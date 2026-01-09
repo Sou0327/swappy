@@ -32,6 +32,48 @@
 
 ---
 
+## ⚖️ Legal & Regulatory Notice
+
+> **IMPORTANT: Operating a cryptocurrency exchange is a regulated activity in most jurisdictions.**
+>
+> ### Before Using This Software
+>
+> This software provides the complete infrastructure for operating a cryptocurrency exchange, including:
+> - User deposit address allocation and management
+> - Real-time deposit detection and processing
+> - Fund aggregation (sweep) functionality
+> - Trading and conversion features
+> - User asset custody
+>
+> **These activities are subject to financial regulations in most countries.**
+>
+> ### Regulatory Requirements by Region
+>
+> | Region | Regulation | Registration/License Required |
+> |--------|------------|-------------------------------|
+> | **Japan** | Payment Services Act (資金決済法) | Crypto-Asset Exchange Service Provider Registration (暗号資産交換業登録) |
+> | **USA** | FinCEN, State MTL | Money Services Business (MSB) Registration, State Money Transmitter Licenses |
+> | **EU** | MiCA Regulation | Crypto-Asset Service Provider (CASP) Authorization |
+> | **UK** | FCA | Crypto-Asset Registration |
+> | **Singapore** | Payment Services Act | Major Payment Institution License |
+>
+> ### Your Responsibilities
+>
+> 1. **Compliance**: You are solely responsible for ensuring compliance with all applicable laws and regulations in your jurisdiction before operating any service using this software.
+>
+> 2. **Legal Advice**: We strongly recommend consulting with legal professionals specializing in financial regulations before deploying this software.
+>
+> 3. **No Legal Advice**: This notice and this software do not constitute legal advice. The authors and contributors are not responsible for any regulatory violations or legal consequences arising from the use of this software.
+>
+> ### Distribution vs. Operation
+>
+> - **Distributing this open-source software** does not require regulatory licenses.
+> - **Operating a service** using this software typically requires appropriate licenses.
+>
+> **By using this software, you acknowledge that you have read and understood this notice and accept full responsibility for regulatory compliance.**
+
+---
+
 ## ✨ Features
 
 ### 🔗 Multi-Chain Support
