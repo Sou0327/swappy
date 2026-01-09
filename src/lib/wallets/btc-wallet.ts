@@ -4,6 +4,9 @@
  */
 
 import { createHash, createHmac } from 'crypto';
+import * as secp256k1 from '@noble/secp256k1';
+import { bech32, bech32m } from 'bech32';
+import bs58check from 'bs58check';
 import { FinancialEncryption } from '../security/encryption';
 import { AuditLogger, AuditAction } from '../security/audit-logger';
 
@@ -222,19 +225,16 @@ export class BitcoinHDWallet {
 
   /**
    * 秘密鍵から公開鍵を導出（secp256k1）
-   * @param privateKey 秘密鍵
-   * @returns 圧縮公開鍵
+   * BIP32準拠: 楕円曲線上の点乗算 G * privateKey
+   * @param privateKey 秘密鍵（32バイト）
+   * @returns 圧縮公開鍵（33バイト、02/03プレフィックス付き）
    */
   static derivePublicKey(privateKey: Buffer): Buffer {
-    // 簡易実装：実際のプロダクションではsecp256k1ライブラリを使用
-    const hash = createHash('sha256').update(privateKey).digest();
-    const isEven = hash[0] % 2 === 0;
-    const prefix = isEven ? 0x02 : 0x03;
-    
-    return Buffer.concat([
-      Buffer.from([prefix]),
-      hash.subarray(0, 32)
-    ]);
+    // secp256k1楕円曲線上でG（生成点）を秘密鍵回乗算
+    // 結果を圧縮形式（33バイト）で返す
+    // Note: @noble/secp256k1はUint8Arrayを期待するため変換
+    const publicKey = secp256k1.getPublicKey(new Uint8Array(privateKey), true);
+    return Buffer.from(publicKey);
   }
 
   /**
@@ -319,100 +319,31 @@ export class BitcoinHDWallet {
 
   /**
    * Base58Checkエンコード
+   * BIP32/BIP38準拠: ペイロード + double-SHA256チェックサム(4バイト)
+   * bs58checkライブラリで検証済み実装を使用
    */
   private static base58CheckEncode(payload: Buffer): string {
-    // チェックサムを計算
-    const checksum = createHash('sha256')
-      .update(createHash('sha256').update(payload).digest())
-      .digest()
-      .subarray(0, 4);
-
-    const fullPayload = Buffer.concat([payload, checksum]);
-    return this.base58Encode(fullPayload);
+    return bs58check.encode(payload);
   }
 
   /**
-   * Base58エンコード
-   */
-  private static base58Encode(buffer: Buffer): string {
-    const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-    
-    // 簡易実装：実際のプロダクションではbs58ライブラリを使用
-    let result = '';
-    let num = BigInt('0x' + buffer.toString('hex'));
-    const base = BigInt(58);
-
-    while (num > 0) {
-      const remainder = num % base;
-      result = alphabet[Number(remainder)] + result;
-      num = num / base;
-    }
-
-    // 先頭の0x00バイトを'1'に変換
-    for (let i = 0; i < buffer.length && buffer[i] === 0; i++) {
-      result = '1' + result;
-    }
-
-    return result;
-  }
-
-  /**
-   * Bech32エンコード（簡易版）
+   * Bech32エンコード
+   * BIP173/BIP350準拠: BCH符号によるチェックサム計算
+   * bech32ライブラリで検証済み実装を使用
+   * @param hrp Human-readable part（'bc' for mainnet, 'tb' for testnet）
+   * @param witnessVersion SegWitバージョン（0 = P2WPKH/P2WSH）
+   * @param program ウィットネスプログラム（HASH160後の20バイト）
    */
   private static bech32Encode(hrp: string, witnessVersion: number, program: Buffer): string {
-    // 簡易実装：実際のプロダクションではbech32ライブラリを使用
-    const alphabet = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
-    
-    // プログラムを5ビット配列に変換
-    const programBits = this.convertBits(Array.from(program), 8, 5, true);
-    const data = [witnessVersion].concat(programBits);
-    
-    // チェックサムを計算（簡易版）
-    const checksum = this.bech32Checksum(hrp, data);
-    const fullData = data.concat(checksum);
-    
-    return hrp + '1' + fullData.map(d => alphabet[d]).join('');
-  }
-
-  /**
-   * ビット変換（8ビット → 5ビット）
-   */
-  private static convertBits(data: number[], fromBits: number, toBits: number, pad: boolean): number[] {
-    let acc = 0;
-    let bits = 0;
-    const result: number[] = [];
-    const maxv = (1 << toBits) - 1;
-    const maxAcc = (1 << (fromBits + toBits - 1)) - 1;
-
-    for (const value of data) {
-      if (value < 0 || value >> fromBits) {
-        throw new Error('Invalid data for base conversion');
-      }
-      acc = ((acc << fromBits) | value) & maxAcc;
-      bits += fromBits;
-      while (bits >= toBits) {
-        bits -= toBits;
-        result.push((acc >> bits) & maxv);
-      }
-    }
-
-    if (pad) {
-      if (bits) {
-        result.push((acc << (toBits - bits)) & maxv);
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * Bech32チェックサム計算（簡易版）
-   */
-  private static bech32Checksum(hrp: string, data: number[]): number[] {
-    // 簡易実装：実際のプロダクションでは正確なBech32チェックサム計算を実装
-    const combined = hrp + data.join('');
-    const hash = createHash('sha256').update(combined).digest();
-    return Array.from(hash.subarray(0, 6)).map(b => b % 32);
+    // BIP173: witness version 0はBech32
+    // BIP350: witness version 1以降はBech32m
+    const encoder = witnessVersion === 0 ? bech32 : bech32m;
+    // 8ビットデータを5ビットワードに変換
+    const words = encoder.toWords(program);
+    // ウィットネスバージョンを先頭に追加
+    words.unshift(witnessVersion);
+    // BCH符号でチェックサムを計算してエンコード
+    return encoder.encode(hrp, words);
   }
 
   /**
@@ -592,25 +523,54 @@ export class BitcoinHDWallet {
   }
 
   /**
-   * Bech32アドレス妥当性検証
+   * Bech32アドレス妥当性検証（BCHチェックサム検証付き）
+   * BIP173/BIP350準拠
    */
   private static validateBech32Address(address: string): boolean {
-    const bech32Regex = /^(bc1|tb1)[a-z0-9]{39,59}$/;
-    return bech32Regex.test(address.toLowerCase());
+    try {
+      // 小文字または大文字で統一されているか確認（混在は無効）
+      const hasUpper = /[A-Z]/.test(address);
+      const hasLower = /[a-z]/.test(address);
+      if (hasUpper && hasLower) {
+        return false;
+      }
+
+      const lowerAddress = address.toLowerCase();
+
+      // witness version 1以降はBech32m（BIP350）
+      if (lowerAddress.startsWith('bc1p') || lowerAddress.startsWith('tb1p')) {
+        // Taproot (P2TR) - Bech32m
+        bech32m.decode(lowerAddress);
+        return true;
+      }
+
+      // witness version 0はBech32（BIP173）
+      bech32.decode(lowerAddress);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
-   * Base58アドレス妥当性検証
+   * Base58アドレス妥当性検証（チェックサム検証付き）
    */
   private static validateBase58Address(address: string, network: 'mainnet' | 'testnet'): boolean {
-    const base58Regex = /^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/;
-    if (!base58Regex.test(address)) return false;
+    try {
+      // bs58checkでデコード（チェックサム検証込み）
+      const decoded = bs58check.decode(address);
+      const versionByte = decoded[0];
 
-    // プレフィックスチェック
-    if (network === 'mainnet') {
-      return address.startsWith('1') || address.startsWith('3');
-    } else {
-      return address.startsWith('m') || address.startsWith('n') || address.startsWith('2');
+      // ネットワーク別のバージョンバイト検証
+      if (network === 'mainnet') {
+        // P2PKH: 0x00, P2SH: 0x05
+        return versionByte === 0x00 || versionByte === 0x05;
+      } else {
+        // testnet P2PKH: 0x6f, testnet P2SH: 0xc4
+        return versionByte === 0x6f || versionByte === 0xc4;
+      }
+    } catch {
+      return false;
     }
   }
 }

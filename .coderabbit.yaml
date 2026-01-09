@@ -1,0 +1,65 @@
+# CodeRabbit Configuration
+# https://docs.coderabbit.ai/guides/configure-coderabbit
+
+language: ja-JP
+
+reviews:
+  # レビューの自動トリガー
+  auto_review:
+    enabled: true
+    drafts: false  # ドラフトPRはスキップ
+
+  # レビュー対象から除外
+  path_filters:
+    - "!dist/**"
+    - "!node_modules/**"
+    - "!package-lock.json"
+    - "!*.lock"
+    - "!*.min.js"
+    - "!*.min.css"
+
+  # レビュー観点
+  profile: assertive  # chill, default, assertive
+
+  # 高度な設定
+  request_changes_workflow: false
+  labeling_instructions: []
+
+chat:
+  # チャット応答を日本語で
+  auto_reply: true
+
+# レビュー時の追加指示
+instructions: |
+  このプロジェクトは日本語で開発されています。
+  レビューコメントは日本語で記述してください。
+
+  重点チェック項目:
+  - セキュリティ脆弱性（XSS, SQLインジェクション等）
+  - TypeScript型安全性
+  - React Hooksのルール違反
+  - パフォーマンス問題
+  - エラーハンドリングの欠如
+
+  軽視してよい項目:
+  - テストファイルでの any 型使用
+  - コメントの不足（コードが自明な場合）
+
+# ファイルタイプ別の追加指示
+path_instructions:
+  - path: "src/components/**"
+    instructions: |
+      UIコンポーネントです。アクセシビリティとレスポンシブデザインに注意してレビューしてください。
+
+  - path: "src/lib/**"
+    instructions: |
+      ユーティリティ・ビジネスロジックです。型安全性とエラーハンドリングを重点的にチェックしてください。
+
+  - path: "supabase/functions/**"
+    instructions: |
+      Supabase Edge Functions（Deno環境）です。セキュリティと入力バリデーションを重点チェックしてください。
+
+  - path: "**/*.test.{ts,tsx}"
+    instructions: |
+      テストファイルです。テストカバレッジとエッジケースの網羅性を確認してください。
+      any型の使用は許容されます。

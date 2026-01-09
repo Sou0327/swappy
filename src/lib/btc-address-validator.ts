@@ -1,4 +1,5 @@
-import { sha256 } from './crypto-utils';
+import bs58check from 'bs58check';
+import { bech32, bech32m } from 'bech32';
 
 /**
  * Bitcoinアドレス形式の詳細情報
@@ -13,70 +14,50 @@ export interface BTCAddressInfo {
 }
 
 /**
- * Base58エンコードの文字セット
+ * Base58Checkデコード
+ * bs58checkライブラリを使用し、チェックサム検証を含む
+ * チェックサム = double-SHA256の先頭4バイト
  */
-const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-
-/**
- * Bech32エンコードの文字セット
- */
-const BECH32_ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
-
-/**
- * Base58デコード（簡易版）
- * 本番環境では bitcoinjs-lib の使用を推奨
- */
-function base58Decode(encoded: string): Buffer | null {
+function base58CheckDecode(encoded: string): Buffer | null {
   try {
-    let result = BigInt(0);
-    const base = BigInt(58);
-    
-    for (const char of encoded) {
-      const index = BASE58_ALPHABET.indexOf(char);
-      if (index === -1) return null;
-      result = result * base + BigInt(index);
-    }
-    
-    // BigIntをBufferに変換（簡易版）
-    const hex = result.toString(16);
-    const paddedHex = hex.length % 2 === 0 ? hex : '0' + hex;
-    return Buffer.from(paddedHex, 'hex');
+    // bs58check.decodeはチェックサム検証を自動的に行う
+    // 無効なチェックサムの場合は例外をスロー
+    return Buffer.from(bs58check.decode(encoded));
   } catch {
     return null;
   }
 }
 
 /**
- * Base58チェックサムの検証（簡易版）
- * 注意: 本番環境では bitcoinjs-lib の使用を推奨
+ * Base58Checkチェックサムの検証
+ * bs58checkライブラリでdouble-SHA256チェックサムを検証
  */
 function verifyBase58Checksum(encoded: string): boolean {
-  const decoded = base58Decode(encoded);
-  if (!decoded || decoded.length < 4) return false;
-
-  // 簡易実装: デコード成功と長さチェックのみ
-  // BigInt変換時に先頭の0が失われることがあるため、24バイトから許可
-  // 正確なチェックサム検証にはbitcoinjs-libが必要
-  return decoded.length >= 24 && decoded.length <= 34;
+  try {
+    // bs58check.decodeが成功すればチェックサムは有効
+    bs58check.decode(encoded);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
- * Bech32チェックサムの検証（簡易版）
+ * Bech32/Bech32mチェックサムの検証
+ * BIP173(Bech32) / BIP350(Bech32m)準拠のBCH符号検証
+ * @param address Bech32/Bech32mエンコードされたアドレス
+ * @param useBech32m Taproot用Bech32mを使用するか
  */
-function verifyBech32Checksum(address: string): boolean {
+function verifyBech32Checksum(address: string, useBech32m: boolean = false): boolean {
   try {
-    const parts = address.split('1');
-    if (parts.length !== 2) return false;
-    
-    const [hrp, data] = parts;
-    
-    // データ部分の文字チェック
-    for (const char of data) {
-      if (!BECH32_ALPHABET.includes(char)) return false;
+    // bech32/bech32m.decodeがBCH符号チェックサムを検証
+    // 無効なチェックサムの場合は例外をスロー
+    if (useBech32m) {
+      bech32m.decode(address);
+    } else {
+      bech32.decode(address);
     }
-    
-    // 簡易的なチェックサム検証（実際はより複雑）
-    return data.length >= 6; // 最低限の長さチェック
+    return true;
   } catch {
     return false;
   }
@@ -121,15 +102,17 @@ function validateBech32(address: string, network: 'mainnet' | 'testnet'): boolea
 
 /**
  * Taprootアドレスの検証（bc1pまたはtb1pで始まる）
+ * BIP350: TaprootはBech32m（witness version 1）を使用
  */
 function validateTaproot(address: string, network: 'mainnet' | 'testnet'): boolean {
   const expectedPrefix = network === 'mainnet' ? 'bc1p' : 'tb1p';
   if (!address.startsWith(expectedPrefix)) return false;
-  
+
   // Taproot アドレスは62文字固定
   if (address.length !== 62) return false;
-  
-  return verifyBech32Checksum(address);
+
+  // TaprootはBech32mを使用（BIP350）
+  return verifyBech32Checksum(address, true);
 }
 
 /**
@@ -237,8 +220,8 @@ export class BTCAddressTester {
       P2PKH: 'mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn',
       P2SH: '2MzQwSSnBHWHqSAqtTVQ6v47XtaisrJa1Vc',
       P2WPKH: 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx',
-      P2WSH: 'tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7',
-      P2TR: 'tb1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rusxg3297'
+      P2WSH: 'tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7',
+      P2TR: 'tb1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rus3q89l3'
     }
   };
 

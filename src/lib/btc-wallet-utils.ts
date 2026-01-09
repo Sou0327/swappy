@@ -1,4 +1,7 @@
-import { sha256, hashTo32BitInt, randomHex } from './crypto-utils';
+import { randomHex } from './crypto-utils';
+import * as secp256k1 from '@noble/secp256k1';
+import bs58check from 'bs58check';
+import CryptoJS from 'crypto-js';
 
 // BIP44 derivation path for Bitcoin
 // m/44'/0'/0'/0/address_index (mainnet)
@@ -75,48 +78,49 @@ export function generateBTCDerivationPath(
 }
 
 /**
- * 簡易Base58エンコード（モック版）
- */
-function simpleBase58Encode(hexString: string): string {
-  // 簡易版: 実際のプロダクションではbitcoinjs-libを使用
-  const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  let result = '';
-  for (let i = 0; i < hexString.length; i += 2) {
-    const byte = parseInt(hexString.substr(i, 2), 16);
-    result += alphabet[byte % 58];
-  }
-  return result;
-}
-
-
-/**
- * Bitcoin addressを生成（P2PKH形式）
- * 注意: これは簡易実装です。本番環境では bitcoinjs-lib を使用してください
+ * Bitcoin P2PKHアドレスを生成
+ * HASH160(publicKey) = RIPEMD160(SHA256(publicKey))
+ * Base58Check = versionByte + HASH160 + checksum
  */
 function createBTCAddressFromPublicKey(
   publicKey: string,
   network: 'mainnet' | 'testnet'
 ): string {
   const networkConfig = BTC_NETWORKS[network];
-  
-  // 簡易版アドレス生成（モック）
-  const addressHash = sha256(`${networkConfig.addressPrefix}-${publicKey}`);
-  const addressHex = addressHash.slice(0, 40);
-  
-  // ネットワークプレフィックスを追加
-  const prefix = network === 'mainnet' ? '1' : 'm';
-  return prefix + simpleBase58Encode(addressHex);
+
+  // CryptoJSでHASH160 = RIPEMD160(SHA256(publicKey))を計算
+  const pubKeyWordArray = CryptoJS.enc.Hex.parse(publicKey);
+  const sha256Hash = CryptoJS.SHA256(pubKeyWordArray);
+  const hash160 = CryptoJS.RIPEMD160(sha256Hash);
+
+  // WordArrayをBufferに変換
+  const hash160Hex = hash160.toString(CryptoJS.enc.Hex);
+  const hash160Buffer = Buffer.from(hash160Hex, 'hex');
+
+  // バージョンバイト + HASH160
+  const payload = Buffer.concat([
+    Buffer.from([networkConfig.addressPrefix]),
+    hash160Buffer
+  ]);
+
+  // Base58Checkエンコード（bs58checkがdouble-SHA256チェックサムを追加）
+  return bs58check.encode(payload);
 }
 
 /**
- * 簡易的な公開鍵生成（実際は秘密鍵から導出）
- * 注意: これはモックです。本番環境では適切なBIP32/BIP44実装を使用してください
+ * 開発用公開鍵生成（決定論的）
+ * derivationPathから決定論的に秘密鍵を導出し、secp256k1で公開鍵を計算
+ * 注意: 本番環境では btc-wallet.ts の BitcoinHDWallet を使用してください
  */
 export function generateMockPublicKey(derivationPath: string): string {
-  const hash = sha256(derivationPath);
-  // 33バイトの圧縮公開鍵として扱う（0x02 or 0x03 プレフィックス）
-  const prefix = hashTo32BitInt(derivationPath) % 2 === 0 ? '02' : '03';
-  return prefix + hash.slice(0, 64);
+  // derivationPathのSHA256ハッシュを秘密鍵として使用（開発用のみ）
+  const hashHex = CryptoJS.SHA256(derivationPath).toString(CryptoJS.enc.Hex);
+  const privateKeyBuffer = Buffer.from(hashHex, 'hex');
+
+  // secp256k1で圧縮公開鍵を生成（33バイト、02/03プレフィックス付き）
+  // Note: @noble/secp256k1はUint8Arrayを期待するため変換
+  const publicKey = secp256k1.getPublicKey(new Uint8Array(privateKeyBuffer), true);
+  return Buffer.from(publicKey).toString('hex');
 }
 
 /**
@@ -142,29 +146,30 @@ export function generateBTCAddress(
 }
 
 /**
- * xpubからアドレスを導出（簡易版）
- * 注意: これはモック実装です。本番環境では bitcoinjs-lib を使用してください
+ * xpubからアドレスを導出（開発用）
+ * xpub + addressIndexから決定論的に秘密鍵を導出し、secp256k1で公開鍵を計算
+ * 注意: 本番環境では btc-wallet.ts の BitcoinHDWallet を使用してください
  */
 export function deriveAddressFromXpub(
   xpub: string,
   addressIndex: number,
   network: 'mainnet' | 'testnet'
 ): string {
-  // xpubの妥当性をチェック（簡易）
+  // xpubの妥当性をチェック
   if (!xpub.startsWith('xpub') && !xpub.startsWith('tpub')) {
     throw new Error('Invalid xpub format');
   }
-  
-  // 実際の実装では、xpubから子鍵を導出してアドレスを生成
-  // ここではモックとして、xpub+addressIndexのハッシュから生成
+
+  // xpub + addressIndexのSHA256ハッシュを秘密鍵として使用（開発用のみ）
   const derivationData = `${xpub}-${addressIndex}`;
-  const hash = sha256(derivationData);
-  
-  // 簡易的な公開鍵を生成してアドレスに変換
-  const prefix = hashTo32BitInt(derivationData) % 2 === 0 ? '02' : '03';
-  const publicKey = prefix + hash.slice(0, 64);
-  
-  return createBTCAddressFromPublicKey(publicKey, network);
+  const hashHex = CryptoJS.SHA256(derivationData).toString(CryptoJS.enc.Hex);
+  const privateKeyBuffer = Buffer.from(hashHex, 'hex');
+
+  // secp256k1で圧縮公開鍵を生成
+  // Note: @noble/secp256k1はUint8Arrayを期待するため変換
+  const publicKey = secp256k1.getPublicKey(new Uint8Array(privateKeyBuffer), true);
+
+  return createBTCAddressFromPublicKey(Buffer.from(publicKey).toString('hex'), network);
 }
 
 /**
@@ -209,9 +214,30 @@ export function estimateBTCTransactionFee(
 
 /**
  * 開発用のモックxpub生成
+ * BIP32形式の拡張公開鍵をBase58Checkでエンコード
+ * 注意: 本番環境では btc-wallet.ts の BitcoinHDWallet を使用してください
  */
 export function generateMockXpub(network: 'mainnet' | 'testnet'): string {
-  const prefix = network === 'mainnet' ? 'xpub' : 'tpub';
-  const randomData = randomHex(148); // xpubのデータ部分
-  return prefix + simpleBase58Encode(randomData);
+  // BIP32 xpub構造: 4バイトversion + 1バイトdepth + 4バイトfingerprint + 4バイトchildNumber + 32バイトchainCode + 33バイト公開鍵 = 78バイト
+  const versionBytes = network === 'mainnet'
+    ? Buffer.from([0x04, 0x88, 0xB2, 0x1E]) // mainnet xpub
+    : Buffer.from([0x04, 0x35, 0x87, 0xCF]); // testnet tpub
+
+  const depth = Buffer.from([0x00]); // depth 0
+  const fingerprint = Buffer.from([0x00, 0x00, 0x00, 0x00]); // master key has no parent
+  const childNumber = Buffer.from([0x00, 0x00, 0x00, 0x00]); // index 0
+
+  // ランダムなチェーンコード（32バイト）
+  const chainCode = Buffer.from(randomHex(64), 'hex');
+
+  // ランダムな秘密鍵から公開鍵を生成（33バイト圧縮形式）
+  // Note: @noble/secp256k1はUint8Arrayを期待するため変換
+  const randomPrivateKey = Buffer.from(randomHex(64), 'hex');
+  const publicKey = Buffer.from(secp256k1.getPublicKey(new Uint8Array(randomPrivateKey), true));
+
+  // 全体を結合（78バイト）
+  const payload = Buffer.concat([versionBytes, depth, fingerprint, childNumber, chainCode, publicKey]);
+
+  // Base58Checkエンコード
+  return bs58check.encode(payload);
 }

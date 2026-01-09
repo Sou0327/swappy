@@ -343,7 +343,8 @@ describe('btc-wallet', () => {
       })
 
       it('有効なP2SHアドレスを検証する', () => {
-        const validP2SH = '3J98t1WpEZ73CNmYviecrnyiWrnqRhWNLy'
+        // 注意: CNmQ（正しいチェックサム）、CNmYはチェックサム無効
+        const validP2SH = '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy'
 
         expect(BitcoinHDWallet.validateAddress(validP2SH, 'mainnet')).toBe(true)
       })
@@ -373,6 +374,60 @@ describe('btc-wallet', () => {
         expect(BitcoinHDWallet.validateAddress(null as any, 'mainnet')).toBe(false)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect(BitcoinHDWallet.validateAddress(undefined as any, 'mainnet')).toBe(false)
+      })
+
+      it('Base58Checkチェックサムエラーを検出する', () => {
+        // 最後の文字を変更（N2→N3）
+        const invalidP2PKH = '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN3'
+        expect(BitcoinHDWallet.validateAddress(invalidP2PKH, 'mainnet')).toBe(false)
+      })
+
+      it('Bech32チェックサムエラーを検出する', () => {
+        // BIP173公式テスト: 最後の文字を変更（t4→t5）
+        const invalidBech32 = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5'
+        expect(BitcoinHDWallet.validateAddress(invalidBech32, 'mainnet')).toBe(false)
+      })
+    })
+
+    describe('BIP173 Official Test Vectors', () => {
+      // BIP173公式テストベクター - 有効なBech32アドレス
+      const validBech32Addresses = [
+        // SegWit v0 mainnet
+        { address: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4', network: 'mainnet' as const },
+        { address: 'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3', network: 'mainnet' as const },
+        // SegWit v0 testnet
+        { address: 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx', network: 'testnet' as const },
+        { address: 'tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7', network: 'testnet' as const }
+      ]
+
+      // BIP173公式テストベクター - 無効なBech32アドレス（チェックサムエラー等）
+      const invalidBech32Addresses = [
+        // チェックサムエラー（最後の文字を変更）
+        'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5',
+        // 無効な文字（o, b, i, 1はBech32で使用不可）
+        'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7ko8f3t4',
+        // 短すぎる
+        'bc1',
+        // 無効なHRP
+        'xx1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx'
+      ]
+
+      it('BIP173有効アドレスを検証する', () => {
+        validBech32Addresses.forEach(({ address, network }) => {
+          expect(BitcoinHDWallet.validateAddress(address, network)).toBe(true)
+        })
+      })
+
+      it('BIP173無効アドレスを拒否する', () => {
+        invalidBech32Addresses.forEach(address => {
+          expect(BitcoinHDWallet.validateAddress(address, 'mainnet')).toBe(false)
+        })
+      })
+
+      it('大文字小文字混在のBech32アドレスを拒否する', () => {
+        // Bech32は全小文字または全大文字のみ許可
+        const mixedCase = 'bc1qW508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4'
+        expect(BitcoinHDWallet.validateAddress(mixedCase, 'mainnet')).toBe(false)
       })
     })
 

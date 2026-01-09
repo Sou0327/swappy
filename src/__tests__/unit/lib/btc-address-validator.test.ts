@@ -33,8 +33,13 @@ describe('btc-address-validator', () => {
       expect(info.isValid).toBe(true)
     })
 
-    // 注意: 簡易実装のため、チェックサムエラーは検出できません
-    // 本番環境ではbitcoinjs-libを使用してください
+    it('Base58Checkチェックサムエラーを検出する', () => {
+      // 最後の1文字を変更したアドレス（チェックサムが無効）
+      const invalidAddress = '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN3'
+      const info = analyzeBTCAddress(invalidAddress, 'mainnet')
+
+      expect(info.isValid).toBe(false)
+    })
   })
 
   describe('analyzeBTCAddress - P2SH (Pay-to-Script-Hash)', () => {
@@ -57,7 +62,13 @@ describe('btc-address-validator', () => {
       expect(info.isValid).toBe(true)
     })
 
-    // 注意: 簡易実装のため、チェックサムエラーは検出できません
+    it('P2SHチェックサムエラーを検出する', () => {
+      // 最後の1文字を変更したアドレス（チェックサムが無効）
+      const invalidAddress = '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLz'
+      const info = analyzeBTCAddress(invalidAddress, 'mainnet')
+
+      expect(info.isValid).toBe(false)
+    })
   })
 
   describe('analyzeBTCAddress - P2WPKH (Pay-to-Witness-Public-Key-Hash)', () => {
@@ -82,7 +93,13 @@ describe('btc-address-validator', () => {
       expect(info.witnessVersion).toBe(0)
     })
 
-    // 注意: 簡易実装のため、チェックサムエラーは検出できません
+    it('Bech32チェックサムエラーを検出する', () => {
+      // 最後の1文字を変更したアドレス（Bech32チェックサムが無効）
+      const invalidAddress = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5'
+      const info = analyzeBTCAddress(invalidAddress, 'mainnet')
+
+      expect(info.isValid).toBe(false)
+    })
   })
 
   describe('analyzeBTCAddress - P2WSH (Pay-to-Witness-Script-Hash)', () => {
@@ -121,7 +138,8 @@ describe('btc-address-validator', () => {
     })
 
     it('testnet P2TRアドレスを検証する', () => {
-      const address = 'tb1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rusxs3y4r'
+      // SAMPLE_ADDRESSESと同じ、正しいBech32mチェックサムを持つアドレスを使用
+      const address = BTCAddressTester.SAMPLE_ADDRESSES.testnet.P2TR
       const info = analyzeBTCAddress(address, 'testnet')
 
       expect(info.type).toBe('P2TR')
@@ -254,8 +272,8 @@ describe('btc-address-validator', () => {
       expect(results['invalid_0']).toBe(true) // 空文字列
       expect(results['invalid_1']).toBe(true) // 短すぎる '1'
 
-      // 注意: 簡易実装のため、チェックサムエラーは検出できません
-      // invalid_3以降はチェックサムエラーのため、falseになる可能性があります
+      // チェックサムエラーも正しく検出される（BIP準拠実装完了）
+      // invalid_3以降はチェックサムエラーとして検出される
     })
 
     it('performanceTestが実行時間を返す', () => {
