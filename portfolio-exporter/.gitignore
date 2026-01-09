@@ -1,0 +1,26 @@
+# 環境変数（認証情報を含むため）
+.env
+
+# 依存関係
+node_modules/
+
+# 出力ファイル
+out/
+.auth/
+
+# ログファイル
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# エディタ設定
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS固有
+.DS_Store
+Thumbs.db

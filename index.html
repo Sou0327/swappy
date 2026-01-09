@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/opengraph-image.png" />
+    <link rel="preload" as="image" href="/opengraph-image.png" />
+    <title><%= VITE_APP_NAME %> - <%= VITE_APP_TAGLINE %></title>
+    <meta name="description" content="<%= VITE_APP_NAME %>で暗号通貨を取引、運用、変換しましょう - ウォレット内蔵、リアルタイム流動性を備えた次世代取引プラットフォーム" />
+    <meta name="author" content="<%= VITE_APP_NAME %>" />
+
+    <meta property="og:title" content="<%= VITE_APP_NAME %> - <%= VITE_APP_TAGLINE %>" />
+    <meta property="og:description" content="<%= VITE_APP_NAME %>で暗号通貨を取引、運用、変換しましょう - ウォレット内蔵、リアルタイム流動性を備えた次世代取引プラットフォーム" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/opengraph-image.png?v=1.0" />
+    <meta property="og:url" content="https://<%= VITE_APP_DOMAIN %>" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="<%= VITE_APP_NAME %> - <%= VITE_APP_TAGLINE %>" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@<%= VITE_APP_TWITTER %>" />
+    <meta name="twitter:image" content="/opengraph-image.png?v=1.0" />
+    <meta name="twitter:image:alt" content="<%= VITE_APP_NAME %> - <%= VITE_APP_TAGLINE %>" />
+    <meta name="twitter:title" content="<%= VITE_APP_NAME %> - <%= VITE_APP_TAGLINE %>" />
+    <meta name="twitter:description" content="<%= VITE_APP_NAME %>で暗号通貨を取引、運用、変換しましょう - ウォレット内蔵、リアルタイム流動性を備えた次世代取引プラットフォーム" />
+
+    <!-- Additional Social Media & SEO Tags -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="keywords" content="暗号通貨, 仮想通貨, 取引, ウォレット, ステーキング, DeFi, Bitcoin, Ethereum, 投資, トレード" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://<%= VITE_APP_DOMAIN %>/" />
+
+    <!-- Preload fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

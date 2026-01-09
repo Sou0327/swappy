@@ -1,0 +1,19 @@
+# セキュリティヘッダー設定
+# Cloudflare Pagesで使用される_headersファイル
+
+/*
+  # Strict-Transport-Security (HSTS)
+  # HTTPSを強制し、ダウングレード攻撃を防止
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # X-Content-Type-Options
+  # MIMEタイプスニッフィングを防止
+  X-Content-Type-Options: nosniff
+
+  # Referrer-Policy
+  # リファラー情報の送信を制限
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # X-Frame-Options
+  # クリックジャッキング攻撃を防止
+  X-Frame-Options: DENY

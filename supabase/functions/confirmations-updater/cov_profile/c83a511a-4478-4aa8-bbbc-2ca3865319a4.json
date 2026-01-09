@@ -1,0 +1,61 @@
+{
+  "scriptId": "335",
+  "url": "file:///Users/aocunxiangyilang/kaihatu/layer-x-forked/supabase/functions/confirmations-updater/__tests__/setup.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [
+        {
+          "startOffset": 0,
+          "endOffset": 1055,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "equal",
+      "ranges": [
+        {
+          "startOffset": 470,
+          "endOffset": 614,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "isTrue",
+      "ranges": [
+        {
+          "startOffset": 626,
+          "endOffset": 746,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "isNotNull",
+      "ranges": [
+        {
+          "startOffset": 761,
+          "endOffset": 900,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "exists",
+      "ranges": [
+        {
+          "startOffset": 912,
+          "endOffset": 1051,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    }
+  ]
+}

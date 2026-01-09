@@ -1,0 +1,50 @@
+{
+  "scriptId": "336",
+  "url": "file:///Users/aocunxiangyilang/kaihatu/layer-x-forked/supabase/functions/confirmations-updater/__tests__/mocks/fixtures.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [
+        {
+          "startOffset": 0,
+          "endOffset": 3136,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createMockDepositTransaction",
+      "ranges": [
+        {
+          "startOffset": 1107,
+          "endOffset": 1451,
+          "count": 14
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createMockDeposit",
+      "ranges": [
+        {
+          "startOffset": 1501,
+          "endOffset": 1888,
+          "count": 7
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createMockUserAsset",
+      "ranges": [
+        {
+          "startOffset": 1943,
+          "endOffset": 2176,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

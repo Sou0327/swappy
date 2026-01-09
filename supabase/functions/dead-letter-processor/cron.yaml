@@ -1,0 +1,40 @@
+# Dead Letter Queue Scheduled Processor Configuration
+# 金融システムの失敗イベント自動復旧を定期実行
+
+# メイン処理：Dead Letter Queueの自動処理
+dead_letter_processing:
+  # 10分間隔で実行（金融システムとして適切な頻度）
+  schedule: "*/10 * * * *"
+  # タイムゾーン：日本時間
+  timezone: "Asia/Tokyo"
+  # HTTP method: POST
+  method: POST
+  # パス
+  path: "/"
+  # ヘッダー
+  headers:
+    Content-Type: "application/json"
+  # リクエストボディ
+  body: |
+    {
+      "trigger": "scheduled",
+      "timestamp": "{{ .timestamp }}",
+      "service": "dead-letter-processor"
+    }
+
+# ヘルスチェック：30分間隔で監視
+dead_letter_health_check:
+  # 30分間隔でヘルスチェック
+  schedule: "*/30 * * * *"
+  # タイムゾーン：日本時間
+  timezone: "Asia/Tokyo"
+  # HTTP method: GET
+  method: GET
+  # パス
+  path: "/health"
+
+# 注意事項：
+# - 10分間隔は金融システムとして適切なバランス（迅速性とリソース効率）
+# - より短い間隔（5分）も可能だが、負荷を考慮して10分を推奨
+# - 緊急時は手動でmanual retry APIを使用可能
+# - Supabase Scheduled Functionsの料金とリソース制限を考慮

@@ -1,0 +1,154 @@
+{
+  "scriptId": "338",
+  "url": "file:///Users/aocunxiangyilang/kaihatu/layer-x-forked/supabase/functions/confirmations-updater/__tests__/mocks/rpc.mock.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [
+        {
+          "startOffset": 0,
+          "endOffset": 5660,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [
+        {
+          "startOffset": 161,
+          "endOffset": 206,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "reset",
+      "ranges": [
+        {
+          "startOffset": 210,
+          "endOffset": 286,
+          "count": 12
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "setBehavior",
+      "ranges": [
+        {
+          "startOffset": 289,
+          "endOffset": 412,
+          "count": 3
+        },
+        {
+          "startOffset": 400,
+          "endOffset": 407,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "setupMockFetch",
+      "ranges": [
+        {
+          "startOffset": 497,
+          "endOffset": 1214,
+          "count": 12
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "globalThis.fetch",
+      "ranges": [
+        {
+          "startOffset": 546,
+          "endOffset": 1211,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "handleEvmRpc",
+      "ranges": [
+        {
+          "startOffset": 1279,
+          "endOffset": 2527,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "handleBitcoinApi",
+      "ranges": [
+        {
+          "startOffset": 2565,
+          "endOffset": 3548,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "handleTronApi",
+      "ranges": [
+        {
+          "startOffset": 3580,
+          "endOffset": 4608,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "handleCardanoApi",
+      "ranges": [
+        {
+          "startOffset": 4645,
+          "endOffset": 5424,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getState",
+      "ranges": [
+        {
+          "startOffset": 5494,
+          "endOffset": 5510,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "resetState",
+      "ranges": [
+        {
+          "startOffset": 5526,
+          "endOffset": 5550,
+          "count": 12
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "setBehavior",
+      "ranges": [
+        {
+          "startOffset": 5567,
+          "endOffset": 5656,
+          "count": 3
+        }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

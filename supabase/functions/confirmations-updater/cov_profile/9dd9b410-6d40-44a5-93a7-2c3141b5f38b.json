@@ -1,0 +1,116 @@
+{
+  "scriptId": "337",
+  "url": "file:///Users/aocunxiangyilang/kaihatu/layer-x-forked/supabase/functions/confirmations-updater/__tests__/mocks/supabase.mock.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [
+        {
+          "startOffset": 0,
+          "endOffset": 6621,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [
+        {
+          "startOffset": 122,
+          "endOffset": 225,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "reset",
+      "ranges": [
+        {
+          "startOffset": 229,
+          "endOffset": 365,
+          "count": 12
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createMockSupabaseClient",
+      "ranges": [
+        {
+          "startOffset": 433,
+          "endOffset": 566,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "createTableQuery",
+      "ranges": [
+        {
+          "startOffset": 567,
+          "endOffset": 2651,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "executeQuery",
+      "ranges": [
+        {
+          "startOffset": 2652,
+          "endOffset": 4126,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "executeUpdate",
+      "ranges": [
+        {
+          "startOffset": 4127,
+          "endOffset": 5869,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "executeInsert",
+      "ranges": [
+        {
+          "startOffset": 5870,
+          "endOffset": 6459,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getState",
+      "ranges": [
+        {
+          "startOffset": 6551,
+          "endOffset": 6572,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "resetState",
+      "ranges": [
+        {
+          "startOffset": 6588,
+          "endOffset": 6617,
+          "count": 12
+        }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}
