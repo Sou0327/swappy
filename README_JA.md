@@ -61,7 +61,7 @@ LayerXは日本語対応のマルチチェーン暗号通貨取引プラット�
 ### 1. リポジトリのクローン
 ```bash
 git clone <YOUR_GIT_URL>
-cd layer-x-forked
+cd undefined-exchange
 ```
 
 ### 2. 🔒 セキュリティ設定（重要）

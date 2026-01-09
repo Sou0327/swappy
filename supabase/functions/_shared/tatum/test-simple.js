@@ -52,7 +52,7 @@ try {
   console.log('  - Circuit Breaker 回路遮断器');
   console.log('  - 構造化ログとメトリクス');
   console.log('  - 型安全なTypeScript実装');
-  console.log('  - Layer-X 9チェーン対応');
+  console.log('  - Undefined 9チェーン対応');
   console.log('  - 既存システム互換性');
 
   console.log('\n🔧 エンタープライズ機能:');

@@ -58,8 +58,8 @@ Thank you for your interest in contributing to **Undefined**, a cryptocurrency e
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-org/layer-x-forked.git
-   cd layer-x-forked
+   git clone https://github.com/your-org/undefined-exchange.git
+   cd undefined-exchange
    ```
 
 2. **Install dependencies**
