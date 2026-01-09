@@ -5,9 +5,9 @@ declare const Deno: {
   };
 };
 
-// @ts-ignore - Deno runtime imports
+// @ts-expect-error Deno runtime imports
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-// @ts-ignore - Deno runtime imports
+// @ts-expect-error Deno runtime imports
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 // 基本的な型定義

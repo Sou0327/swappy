@@ -25,5 +25,21 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-unused-vars": "off",
     },
+  },
+  // テストファイル・モック用の緩和ルール
+  {
+    files: [
+      "**/__tests__/**/*.ts",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/test/**/*.ts",
+      "**/test/**/*.tsx",
+      "**/mocks/**/*.ts",
+    ],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-this-alias": "off",
+      "no-async-promise-executor": "off",
+    },
   }
 );
