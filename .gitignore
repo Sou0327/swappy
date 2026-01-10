@@ -39,11 +39,9 @@ supabase/.temp/
 claudedocs/
 Plans.md
 AGENTS.md
+CLAUDE.md
 *.session.json
 *.jsonl
-
-# AI Tool Settings (keep templates for OSS)
-# Note: CLAUDE.md is kept for development guidance
 
 # Editor directories and files
 .vscode/*
