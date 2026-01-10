@@ -21,8 +21,12 @@ import {
 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 
+// デモモード用サンプルデータ
+const DEMO_TOTAL_BALANCE = 12543.87; // USD
+const DEMO_BTC_PRICE = 97000;
+
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const navigate = useNavigate();
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [totalBalance, setTotalBalance] = useState(0);
@@ -82,11 +86,18 @@ const Dashboard = () => {
   }, [user?.id]);
 
   useEffect(() => {
+    if (isDemoMode) {
+      // デモモード時はサンプルデータを使用
+      setTotalBalance(DEMO_TOTAL_BALANCE);
+      setBtcPrice(DEMO_BTC_PRICE);
+      setLoading(false);
+      return;
+    }
     if (user?.id) {
       fetchUserAssets();
       fetchUserStatus();
     }
-  }, [user?.id, fetchUserAssets, fetchUserStatus]);
+  }, [user?.id, isDemoMode, fetchUserAssets, fetchUserStatus]);
 
   // アカウントアクセス履歴は画面上から非表示（将来のために実装は保留）
 

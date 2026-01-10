@@ -33,9 +33,19 @@ interface UserAssetsRow {
   locked_balance: string | number;
 }
 
+// デモモード用サンプル残高データ
+const DEMO_BALANCES: AssetBalance[] = [
+  { user_id: 'demo', currency: 'BTC', total: 0.12345678, locked: 0, available: 0.12345678 },
+  { user_id: 'demo', currency: 'ETH', total: 2.5, locked: 0.5, available: 2.0 },
+  { user_id: 'demo', currency: 'USDT', total: 5000, locked: 0, available: 5000 },
+  { user_id: 'demo', currency: 'XRP', total: 1500, locked: 0, available: 1500 },
+];
+const DEMO_USD_PRICES: Record<string, number> = { BTC: 97000, ETH: 3500, USDT: 1, USDC: 1, XRP: 2.5, TRX: 0.12, ADA: 0.45 };
+const DEMO_TOTAL_BALANCE = 0.12345678 * 97000 + 2.5 * 3500 + 5000 + 1500 * 2.5; // ~$24,500
+
 const WalletOverview = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const [hideSmallAssets, setHideSmallAssets] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [balances, setBalances] = useState<AssetBalance[]>([]);
@@ -84,8 +94,16 @@ const WalletOverview = () => {
   }, [user?.id]);
 
   useEffect(() => {
+    if (isDemoMode) {
+      // デモモード時はサンプルデータを使用
+      setBalances(DEMO_BALANCES);
+      setUsdPrices(DEMO_USD_PRICES);
+      setTotalBalance(DEMO_TOTAL_BALANCE);
+      setLoading(false);
+      return;
+    }
     if (user?.id) { fetchBalances(); }
-  }, [user?.id, fetchBalances]);
+  }, [user?.id, isDemoMode, fetchBalances]);
 
   // Create a combined list of all depositable assets with user balances
   const allAssets = depositableAssets.map((asset) => {
