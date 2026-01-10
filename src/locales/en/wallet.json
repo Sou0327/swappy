@@ -1,0 +1,252 @@
+{
+  "title": "Wallet",
+  "overview": {
+    "title": "Wallet Overview",
+    "totalAssets": "Total Assets",
+    "totalAssetValue": "Total Asset Value",
+    "availableBalance": "Available Balance",
+    "lockedBalance": "Locked Balance"
+  },
+  "search": {
+    "placeholder": "Search",
+    "noMatchSearch": "No coins match the search criteria",
+    "noMatchFilter": "No coins match the filter criteria",
+    "noDepositableAssets": "No depositable assets available"
+  },
+  "filter": {
+    "hideSmallAssets": "Hide small assets",
+    "hideSmallAssetsShort": "Hide small"
+  },
+  "table": {
+    "coin": "Coin",
+    "balance": "Balance",
+    "actions": "Actions"
+  },
+  "deposit": {
+    "title": "Deposit",
+    "selectCurrency": "Select Currency",
+    "depositAddress": "Deposit Address",
+    "copyAddress": "Copy Address",
+    "qrCode": "QR Code",
+    "minDeposit": "Minimum Deposit",
+    "confirmations": "Required Confirmations",
+    "warning": "Please only send {{currency}} to this address. Sending other assets may result in permanent loss.",
+    "pending": "Pending Deposits",
+    "history": "Deposit History",
+    "phase2Badge": "Phase 2: Real-time Monitoring",
+    "depositInfo": "Deposit Info",
+    "walletAddress": "Wallet Address",
+    "generatingAddress": "Generating address...",
+    "generatingXrpAddress": "Generating XRP address...",
+    "status": {
+      "offline": "Offline",
+      "monitoring": "Real-time Monitoring",
+      "waiting": "Monitoring Standby",
+      "accepting": "Accepting Deposits",
+      "suspended": "Deposits Suspended"
+    },
+    "form": {
+      "asset": "Asset",
+      "chain": "Chain",
+      "network": "Network",
+      "step": "Step"
+    },
+    "actions": {
+      "copy": "Copy",
+      "download": "Download",
+      "retry": "Retry",
+      "reconnect": "Reconnect",
+      "showGuide": "Show Transfer Guide",
+      "openSettings": "Open Settings",
+      "closeSettings": "Close Settings"
+    },
+    "xrp": {
+      "destinationTagRequired": "Destination Tag (Required)",
+      "destinationTagWarning": "Please always enter this Destination Tag when sending XRP. Forgetting to enter it may result in loss of funds."
+    },
+    "notices": {
+      "important": "Important Notices",
+      "networkOnly": "Only {{network}} network supported",
+      "minDepositAmount": "Minimum deposit: {{amount}} {{asset}}",
+      "confirmationsRequired": "{{count}} block confirmations required",
+      "destinationTagMandatory": "Destination Tag input is required",
+      "wrongNetworkWarning": "Sending from other networks may result in loss of funds"
+    },
+    "historyTable": {
+      "title": "Recent Deposit History",
+      "datetime": "Date/Time",
+      "asset": "Asset",
+      "network": "Network",
+      "transaction": "Transaction",
+      "amount": "Amount",
+      "confirmations": "Confirmations",
+      "status": "Status",
+      "noHistory": "No deposit history"
+    },
+    "notifications": {
+      "title": "Notification Settings",
+      "settingsUpdated": "Notification Settings Updated",
+      "settingsSaved": "Settings saved successfully."
+    },
+    "faq": {
+      "title": "FAQ",
+      "howToDeposit": "How do I deposit {{asset}}?",
+      "howToDepositAnswer": "Send {{asset}} using the selected network ({{network}}). Minimum deposit is {{minDeposit}} {{asset}}, requiring {{minConf}} confirmations.",
+      "whenReflected": "When will my deposit be reflected?",
+      "whenReflectedAnswer": "Your balance will be updated after {{minConf}} confirmations on the blockchain. Time may vary depending on network conditions.",
+      "wrongNetwork": "What if I sent to the wrong network?",
+      "wrongNetworkAnswer": "Funds sent to a network other than the selected chain/network may not be recoverable. Always verify the network before sending.",
+      "xrpTagRequired": "Is XRP Destination Tag required?",
+      "xrpTagRequiredAnswer": "Yes. You must enter the specified Destination Tag. Missing or incorrect tags may result in permanent loss of funds.",
+      "tronConfirmation": "How long does TRON confirmation take?",
+      "tronConfirmationAnswer": "Approximately 19 blocks for finality (depending on network conditions). TRC-20 (USDT) also requires waiting for Transfer event confirmation.",
+      "adaUtxo": "Are there any considerations for ADA UTXO?",
+      "adaUtxoAnswer": "Cardano uses the UTXO model, so transactions may be split into multiple inputs/outputs. There may be differences in history reflection."
+    },
+    "toast": {
+      "realtimeMonitoring": "Real-time Monitoring",
+      "connectionLost": "Real-time deposit monitoring connection lost. Please try manual refresh.",
+      "connectionRestored": "Real-time Monitoring Restored",
+      "connectionRestoredDesc": "Real-time deposit monitoring has been restored.",
+      "monitoringError": "Monitoring Error",
+      "addressGeneration": "Address Generation",
+      "generatingWallet": "Generating wallet address...",
+      "authError": "Authentication Error",
+      "authRequired": "User authentication required",
+      "goToLogin": "Go to Login",
+      "copyError": "Copy Error",
+      "noAddressToCopy": "No address found to copy.",
+      "addressCopied": "Address info copied",
+      "xrpAddressCopied": "XRP address and Destination Tag copied.",
+      "walletAddressCopied": "Wallet address copied to clipboard.",
+      "copyFailed": "Copy Failed",
+      "clipboardError": "Failed to copy to clipboard.",
+      "qrDownload": "QR Code Download",
+      "qrDownloadStarted": "Starting QR code download.",
+      "downloadFailed": "Download Failed",
+      "qrDownloadError": "Failed to download QR code.",
+      "depositDetected": "Deposit Detected",
+      "depositDetectedDesc": "{{amount}} {{asset}} deposit detected. Please wait for confirmation.",
+      "viewTransaction": "View Transaction",
+      "confirming": "Confirming",
+      "confirmingDesc": "Confirmations: {{current}}/{{required}} - Deposit confirmation in progress.",
+      "depositComplete": "Deposit Complete",
+      "depositCompleteDesc": "{{amount}} {{asset}} deposit complete and reflected in balance.",
+      "depositError": "Deposit Processing Error",
+      "depositErrorDesc": "An error occurred during deposit processing. Please contact support.",
+      "refreshing": "Refreshing",
+      "refreshingDesc": "Checking latest deposit status..."
+    },
+    "serviceSuspended": {
+      "title": "Deposit Function Temporarily Suspended",
+      "description": "New deposits are temporarily suspended",
+      "notice": "Notice"
+    },
+    "estimatedTimeSeconds": "{{count}} seconds",
+    "featureName": "Deposit",
+    "erc20Notice": "Please send as ERC-20 token",
+    "trc20Notice": "Please send as TRC-20 token",
+    "loadingConfig": "Loading settings...",
+    "errors": {
+      "xrpNetworkOnly": "XRP only supports mainnet/testnet",
+      "subscriptionFailed": "Failed to create subscription",
+      "invalidAddressFormat": "Invalid address format"
+    }
+  },
+  "withdraw": {
+    "title": "Withdraw",
+    "pageTitle": "Withdraw | {{platform}}",
+    "pageDescription": "Crypto Withdrawal: Select asset and network, enter withdrawal address and amount to withdraw.",
+    "selectCurrency": "Select Currency",
+    "withdrawAddress": "Withdrawal Address",
+    "amount": "Amount",
+    "available": "Available",
+    "max": "MAX",
+    "fee": "Network Fee",
+    "receiveAmount": "You will receive",
+    "minWithdraw": "Minimum Withdrawal",
+    "submit": "Submit Withdrawal",
+    "submitting": "Submitting...",
+    "pending": "Pending Withdrawals",
+    "history": "Withdrawal History",
+    "featureName": "Withdrawal",
+    "formTitle": "Withdrawal Form",
+    "form": {
+      "coinLabel": "Coin / Token",
+      "selectPlaceholder": "Please select",
+      "networkLabel": "Network",
+      "networkPlaceholder": "Select network",
+      "addressLabel": "Withdrawal Address",
+      "addressPlaceholder": "Enter withdrawal address",
+      "tagLabel": "Tag / Memo (Optional)",
+      "tagPlaceholder": "Enter tag/memo (optional)",
+      "amountLabel": "Withdrawal Amount",
+      "amountPlaceholder": "Enter amount"
+    },
+    "balance": {
+      "insufficient": "Insufficient Balance",
+      "insufficientMessage": "Exceeds available balance of {{balance}} {{coin}}. Use the 100% button to enter the maximum withdrawal amount.",
+      "minWithdraw": "Min withdrawal: {{amount}} {{coin}}",
+      "maxWithdraw": "Max withdrawal: {{amount}} {{coin}}",
+      "available": "Available balance: {{amount}} {{coin}}"
+    },
+    "notices": {
+      "title": "Important Notices",
+      "addressMatch": "Please ensure the address and network match. Incorrect transfers may result in loss of funds.",
+      "networkCongestion": "Processing may take time due to network congestion."
+    },
+    "toast": {
+      "submitted": "Withdrawal Request Submitted",
+      "submittedDesc": "Withdrawal request for {{amount}} {{coin}} to {{network}} network submitted.",
+      "error": "Error",
+      "errorDefault": "Request failed"
+    },
+    "confirm": {
+      "title": "Confirm Withdrawal",
+      "message": "Please confirm the withdrawal details below.",
+      "currency": "Currency",
+      "address": "Address",
+      "amount": "Amount",
+      "fee": "Fee",
+      "total": "Total"
+    }
+  },
+  "transfer": {
+    "title": "Transfer",
+    "recipient": "Recipient Email",
+    "selectCurrency": "Select Currency",
+    "amount": "Amount",
+    "available": "Available",
+    "memo": "Memo (Optional)",
+    "submit": "Send Transfer",
+    "confirm": {
+      "title": "Confirm Transfer",
+      "message": "Please confirm the transfer details below.",
+      "recipient": "Recipient",
+      "currency": "Currency",
+      "amount": "Amount"
+    },
+    "history": "Transfer History"
+  },
+  "convert": {
+    "title": "Convert",
+    "from": "From",
+    "to": "To",
+    "rate": "Exchange Rate",
+    "fee": "Conversion Fee",
+    "submit": "Convert",
+    "confirm": {
+      "title": "Confirm Conversion",
+      "message": "Please confirm the conversion details below."
+    }
+  },
+  "assets": {
+    "title": "Assets",
+    "currency": "Currency",
+    "available": "Available",
+    "locked": "Locked",
+    "total": "Total",
+    "actions": "Actions",
+    "noAssets": "No assets found"
+  }
+}

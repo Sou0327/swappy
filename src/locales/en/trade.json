@@ -1,0 +1,128 @@
+{
+  "title": "Trade",
+  "featureName": "Trading",
+  "header": {
+    "currentPrice": "Current Price",
+    "liveSimulation": "Live Simulation",
+    "simulationStopped": "Simulation Stopped"
+  },
+  "market": {
+    "title": "Markets",
+    "pair": "Pair",
+    "price": "Price",
+    "change24h": "24h Change",
+    "volume24h": "24h Volume",
+    "high24h": "24h High",
+    "low24h": "24h Low"
+  },
+  "chart": {
+    "title": "Chart",
+    "priceChart": "Price Chart",
+    "tradingViewLive": "TradingView Live Chart",
+    "liveData": "Live Data",
+    "timeframes": {
+      "1m": "1m",
+      "5m": "5m",
+      "15m": "15m",
+      "1h": "1h",
+      "4h": "4h",
+      "1d": "1d",
+      "1w": "1w"
+    }
+  },
+  "tradeHistory": {
+    "title": "Trade History",
+    "subtitle": "Recent 20 trades",
+    "time": "Time",
+    "price": "Price",
+    "quantity": "Quantity",
+    "side": "Side",
+    "buy": "Buy",
+    "sell": "Sell",
+    "noHistory": "No trade history"
+  },
+  "orderBook": {
+    "title": "Order Book",
+    "subtitle": "Buy & Sell Orders",
+    "price": "Price",
+    "amount": "Amount",
+    "total": "Total",
+    "asks": "Asks",
+    "bids": "Bids",
+    "spread": "Spread"
+  },
+  "orderForm": {
+    "title": "Order",
+    "subtitle": "Place buy/sell orders",
+    "buy": "Buy",
+    "sell": "Sell",
+    "orderType": "Order Type",
+    "limit": "Limit",
+    "market": "Market",
+    "price": "Price",
+    "amount": "Amount",
+    "total": "Total",
+    "available": "Available",
+    "fee": "Fee",
+    "buyOrder": "Buy Order",
+    "sellOrder": "Sell Order",
+    "placeOrder": "Place Order",
+    "confirmOrder": "Confirm Order",
+    "marketBuyNote": "Market: Executes immediately at best ask price",
+    "marketSellNote": "Market: Executes immediately at best bid price"
+  },
+  "orders": {
+    "title": "Order Management",
+    "subtitle": "Active orders and history",
+    "openOrders": "Active Orders",
+    "orderHistory": "Order History",
+    "tradeHistory": "Trade History",
+    "noOrders": "No orders",
+    "noActiveOrders": "No active orders",
+    "noOrderHistory": "No order history",
+    "cancel": "Cancel",
+    "cancelAll": "Cancel All",
+    "canceling": "Canceling...",
+    "fields": {
+      "price": "Price",
+      "quantity": "Quantity",
+      "filled": "Filled",
+      "completedAt": "Completed At"
+    }
+  },
+  "status": {
+    "pending": "Pending",
+    "open": "Open",
+    "filled": "Filled",
+    "cancelled": "Canceled",
+    "rejected": "Rejected",
+    "partiallyFilled": "Partially Filled"
+  },
+  "toast": {
+    "loginRequired": "Login Required",
+    "loginRequiredDesc": "Please login to place orders",
+    "error": "Error",
+    "priceError": "Cannot get price.",
+    "priceErrorLimit": "Please enter a price",
+    "priceErrorMarket": "Loading order book data",
+    "orderSubmittedSim": "Order Submitted (Simulation)",
+    "orderSubmittedSimDesc": "{{orderType}} {{side}} order submitted",
+    "orderFilled": "Order Filled",
+    "orderFilledDesc": "Market {{side}} order filled at {{price}} USDT",
+    "orderSubmitted": "Order Submitted",
+    "orderSubmittedDesc": "Limit {{side}} order submitted (Order ID: {{orderId}})",
+    "orderFailed": "Order failed",
+    "canceledSim": "Order Canceled (Simulation)",
+    "canceledSimDesc": "Order has been canceled",
+    "cancelSuccess": "Order Canceled",
+    "cancelSuccessDesc": "Order has been canceled",
+    "cancelFailed": "Failed to cancel order",
+    "cancelAllSim": "All Canceled (Simulation)",
+    "cancelAllSimDesc": "{{count}} orders canceled",
+    "cancelAllSuccess": "All Canceled",
+    "cancelAllSuccessDesc": "{{count}} orders canceled",
+    "cancelAllPartial": "Partial Cancel Complete",
+    "cancelAllPartialDesc": "{{success}} canceled, {{failed}} failed",
+    "cancelAllFailed": "Failed to cancel all orders"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "title": "取引",
+  "featureName": "取引",
+  "header": {
+    "currentPrice": "現在価格",
+    "liveSimulation": "ライブ シミュレーション",
+    "simulationStopped": "シミュレーション停止中"
+  },
+  "market": {
+    "title": "マーケット",
+    "pair": "ペア",
+    "price": "価格",
+    "change24h": "24時間変動",
+    "volume24h": "24時間出来高",
+    "high24h": "24時間高値",
+    "low24h": "24時間安値"
+  },
+  "chart": {
+    "title": "チャート",
+    "priceChart": "価格チャート",
+    "tradingViewLive": "TradingView ライブチャート",
+    "liveData": "ライブデータ",
+    "timeframes": {
+      "1m": "1分",
+      "5m": "5分",
+      "15m": "15分",
+      "1h": "1時間",
+      "4h": "4時間",
+      "1d": "1日",
+      "1w": "1週間"
+    }
+  },
+  "tradeHistory": {
+    "title": "取引履歴",
+    "subtitle": "最近20件の取引記録",
+    "time": "時刻",
+    "price": "価格",
+    "quantity": "数量",
+    "side": "売買",
+    "buy": "買い",
+    "sell": "売り",
+    "noHistory": "取引履歴がありません"
+  },
+  "orderBook": {
+    "title": "板情報",
+    "subtitle": "買い・売り注文一覧",
+    "price": "価格",
+    "amount": "数量",
+    "total": "合計",
+    "asks": "売り",
+    "bids": "買い",
+    "spread": "スプレッド"
+  },
+  "orderForm": {
+    "title": "注文",
+    "subtitle": "売買注文を発行",
+    "buy": "買い",
+    "sell": "売り",
+    "orderType": "注文タイプ",
+    "limit": "指値",
+    "market": "成行",
+    "price": "価格",
+    "amount": "数量",
+    "total": "合計",
+    "available": "利用可能",
+    "fee": "手数料",
+    "buyOrder": "買い注文",
+    "sellOrder": "売り注文",
+    "placeOrder": "注文する",
+    "confirmOrder": "注文確認",
+    "marketBuyNote": "成行: 最良売気配で即時約定します",
+    "marketSellNote": "成行: 最良買気配で即時約定します"
+  },
+  "orders": {
+    "title": "注文管理",
+    "subtitle": "未約定注文と履歴",
+    "openOrders": "未約定注文",
+    "orderHistory": "注文履歴",
+    "tradeHistory": "取引履歴",
+    "noOrders": "注文がありません",
+    "noActiveOrders": "アクティブな注文がありません",
+    "noOrderHistory": "注文履歴がありません",
+    "cancel": "取消",
+    "cancelAll": "全て取消",
+    "canceling": "取消中...",
+    "fields": {
+      "price": "価格",
+      "quantity": "数量",
+      "filled": "約定",
+      "completedAt": "完了日時"
+    }
+  },
+  "status": {
+    "pending": "保留中",
+    "open": "オープン",
+    "filled": "約定",
+    "cancelled": "取消",
+    "rejected": "拒否",
+    "partiallyFilled": "一部約定"
+  },
+  "toast": {
+    "loginRequired": "要ログイン",
+    "loginRequiredDesc": "ログインすると発注できます",
+    "error": "エラー",
+    "priceError": "価格を取得できません。",
+    "priceErrorLimit": "価格を入力してください",
+    "priceErrorMarket": "板情報を読み込み中です",
+    "orderSubmittedSim": "注文送信（シミュレーション）",
+    "orderSubmittedSimDesc": "{{orderType}}で{{side}}注文を送信しました",
+    "orderFilled": "注文約定",
+    "orderFilledDesc": "成行{{side}}注文が約定しました（価格: {{price}} USDT）",
+    "orderSubmitted": "注文送信成功",
+    "orderSubmittedDesc": "指値{{side}}注文を送信しました（注文ID: {{orderId}}）",
+    "orderFailed": "注文に失敗しました",
+    "canceledSim": "注文取消（シミュレーション）",
+    "canceledSimDesc": "注文を取消しました",
+    "cancelSuccess": "注文取消成功",
+    "cancelSuccessDesc": "注文を取消しました",
+    "cancelFailed": "取消に失敗しました",
+    "cancelAllSim": "一括取消（シミュレーション）",
+    "cancelAllSimDesc": "{{count}}件の注文を取消しました",
+    "cancelAllSuccess": "一括取消成功",
+    "cancelAllSuccessDesc": "{{count}}件の注文を取消しました",
+    "cancelAllPartial": "一括取消完了（一部失敗）",
+    "cancelAllPartialDesc": "{{success}}件を取消、{{failed}}件失敗しました",
+    "cancelAllFailed": "一括取消に失敗しました"
+  }
+}

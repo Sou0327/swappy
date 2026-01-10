@@ -1,0 +1,60 @@
+{
+  "pageTitle": "送金",
+  "feature": "送金",
+  "error": {
+    "searchTitle": "検索エラー",
+    "searchFailed": "ユーザー検索中にエラーが発生しました",
+    "unexpectedError": "予期しないエラーが発生しました",
+    "transferTitle": "送金エラー",
+    "transferFailed": "送金に失敗しました",
+    "transferFailedRetry": "送金に失敗しました。再試行してください。"
+  },
+  "success": {
+    "title": "送金完了",
+    "message": "{{amount}} {{currency}} を @{{handle}} に送金しました\n参照番号: {{reference}}"
+  },
+  "confirmation": {
+    "back": "← 戻る",
+    "pageTitle": "送金確認",
+    "cardTitle": "送金内容の確認",
+    "recipient": "送金先",
+    "amount": "送金金額",
+    "description": "説明",
+    "cancel": "キャンセル",
+    "processing": "送金中...",
+    "execute": "送金実行"
+  },
+  "recipient": {
+    "cardTitle": "送金先を選択",
+    "label": "ユーザーID、メールアドレス、または表示名",
+    "placeholder": "@username, email@example.com, または 表示名",
+    "searching": "検索中...",
+    "notFound": "ユーザーが見つかりません",
+    "change": "変更"
+  },
+  "amount": {
+    "cardTitle": "送金金額",
+    "currencyLabel": "通貨",
+    "currencyPlaceholder": "通貨を選択",
+    "quantityLabel": "数量選択",
+    "max": "最大",
+    "available": "利用可能残高:"
+  },
+  "description": {
+    "label": "説明（オプション）",
+    "placeholder": "送金の理由や説明を入力..."
+  },
+  "submit": "送金内容を確認",
+  "notice": {
+    "title": "ご注意",
+    "items": {
+      "immediate": "送金は即座に実行され、キャンセルできません",
+      "confirm": "送金先ユーザーIDを必ずご確認ください",
+      "noFee": "ネットワーク手数料は発生しません"
+    }
+  },
+  "assets": {
+    "title": "保有資産",
+    "empty": "送金可能な資産がありません"
+  }
+}

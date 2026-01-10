@@ -1,0 +1,50 @@
+{
+  "pageTitle": "Support",
+  "createTicket": "Create Ticket",
+  "table": {
+    "ticketId": "Ticket ID",
+    "subject": "Subject",
+    "status": "Status",
+    "createdAt": "Created At",
+    "action": "Action"
+  },
+  "noRecords": "No records found",
+  "status": {
+    "open": "Open",
+    "pending": "Pending",
+    "closed": "Closed"
+  },
+  "details": "Details",
+  "showDetails": "Show Details",
+  "newTicket": {
+    "title": "New Ticket",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Enter subject",
+    "bodyLabel": "Message",
+    "bodyPlaceholder": "Describe your issue in detail",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "toast": {
+    "subjectRequired": "Subject is required",
+    "createFailed": "Creation failed",
+    "created": "Ticket created",
+    "error": "Error",
+    "success": "Success",
+    "loadRepliesFailed": "Failed to load replies",
+    "replySent": "Reply sent",
+    "sendReplyFailed": "Failed to send reply"
+  },
+  "ticketDetail": {
+    "title": "Ticket Details: {{subject}}",
+    "replyHistory": "Reply History",
+    "loadingReplies": "Loading replies...",
+    "noReplies": "No replies yet",
+    "supportStaff": "Support Staff",
+    "you": "You",
+    "user": "User",
+    "addReply": "Add Reply",
+    "replyPlaceholder": "Enter your reply...",
+    "sendReply": "Send Reply"
+  }
+}

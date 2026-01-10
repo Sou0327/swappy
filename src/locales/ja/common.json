@@ -1,0 +1,114 @@
+{
+  "loading": "読み込み中...",
+  "error": "エラー",
+  "success": "成功",
+  "confirm": "確認",
+  "cancel": "キャンセル",
+  "save": "保存",
+  "delete": "削除",
+  "edit": "編集",
+  "close": "閉じる",
+  "back": "戻る",
+  "next": "次へ",
+  "submit": "送信",
+  "search": "検索",
+  "noData": "データがありません",
+  "required": "必須",
+  "optional": "任意",
+  "yes": "はい",
+  "no": "いいえ",
+  "or": "または",
+  "and": "および",
+  "all": "すべて",
+  "none": "なし",
+  "copy": "コピー",
+  "copied": "コピーしました！",
+  "more": "もっと見る",
+  "less": "閉じる",
+  "showMore": "もっと見る",
+  "showLess": "閉じる",
+  "viewAll": "すべて見る",
+  "learnMore": "詳しく見る",
+  "getStarted": "始める",
+  "signIn": "ログイン",
+  "signOut": "サインアウト",
+  "signUp": "新規登録",
+  "home": "ホーム",
+  "returnHome": "ホームに戻る",
+  "menu": "メニュー",
+  "settings": "設定",
+  "profile": "プロフィール",
+  "account": "アカウント",
+  "security": "セキュリティ",
+  "notifications": "通知",
+  "help": "ヘルプ",
+  "support": "サポート",
+  "about": "会社概要",
+  "privacy": "プライバシー",
+  "terms": "利用規約",
+  "language": "言語",
+  "english": "English",
+  "japanese": "日本語",
+
+  "hero": {
+    "title": "美しい取引体験を",
+    "titleWith": "で",
+    "subtitle": "シンプルで直感的。安全で高速。",
+    "subtitleSecond": "暗号通貨取引の新しいスタンダード",
+    "getStarted": "今すぐ始める",
+    "tryDemo": "デモを試す",
+    "exploreMarkets": "マーケットを探索",
+    "features": {
+      "trading": {
+        "title": "高度な取引ツール",
+        "description": "プロレベルのチャート分析から自動取引まで、すべてのツールを一つのプラットフォームで。"
+      },
+      "security": {
+        "title": "最高水準のセキュリティ",
+        "description": "銀行レベルの暗号化と多層防御システムで、あなたの資産を完全に保護します。"
+      },
+      "speed": {
+        "title": "瞬時の取引実行",
+        "description": "最先端のマッチングエンジンにより、ミリ秒単位での高速取引を実現。"
+      }
+    }
+  },
+
+  "howItWorks": {
+    "title": "シンプルな",
+    "titleHighlight": "3ステップ",
+    "subtitle": "暗号通貨取引を始めて、収益を生み出すまでの流れをご紹介します",
+    "steps": {
+      "signup": {
+        "title": "アカウント作成",
+        "description": "メールアドレスだけで数分でサインアップ"
+      },
+      "deposit": {
+        "title": "ウォレットに入金",
+        "description": "暗号通貨を入金するかクレジットカードで購入"
+      },
+      "trade": {
+        "title": "取引を開始",
+        "description": "リアルタイムマーケットで瞬時に取引実行"
+      }
+    },
+    "features": {
+      "noKyc": "KYC不要で即開始",
+      "support": "24時間365日サポート",
+      "instant": "即時入出金"
+    }
+  },
+
+  "footer": {
+    "description": "すべての人のために構築された次世代の暗号通貨取引プラットフォーム。",
+    "products": "プロダクト",
+    "spotTrading": "現物取引",
+    "support": "サポート",
+    "contact": "お問い合わせ",
+    "legal": "法的情報",
+    "privacyPolicy": "プライバシーポリシー",
+    "termsOfService": "利用規約",
+    "riskDisclosure": "リスク開示",
+    "copyright": "全権利所有。"
+  }
+}

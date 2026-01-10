@@ -1,0 +1,27 @@
+{
+  "pageTitle": "マーケット",
+  "pageSubtitle": "最新の価格情報と取引をチェック",
+  "error": {
+    "title": "エラー",
+    "fetchFailed": "マーケットデータの取得に失敗しました"
+  },
+  "card": {
+    "pair": "ペア",
+    "lastPrice": "最終価格",
+    "volume24h": "24h出来高",
+    "startTrading": "取引を始める"
+  },
+  "table": {
+    "title": "取引可能なペア",
+    "pair": "ペア",
+    "lastPrice": "最終価格",
+    "change24h": "24h変動",
+    "volume24h": "24h出来高",
+    "action": "アクション",
+    "trade": "取引"
+  },
+  "empty": {
+    "title": "マーケットデータがありません",
+    "subtitle": "しばらくお待ちください"
+  }
+}

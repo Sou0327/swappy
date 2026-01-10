@@ -1,0 +1,47 @@
+{
+  "pageTitle": "マイアカウント",
+  "profile": {
+    "fullName": "フルネーム",
+    "email": "メールアドレス",
+    "notSet": "未設定",
+    "noInfo": "情報なし"
+  },
+  "accountInfo": {
+    "title": "アカウント情報",
+    "userId": "ユーザーID",
+    "copy": "コピー",
+    "lastLogin": "最終ログイン",
+    "createdAt": "アカウント作成日"
+  },
+  "basicInfo": {
+    "title": "基本情報",
+    "fullNameRequired": "フルネーム *"
+  },
+  "actions": {
+    "save": "保存",
+    "saving": "保存中..."
+  },
+  "toast": {
+    "saved": "保存しました",
+    "saveFailed": "保存失敗",
+    "retryMessage": "再試行してください"
+  },
+  "kyc": {
+    "title": "本人確認 (KYC) - Sumsub統合",
+    "sumsubTitle": "Sumsub外部KYC統合",
+    "sumsubDescription": "プロフェッショナルな本人確認サービスを利用します。",
+    "testMessage": "Sumsub KYCコンポーネントのテスト表示です。",
+    "testButton": "KYC機能テスト",
+    "testSuccess": "テスト成功",
+    "testSuccessDesc": "KYCセクションが正常に動作しています"
+  },
+  "logout": {
+    "title": "ログアウト",
+    "description": "アカウントからログアウトします",
+    "button": "ログアウト",
+    "loggingOut": "ログアウト中...",
+    "pleaseWait": "しばらくお待ちください",
+    "complete": "ログアウト完了",
+    "completeDesc": "またのご利用をお待ちしております"
+  }
+}

@@ -1,9 +1,11 @@
 import { UserPlus, Wallet, TrendingUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const HowItWorks = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -28,18 +30,18 @@ export const HowItWorks = () => {
   const steps = [
     {
       icon: UserPlus,
-      title: "アカウント作成",
-      description: "メールアドレスだけで数分でサインアップ"
+      title: t('howItWorks.steps.signup.title'),
+      description: t('howItWorks.steps.signup.description')
     },
     {
       icon: Wallet,
-      title: "ウォレットに入金",
-      description: "暗号通貨を入金するかクレジットカードで購入"
+      title: t('howItWorks.steps.deposit.title'),
+      description: t('howItWorks.steps.deposit.description')
     },
     {
       icon: TrendingUp,
-      title: "取引を開始",
-      description: "リアルタイムマーケットで瞬時に取引実行"
+      title: t('howItWorks.steps.trade.title'),
+      description: t('howItWorks.steps.trade.description')
     },
   ];
 
@@ -48,13 +50,13 @@ export const HowItWorks = () => {
       <div className="container mx-auto px-4 md:px-8">
         <div className={`text-center mb-12 md:mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-4 md:mb-6 tracking-tight px-2">
-            シンプルな
+            {t('howItWorks.title')}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-medium">
-              3ステップ
+              {t('howItWorks.titleHighlight')}
             </span>
           </h2>
           <p className="text-base md:text-lg text-gray-600 font-light max-w-2xl mx-auto leading-relaxed px-4">
-            暗号通貨取引を始めて、収益を生み出すまでの流れをご紹介します
+            {t('howItWorks.subtitle')}
           </p>
         </div>
 
@@ -109,17 +111,17 @@ export const HowItWorks = () => {
           <div className="hidden md:inline-flex items-center gap-6 bg-gradient-to-r from-gray-50 to-white rounded-2xl p-6 border border-gray-100">
             <div className="flex items-center gap-3 text-sm text-gray-700">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">KYC不要で即開始</span>
+              <span className="font-medium">{t('howItWorks.features.noKyc')}</span>
             </div>
             <div className="w-px h-4 bg-gray-200"></div>
             <div className="flex items-center gap-3 text-sm text-gray-700">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">24時間365日サポート</span>
+              <span className="font-medium">{t('howItWorks.features.support')}</span>
             </div>
             <div className="w-px h-4 bg-gray-200"></div>
             <div className="flex items-center gap-3 text-sm text-gray-700">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">即時入出金</span>
+              <span className="font-medium">{t('howItWorks.features.instant')}</span>
             </div>
           </div>
 
@@ -127,15 +129,15 @@ export const HowItWorks = () => {
           <div className="md:hidden bg-gradient-to-r from-gray-50 to-white rounded-2xl p-4 border border-gray-100 space-y-3">
             <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">KYC不要で即開始</span>
+              <span className="font-medium">{t('howItWorks.features.noKyc')}</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">24時間365日サポート</span>
+              <span className="font-medium">{t('howItWorks.features.support')}</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">即時入出金</span>
+              <span className="font-medium">{t('howItWorks.features.instant')}</span>
             </div>
           </div>
         </div>

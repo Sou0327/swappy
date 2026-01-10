@@ -1,0 +1,70 @@
+{
+  "toast": {
+    "success": {
+      "default": "操作が完了しました",
+      "saved": "変更を保存しました",
+      "deleted": "削除しました",
+      "copied": "クリップボードにコピーしました",
+      "loggedOut": "ログアウトしました",
+      "loggedOutDesc": "正常にログアウトされました。",
+      "deposit": "入金を開始しました",
+      "withdraw": "出金リクエストを送信しました",
+      "transfer": "送金が完了しました",
+      "orderPlaced": "注文を受け付けました",
+      "orderCancelled": "注文をキャンセルしました"
+    },
+    "error": {
+      "default": "エラーが発生しました",
+      "network": "ネットワークエラーです。再度お試しください。",
+      "auth": "認証に失敗しました",
+      "permission": "権限がありません",
+      "notFound": "見つかりませんでした",
+      "validation": "入力内容を確認してください",
+      "logoutError": "ログアウトエラー",
+      "logoutErrorDesc": "ログアウト中にエラーが発生しました。",
+      "insufficientBalance": "残高が不足しています",
+      "invalidAddress": "無効なアドレスです",
+      "minAmount": "最小金額を下回っています",
+      "maxAmount": "最大金額を超えています"
+    },
+    "warning": {
+      "default": "警告",
+      "unsavedChanges": "保存されていない変更があります",
+      "sessionExpiring": "セッションがまもなく期限切れになります"
+    },
+    "info": {
+      "default": "お知らせ",
+      "processing": "リクエストを処理中...",
+      "confirmationRequired": "確認が必要です"
+    }
+  },
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "すべて既読",
+    "loading": "読み込み中...",
+    "noNotifications": "新しい通知はありません",
+    "viewAll": "すべての通知を見る"
+  },
+  "validation": {
+    "required": "この項目は必須です",
+    "email": "有効なメールアドレスを入力してください",
+    "minLength": "{{count}}文字以上で入力してください",
+    "maxLength": "{{count}}文字以内で入力してください",
+    "password": "パスワードは8文字以上で、大文字・小文字・数字を含む必要があります",
+    "passwordMatch": "パスワードが一致しません",
+    "invalidAmount": "有効な金額を入力してください",
+    "invalidAddress": "有効なアドレスを入力してください"
+  },
+  "confirm": {
+    "delete": "本当に削除しますか？",
+    "cancel": "本当にキャンセルしますか？",
+    "logout": "本当にログアウトしますか？",
+    "unsavedChanges": "保存されていない変更があります。ページを離れますか？"
+  },
+  "demo": {
+    "restriction": {
+      "title": "デモモード制限",
+      "description": "この機能はデモモードでは無効です。実際のアカウントを作成してご利用ください。"
+    }
+  }
+}

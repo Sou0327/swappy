@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getPriceSnapshot } from "@/lib/price-service";
 import { supabase } from "@/integrations/supabase/client";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import { useTranslation } from "react-i18next";
 import {
   Eye,
   EyeOff,
@@ -28,6 +29,7 @@ const DEMO_BTC_PRICE = 97000;
 const Dashboard = () => {
   const { user, isDemoMode } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation('dashboard');
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [totalBalance, setTotalBalance] = useState(0);
   const [btcPrice, setBtcPrice] = useState(97000); // デフォルト値（2025年9月相場）
@@ -68,7 +70,7 @@ const Dashboard = () => {
 
   const fetchUserStatus = useCallback(async () => {
     if (!user?.id) return;
-    
+
     try {
       // プロフィールからKYC状態を確認
       const { data: profile } = await supabase
@@ -76,7 +78,7 @@ const Dashboard = () => {
         .select('kyc_status')
         .eq('id', user.id)
         .maybeSingle();
-      
+
       if (profile) {
         setKycCompleted(profile.kyc_status === 'verified');
       }
@@ -106,33 +108,33 @@ const Dashboard = () => {
       <div className="space-y-2 md:space-y-2">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">ダッシュボード</h1>
+          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">{t('title')}</h1>
         </div>
 
         {/* Wallet Overview */}
         <div>
-          <h2 className="text-base md:text-base font-semibold mb-2 md:mb-2 text-gray-900">ウォレット概要</h2>
+          <h2 className="text-base md:text-base font-semibold mb-2 md:mb-2 text-gray-900">{t('wallet.title')}</h2>
           <Card>
             <CardContent className="p-2 md:p-2">
               <div className="mb-2">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-sm text-gray-600">合計価値 (USD)</span>
+                      <span className="text-sm text-gray-600">{t('wallet.totalValueUsd')}</span>
                       <Info className="h-4 w-4 text-gray-400" />
                       <button
                         className="text-primary cursor-pointer hover:underline text-sm transition-all duration-200 active:scale-95"
                         onClick={() => navigate("/wallet")}
                       >
-                        資産詳細
+                        {t('wallet.assetDetails')}
                       </button>
                     </div>
                     <div className="text-2xl md:text-2xl font-bold">
                       {loading ? 'Loading...' : balanceVisible ? (
-                        <AnimatedCounter 
-                          value={totalBalance} 
-                          prefix="$ " 
-                          decimals={2} 
+                        <AnimatedCounter
+                          value={totalBalance}
+                          prefix="$ "
+                          decimals={2}
                           duration={2000}
                         />
                       ) : '****'}
@@ -149,8 +151,8 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" className="flex-1 md:flex-none" onClick={() => navigate("/deposit")}>入金</Button>
-                    <Button size="sm" variant="outline" className="flex-1 md:flex-none" onClick={() => navigate("/withdraw")}>出金</Button>
+                    <Button size="sm" className="flex-1 md:flex-none" onClick={() => navigate("/deposit")}>{t('quickActions.deposit')}</Button>
+                    <Button size="sm" variant="outline" className="flex-1 md:flex-none" onClick={() => navigate("/withdraw")}>{t('quickActions.withdraw')}</Button>
                   </div>
                 </div>
               </div>
@@ -161,11 +163,11 @@ const Dashboard = () => {
         {/* Getting Started */}
         <div>
           <h2 className="text-base md:text-base font-semibold mb-2 md:mb-2 text-gray-900">
-            {!kycCompleted ? '初回の暗号通貨ステップを始める' : 'クイックアクション'}
+            {!kycCompleted ? t('gettingStarted.title') : t('quickActions.title')}
           </h2>
           {!kycCompleted && (
             <p className="text-gray-600 mb-2 md:mb-2 text-sm md:text-sm">
-              これらの簡単なアクションを完了して、アカウントをアクティベートし、セキュリティを強化することで、暗号通貨の旅を始めましょう。
+              {t('gettingStarted.description')}
             </p>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-2">
@@ -178,13 +180,13 @@ const Dashboard = () => {
                         <FileText className="h-5 w-5 md:h-5 md:w-5 text-primary" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-gray-900 text-sm md:text-sm">本人確認</h3>
+                        <h3 className="font-semibold text-gray-900 text-sm md:text-sm">{t('gettingStarted.kyc.title')}</h3>
                         <p className="text-xs md:text-sm text-gray-600">
-                          KYC書類をアップロードしてください。- 任意 -
+                          {t('gettingStarted.kyc.description')}
                         </p>
                       </div>
                     </div>
-                    <Button size="sm" className="md:size-default transition-all duration-200 active:scale-95" onClick={() => navigate("/kyc")}>確認</Button>
+                    <Button size="sm" className="md:size-default transition-all duration-200 active:scale-95" onClick={() => navigate("/kyc")}>{t('gettingStarted.kyc.button')}</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -198,13 +200,13 @@ const Dashboard = () => {
                       <Upload className="h-5 w-5 md:h-5 md:w-5 text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-gray-900 text-sm md:text-sm">暗号通貨を入金</h3>
+                      <h3 className="font-semibold text-gray-900 text-sm md:text-sm">{t('gettingStarted.deposit.title')}</h3>
                       <p className="text-xs md:text-sm text-gray-600">
-                        アドレスまたはQRコードでコインを選択して入金してください
+                        {t('gettingStarted.deposit.description')}
                       </p>
                     </div>
                   </div>
-                  <Button size="sm" className="md:size-default transition-all duration-200 active:scale-95" onClick={() => navigate("/deposit")}>入金</Button>
+                  <Button size="sm" className="md:size-default transition-all duration-200 active:scale-95" onClick={() => navigate("/deposit")}>{t('quickActions.deposit')}</Button>
                 </div>
               </CardContent>
             </Card>
@@ -217,13 +219,13 @@ const Dashboard = () => {
                       <TrendingUp className="h-5 w-5 md:h-5 md:w-5 text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-gray-900 text-sm md:text-sm">取引開始</h3>
+                      <h3 className="font-semibold text-gray-900 text-sm md:text-sm">{t('gettingStarted.trade.title')}</h3>
                       <p className="text-xs md:text-sm text-gray-600">
-                        スポットマーケットにアクセスして暗号通貨を即座に売買してください
+                        {t('gettingStarted.trade.description')}
                       </p>
                     </div>
                   </div>
-                  <Button size="sm" className="md:size-default transition-all duration-200 active:scale-95" onClick={() => navigate("/trade")}>取引</Button>
+                  <Button size="sm" className="md:size-default transition-all duration-200 active:scale-95" onClick={() => navigate("/trade")}>{t('quickActions.trade')}</Button>
                 </div>
               </CardContent>
             </Card>
@@ -232,7 +234,7 @@ const Dashboard = () => {
 
         {/* Additional Quick Actions */}
         <div>
-          <h2 className="text-base md:text-base font-semibold mb-2 md:mb-2 text-gray-900">その他のサービス</h2>
+          <h2 className="text-base md:text-base font-semibold mb-2 md:mb-2 text-gray-900">{t('services.title')}</h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-2">
             {/* 両替 */}
             <button
@@ -244,8 +246,8 @@ const Dashboard = () => {
                   <RefreshCw className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 text-sm">両替</h3>
-                  <p className="text-xs text-gray-600 mt-1">暗号通貨の交換</p>
+                  <h3 className="font-medium text-gray-900 text-sm">{t('services.convert.title')}</h3>
+                  <p className="text-xs text-gray-600 mt-1">{t('services.convert.description')}</p>
                 </div>
               </div>
             </button>
@@ -260,8 +262,8 @@ const Dashboard = () => {
                   <Shield className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 text-sm">セキュリティ</h3>
-                  <p className="text-xs text-gray-600 mt-1">アカウント設定</p>
+                  <h3 className="font-medium text-gray-900 text-sm">{t('services.security.title')}</h3>
+                  <p className="text-xs text-gray-600 mt-1">{t('services.security.description')}</p>
                 </div>
               </div>
             </button>
@@ -276,8 +278,8 @@ const Dashboard = () => {
                   <Clock className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 text-sm">履歴</h3>
-                  <p className="text-xs text-gray-600 mt-1">取引履歴</p>
+                  <h3 className="font-medium text-gray-900 text-sm">{t('services.history.title')}</h3>
+                  <p className="text-xs text-gray-600 mt-1">{t('services.history.description')}</p>
                 </div>
               </div>
             </button>
@@ -292,8 +294,8 @@ const Dashboard = () => {
                   <HelpCircle className="h-5 w-5 text-orange-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 text-sm">サポート</h3>
-                  <p className="text-xs text-gray-600 mt-1">ヘルプ・お問合せ</p>
+                  <h3 className="font-medium text-gray-900 text-sm">{t('services.support.title')}</h3>
+                  <p className="text-xs text-gray-600 mt-1">{t('services.support.description')}</p>
                 </div>
               </div>
             </button>

@@ -1,0 +1,59 @@
+{
+  "pageTitle": "Convert",
+  "error": {
+    "title": "Error",
+    "fetchAssets": "Failed to fetch asset information.",
+    "invalidAmount": "Please enter a valid amount.",
+    "insufficientBalance": "Insufficient balance.",
+    "conversionFailed": "Conversion failed.",
+    "fetchHistory": "Failed to fetch conversion history."
+  },
+  "success": {
+    "title": "Success",
+    "converted": "Converted {{from}} {{fromCurrency}} to {{to}} {{toCurrency}}. Fee: {{fee}} {{fromCurrency}}"
+  },
+  "form": {
+    "from": "From",
+    "to": "To",
+    "available": "Available:",
+    "enterAmount": "Enter amount",
+    "max": "Max",
+    "balance": "Balance:",
+    "exchangeRate": "Exchange Rate:",
+    "convert": "Convert",
+    "processing": "Processing..."
+  },
+  "fee": {
+    "title": "Fee Information",
+    "rate": "Fee Rate:",
+    "amount": "Fee:",
+    "netAmount": "Actual Exchange Amount:",
+    "expectedAmount": "Expected Receive Amount:"
+  },
+  "history": {
+    "title": "Recent Conversion History",
+    "showAll": "Show All",
+    "table": {
+      "dateTime": "Date & Time",
+      "pair": "Pair",
+      "rate": "Rate",
+      "paymentAmount": "Payment Amount",
+      "fee": "Fee",
+      "receiveAmount": "Receive Amount",
+      "status": "Status"
+    },
+    "mobile": {
+      "dateTime": "Date:",
+      "rate": "Rate:",
+      "payment": "Payment:",
+      "fee": "Fee:",
+      "receive": "Receive:"
+    },
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed"
+    },
+    "noRecords": "No records found"
+  }
+}

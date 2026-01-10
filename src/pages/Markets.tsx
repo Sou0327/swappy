@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,7 @@ interface MarketData {
 }
 
 const Markets = () => {
+  const { t } = useTranslation('markets');
   const [marketData, setMarketData] = useState<MarketData[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -68,8 +70,8 @@ const Markets = () => {
       if (error) {
         console.error('Failed to fetch markets:', error);
         toast({
-          title: "エラー",
-          description: "マーケットデータの取得に失敗しました",
+          title: t('error.title'),
+          description: t('error.fetchFailed'),
           variant: "destructive",
         });
         return;
@@ -159,7 +161,7 @@ const Markets = () => {
                 </div>
                 <div>
                   <div className="font-bold text-base">{market.symbol}</div>
-                  <div className="text-xs text-muted-foreground">ペア</div>
+                  <div className="text-xs text-muted-foreground">{t('card.pair')}</div>
                 </div>
               </div>
               <Badge
@@ -176,11 +178,11 @@ const Markets = () => {
             {/* 価格情報 */}
             <div className="grid grid-cols-2 gap-1.5">
               <div>
-                <div className="text-xs text-muted-foreground mb-1">最終価格</div>
+                <div className="text-xs text-muted-foreground mb-1">{t('card.lastPrice')}</div>
                 <div className="font-bold text-base">{formatPrice(market.price)} {market.quoteCurrency}</div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground mb-1">24h出来高</div>
+                <div className="text-xs text-muted-foreground mb-1">{t('card.volume24h')}</div>
                 <div className="font-medium">{formatVolume(market.volume)}</div>
               </div>
             </div>
@@ -190,7 +192,7 @@ const Markets = () => {
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={() => navigate(`/trade?pair=${market.symbol}`)}
             >
-              取引を始める
+              {t('card.startTrading')}
             </Button>
           </div>
         </CardContent>
@@ -243,7 +245,7 @@ const Markets = () => {
         <div className="text-right text-muted-foreground">{formatVolume(market.volume)}</div>
         <div className="text-right">
           <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => navigate(`/trade?pair=${market.symbol}`)}>
-            取引
+            {t('table.trade')}
           </Button>
         </div>
       </div>
@@ -254,8 +256,8 @@ const Markets = () => {
     <DashboardLayout>
       <div className="space-y-1">
         <div>
-          <h1 className="text-2xl md:text-2xl font-bold text-foreground mb-1">マーケット</h1>
-          <p className="text-muted-foreground">最新の価格情報と取引をチェック</p>
+          <h1 className="text-2xl md:text-2xl font-bold text-foreground mb-1">{t('pageTitle')}</h1>
+          <p className="text-muted-foreground">{t('pageSubtitle')}</p>
         </div>
 
         {marketData.length === 0 ? (
@@ -263,8 +265,8 @@ const Markets = () => {
             <CardContent className="py-12">
               <div className="text-center text-muted-foreground">
                 <div className="text-4xl mb-4">📊</div>
-                <div className="text-base font-medium mb-2">マーケットデータがありません</div>
-                <div className="text-sm">しばらくお待ちください</div>
+                <div className="text-base font-medium mb-2">{t('empty.title')}</div>
+                <div className="text-sm">{t('empty.subtitle')}</div>
               </div>
             </CardContent>
           </Card>
@@ -281,16 +283,16 @@ const Markets = () => {
             <div className="hidden lg:block">
               <Card>
                 <CardHeader>
-                  <CardTitle>取引可能なペア</CardTitle>
+                  <CardTitle>{t('table.title')}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="space-y-0">
                     <div className="grid grid-cols-5 gap-1.5 p-2 text-sm font-medium text-muted-foreground border-b border-border bg-muted/30">
-                      <div>ペア</div>
-                      <div className="text-right">最終価格</div>
-                      <div className="text-right">24h変動</div>
-                      <div className="text-right">24h出来高</div>
-                      <div className="text-right">アクション</div>
+                      <div>{t('table.pair')}</div>
+                      <div className="text-right">{t('table.lastPrice')}</div>
+                      <div className="text-right">{t('table.change24h')}</div>
+                      <div className="text-right">{t('table.volume24h')}</div>
+                      <div className="text-right">{t('table.action')}</div>
                     </div>
                     {marketData.map((market) => (
                       <MarketRow key={market.symbol} market={market} />

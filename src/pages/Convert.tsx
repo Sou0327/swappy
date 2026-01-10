@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +43,7 @@ interface FeeInfo {
 }
 
 const Convert = () => {
+  const { t } = useTranslation('convert');
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -88,12 +90,12 @@ const Convert = () => {
     } catch (error) {
       console.error('Error fetching user assets:', error);
       toast({
-        title: "エラー",
-        description: "資産情報の取得に失敗しました。",
+        title: t('error.title'),
+        description: t('error.fetchAssets'),
         variant: "destructive",
       });
     }
-  }, [user, toast]);
+  }, [user, toast, t]);
 
   // 価格の定期更新（表示はレートのみ。"何秒前"は非表示）
   useEffect(() => {
@@ -202,8 +204,8 @@ const Convert = () => {
   const handleConvert = async () => {
     if (!user || !fromAmount || parseFloat(fromAmount) <= 0) {
       toast({
-        title: "エラー",
-        description: "有効な金額を入力してください。",
+        title: t('error.title'),
+        description: t('error.invalidAmount'),
         variant: "destructive",
       });
       return;
@@ -214,8 +216,8 @@ const Convert = () => {
 
     if (convertAmount > fromBalance) {
       toast({
-        title: "エラー",
-        description: "残高が不足しています。",
+        title: t('error.title'),
+        description: t('error.insufficientBalance'),
         variant: "destructive",
       });
       return;
@@ -241,8 +243,14 @@ const Convert = () => {
 
       const result = conversionResult as unknown as { to_amount: number; fee_amount: number };
       toast({
-        title: "成功",
-        description: `${convertAmount} ${fromCurrency} を ${result.to_amount.toFixed(8)} ${toCurrency} に両替しました。手数料: ${result.fee_amount.toFixed(8)} ${fromCurrency}`,
+        title: t('success.title'),
+        description: t('success.converted', {
+          from: convertAmount,
+          fromCurrency,
+          to: result.to_amount.toFixed(8),
+          toCurrency,
+          fee: result.fee_amount.toFixed(8)
+        }),
       });
 
       // フォームをリセットし、資産情報と履歴を更新
@@ -254,8 +262,8 @@ const Convert = () => {
     } catch (error) {
       console.error('Error converting currencies:', error);
       toast({
-        title: "エラー",
-        description: "両替処理に失敗しました。",
+        title: t('error.title'),
+        description: t('error.conversionFailed'),
         variant: "destructive",
       });
     } finally {
@@ -278,12 +286,12 @@ const Convert = () => {
     } catch (error) {
       console.error('Error fetching conversion history:', error);
       toast({
-        title: "エラー",
-        description: "両替履歴の取得に失敗しました。",
+        title: t('error.title'),
+        description: t('error.fetchHistory'),
         variant: "destructive",
       });
     }
-  }, [user, toast]);
+  }, [user, toast, t]);
 
   // 初期データ読み込み
   useEffect(() => {
@@ -307,7 +315,7 @@ const Convert = () => {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">両替</h1>
+          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">{t('pageTitle')}</h1>
         </div>
 
         {/* Convert Interface */}
@@ -318,15 +326,15 @@ const Convert = () => {
                 {/* From Section */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium">交換元</label>
+                    <label className="text-sm font-medium">{t('form.from')}</label>
                     <span className="text-sm text-muted-foreground">
-                      利用可能: {getAvailableBalance(fromCurrency).toFixed(8)} {fromCurrency}
+                      {t('form.available')} {getAvailableBalance(fromCurrency).toFixed(8)} {fromCurrency}
                     </span>
                   </div>
                   <div className="space-y-3">
                     <div className="relative">
                       <Input
-                        placeholder="金額を入力"
+                        placeholder={t('form.enterAmount')}
                         value={fromAmount}
                         onChange={(e) => setFromAmount(e.target.value)}
                         className="pr-16 md:pr-20"
@@ -337,7 +345,7 @@ const Convert = () => {
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs px-2 md:px-3 transition-all duration-200 active:scale-95"
                         onClick={() => setFromAmount(getAvailableBalance(fromCurrency).toString())}
                       >
-                        最大
+                        {t('form.max')}
                       </Button>
                     </div>
                     <Select value={fromCurrency} onValueChange={setFromCurrency}>
@@ -349,7 +357,7 @@ const Convert = () => {
                           const availableBalance = asset.balance - (asset.locked_balance || 0);
                           return (
                             <SelectItem key={asset.currency} value={asset.currency}>
-                              {asset.currency} (残高: {availableBalance.toFixed(8)})
+                              {asset.currency} ({t('form.balance')} {availableBalance.toFixed(8)})
                             </SelectItem>
                           );
                         })}
@@ -361,14 +369,14 @@ const Convert = () => {
                 {/* To Section */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium">受取</label>
+                    <label className="text-sm font-medium">{t('form.to')}</label>
                     <span className="text-sm text-muted-foreground">
-                      利用可能: {getAvailableBalance(toCurrency).toFixed(8)} {toCurrency}
+                      {t('form.available')} {getAvailableBalance(toCurrency).toFixed(8)} {toCurrency}
                     </span>
                   </div>
                   <div className="space-y-3">
                     <Input
-                      placeholder="金額を入力"
+                      placeholder={t('form.enterAmount')}
                       value={toAmount}
                       onChange={(e) => setToAmount(e.target.value)}
                       className="transition-all duration-200"
@@ -382,7 +390,7 @@ const Convert = () => {
                           const availableBalance = asset.balance - (asset.locked_balance || 0);
                           return (
                             <SelectItem key={asset.currency} value={asset.currency}>
-                              {asset.currency} (残高: {availableBalance.toFixed(8)})
+                              {asset.currency} ({t('form.balance')} {availableBalance.toFixed(8)})
                             </SelectItem>
                           );
                         })}
@@ -406,28 +414,28 @@ const Convert = () => {
 
               {/* Exchange Rate */}
               <div className="flex items-center justify-center gap-2 mb-4 text-xs md:text-sm">
-                <span className="text-center">為替レート: {exchangeRate}</span>
+                <span className="text-center">{t('form.exchangeRate')} {exchangeRate}</span>
               </div>
 
               {/* Fee Information */}
               {feeInfo && (
                 <div className="bg-muted/50 rounded-lg p-3 md:p-4 mb-4 md:mb-6 space-y-2">
-                  <div className="text-sm font-medium text-center">手数料情報</div>
+                  <div className="text-sm font-medium text-center">{t('fee.title')}</div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 text-xs md:text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">手数料率:</span>
+                      <span className="text-muted-foreground">{t('fee.rate')}</span>
                       <span>{(feeInfo.fee_percentage * 100).toFixed(2)}%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">手数料:</span>
+                      <span className="text-muted-foreground">{t('fee.amount')}</span>
                       <span>{feeInfo.fee_amount.toFixed(8)} {fromCurrency}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">実際の交換額:</span>
+                      <span className="text-muted-foreground">{t('fee.netAmount')}</span>
                       <span>{feeInfo.net_amount.toFixed(8)} {fromCurrency}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">受取予定額:</span>
+                      <span className="text-muted-foreground">{t('fee.expectedAmount')}</span>
                       <span>{toAmount} {toCurrency}</span>
                     </div>
                   </div>
@@ -441,7 +449,7 @@ const Convert = () => {
                 onClick={handleConvert}
                 disabled={isLoading || !fromAmount || parseFloat(fromAmount) <= 0 || fromCurrency === toCurrency}
               >
-                {isLoading ? "処理中..." : "両替"}
+                {isLoading ? t('form.processing') : t('form.convert')}
               </Button>
             </CardContent>
           </Card>
@@ -451,9 +459,9 @@ const Convert = () => {
         <Card>
           <CardHeader className="p-4 md:p-6">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base md:text-base">最近の両替履歴</CardTitle>
+              <CardTitle className="text-base md:text-base">{t('history.title')}</CardTitle>
               <Button variant="link" className="text-primary text-sm transition-all duration-200 active:scale-95">
-                すべて表示
+                {t('history.showAll')}
               </Button>
             </div>
           </CardHeader>
@@ -463,13 +471,13 @@ const Convert = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left p-4 font-medium text-sm">日付 & 時間</th>
-                    <th className="text-left p-4 font-medium text-sm">ペア</th>
-                    <th className="text-left p-4 font-medium text-sm">レート</th>
-                    <th className="text-left p-4 font-medium text-sm">支払い金額</th>
-                    <th className="text-left p-4 font-medium text-sm">手数料</th>
-                    <th className="text-left p-4 font-medium text-sm">受け取り金額</th>
-                    <th className="text-left p-4 font-medium text-sm">ステータス</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('history.table.dateTime')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('history.table.pair')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('history.table.rate')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('history.table.paymentAmount')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('history.table.fee')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('history.table.receiveAmount')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('history.table.status')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -509,8 +517,7 @@ const Convert = () => {
                             ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-red-100 text-red-800'
                           }`}>
-                          {history.status === 'completed' ? '完了' :
-                            history.status === 'pending' ? '処理中' : '失敗'}
+                          {t(`history.status.${history.status}`)}
                         </span>
                       </td>
                     </tr>
@@ -535,14 +542,13 @@ const Convert = () => {
                           ? 'bg-yellow-100 text-yellow-800'
                           : 'bg-red-100 text-red-800'
                         }`}>
-                        {history.status === 'completed' ? '完了' :
-                          history.status === 'pending' ? '処理中' : '失敗'}
+                        {t(`history.status.${history.status}`)}
                       </span>
                     </div>
                     
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">日時:</span>
+                        <span className="text-muted-foreground">{t('history.mobile.dateTime')}</span>
                         <span className="font-mono text-xs">
                           {new Date(history.created_at).toLocaleString('ja-JP', {
                             month: '2-digit',
@@ -553,20 +559,20 @@ const Convert = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">レート:</span>
+                        <span className="text-muted-foreground">{t('history.mobile.rate')}</span>
                         <span className="font-mono text-xs">
                           1 {history.from_currency} = {formatExchangeRate(history.exchange_rate)} {history.to_currency}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">支払い:</span>
+                        <span className="text-muted-foreground">{t('history.mobile.payment')}</span>
                         <span className="font-mono text-xs">
                           {history.from_amount.toFixed(8)} {history.from_currency}
                         </span>
                       </div>
                       {history.fee_amount && (
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">手数料:</span>
+                          <span className="text-muted-foreground">{t('history.mobile.fee')}</span>
                           <span className="font-mono text-xs">
                             {history.fee_amount.toFixed(8)} {history.from_currency}
                             <span className="text-muted-foreground ml-1">
@@ -576,7 +582,7 @@ const Convert = () => {
                         </div>
                       )}
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">受取:</span>
+                        <span className="text-muted-foreground">{t('history.mobile.receive')}</span>
                         <span className="font-mono text-xs font-semibold">
                           {history.to_amount.toFixed(8)} {history.to_currency}
                         </span>
@@ -593,7 +599,7 @@ const Convert = () => {
                 <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
                   <Search className="h-5 w-5 sm:h-8 sm:w-8 text-muted-foreground" />
                 </div>
-                <p className="text-muted-foreground text-sm">記録が見つかりません</p>
+                <p className="text-muted-foreground text-sm">{t('history.noRecords')}</p>
               </div>
             )}
           </CardContent>

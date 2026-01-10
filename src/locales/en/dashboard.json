@@ -1,0 +1,76 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome back",
+  "overview": {
+    "title": "Overview",
+    "totalBalance": "Total Balance",
+    "availableBalance": "Available Balance",
+    "lockedBalance": "Locked Balance",
+    "pendingDeposits": "Pending Deposits",
+    "pendingWithdrawals": "Pending Withdrawals"
+  },
+  "wallet": {
+    "title": "Wallet Overview",
+    "totalValueUsd": "Total Value (USD)",
+    "assetDetails": "Asset Details"
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "assets": "Assets",
+    "allocation": "Allocation",
+    "change24h": "24h Change",
+    "value": "Value"
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "noActivity": "No recent activity",
+    "viewAll": "View all transactions"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "trade": "Trade",
+    "transfer": "Transfer"
+  },
+  "gettingStarted": {
+    "title": "Start Your First Crypto Steps",
+    "description": "Complete these simple actions to activate your account and enhance security to begin your cryptocurrency journey.",
+    "kyc": {
+      "title": "Identity Verification",
+      "description": "Please upload your KYC documents. - Optional -",
+      "button": "Verify"
+    },
+    "deposit": {
+      "title": "Deposit Crypto",
+      "description": "Select a coin and deposit via address or QR code"
+    },
+    "trade": {
+      "title": "Start Trading",
+      "description": "Access the spot market to instantly buy and sell cryptocurrency"
+    }
+  },
+  "services": {
+    "title": "Other Services",
+    "convert": {
+      "title": "Convert",
+      "description": "Exchange cryptocurrencies"
+    },
+    "security": {
+      "title": "Security",
+      "description": "Account settings"
+    },
+    "history": {
+      "title": "History",
+      "description": "Transaction history"
+    },
+    "support": {
+      "title": "Support",
+      "description": "Help & Contact"
+    }
+  },
+  "demo": {
+    "sampleData": "Sample Data",
+    "sampleDataDescription": "This is demo data for demonstration purposes."
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "title": "ダッシュボード",
+  "welcome": "おかえりなさい",
+  "overview": {
+    "title": "概要",
+    "totalBalance": "総残高",
+    "availableBalance": "利用可能残高",
+    "lockedBalance": "ロック中残高",
+    "pendingDeposits": "入金待ち",
+    "pendingWithdrawals": "出金待ち"
+  },
+  "wallet": {
+    "title": "ウォレット概要",
+    "totalValueUsd": "合計価値 (USD)",
+    "assetDetails": "資産詳細"
+  },
+  "portfolio": {
+    "title": "ポートフォリオ",
+    "assets": "資産",
+    "allocation": "配分",
+    "change24h": "24時間変動",
+    "value": "評価額"
+  },
+  "recentActivity": {
+    "title": "最近のアクティビティ",
+    "noActivity": "アクティビティがありません",
+    "viewAll": "すべての取引を見る"
+  },
+  "quickActions": {
+    "title": "クイックアクション",
+    "deposit": "入金",
+    "withdraw": "出金",
+    "trade": "取引",
+    "transfer": "送金"
+  },
+  "gettingStarted": {
+    "title": "初回の暗号通貨ステップを始める",
+    "description": "これらの簡単なアクションを完了して、アカウントをアクティベートし、セキュリティを強化することで、暗号通貨の旅を始めましょう。",
+    "kyc": {
+      "title": "本人確認",
+      "description": "KYC書類をアップロードしてください。- 任意 -",
+      "button": "確認"
+    },
+    "deposit": {
+      "title": "暗号通貨を入金",
+      "description": "アドレスまたはQRコードでコインを選択して入金してください"
+    },
+    "trade": {
+      "title": "取引開始",
+      "description": "スポットマーケットにアクセスして暗号通貨を即座に売買してください"
+    }
+  },
+  "services": {
+    "title": "その他のサービス",
+    "convert": {
+      "title": "両替",
+      "description": "暗号通貨の交換"
+    },
+    "security": {
+      "title": "セキュリティ",
+      "description": "アカウント設定"
+    },
+    "history": {
+      "title": "履歴",
+      "description": "取引履歴"
+    },
+    "support": {
+      "title": "サポート",
+      "description": "ヘルプ・お問合せ"
+    }
+  },
+  "demo": {
+    "sampleData": "サンプルデータ",
+    "sampleDataDescription": "これはデモ用のサンプルデータです。"
+  }
+}

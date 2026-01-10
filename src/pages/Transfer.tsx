@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +41,7 @@ interface RecipientInfo {
 
 
 const Transfer = () => {
+  const { t } = useTranslation('transfer');
   const { user, isDemoMode } = useAuth();
   const { toast } = useToast();
 
@@ -105,8 +107,8 @@ const Transfer = () => {
 
       if (error) {
         toast({
-          title: "検索エラー",
-          description: "ユーザー検索中にエラーが発生しました",
+          title: t('error.searchTitle'),
+          description: t('error.searchFailed'),
           variant: "destructive"
         });
         setSearchResults([]);
@@ -125,8 +127,8 @@ const Transfer = () => {
       setSelectedIndex(-1);
     } catch (error) {
       toast({
-        title: "検索エラー",
-        description: "予期しないエラーが発生しました",
+        title: t('error.searchTitle'),
+        description: t('error.unexpectedError'),
         variant: "destructive"
       });
       setSearchResults([]);
@@ -192,8 +194,8 @@ const Transfer = () => {
 
       if (result.success) {
         toast({
-          title: "送金完了",
-          description: `${amount} ${selectedCurrency} を @${selectedRecipient.user_handle} に送金しました\n参照番号: ${result.reference_number}`,
+          title: t('success.title'),
+          description: t('success.message', { amount, currency: selectedCurrency, handle: selectedRecipient.user_handle, reference: result.reference_number }),
         });
 
         // フォームリセット
@@ -215,13 +217,13 @@ const Transfer = () => {
           setUserAssets(updatedAssets);
         }
       } else {
-        throw new Error(result.error || '送金に失敗しました');
+        throw new Error(result.error || t('error.transferFailed'));
       }
     } catch (error) {
-      console.error('送金エラー:', error);
-      const message = error instanceof Error ? error.message : "送金に失敗しました。再試行してください。";
+      console.error('Transfer error:', error);
+      const message = error instanceof Error ? error.message : t('error.transferFailedRetry');
       toast({
-        title: "送金エラー",
+        title: t('error.transferTitle'),
         description: message,
         variant: "destructive"
       });
@@ -260,22 +262,22 @@ const Transfer = () => {
               onClick={() => setShowConfirmation(false)}
               className="text-muted-foreground"
             >
-              ← 戻る
+              {t('confirmation.back')}
             </Button>
-            <h1 className="text-2xl font-bold">送金確認</h1>
+            <h1 className="text-2xl font-bold">{t('confirmation.pageTitle')}</h1>
           </div>
 
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-600" />
-                送金内容の確認
+                {t('confirmation.cardTitle')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* 送金先 */}
               <div className="space-y-2">
-                <Label className="text-sm text-muted-foreground">送金先</Label>
+                <Label className="text-sm text-muted-foreground">{t('confirmation.recipient')}</Label>
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                   <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
                     {selectedRecipient?.display_name?.[0] || '?'}
@@ -289,7 +291,7 @@ const Transfer = () => {
 
               {/* 送金金額 */}
               <div className="space-y-2">
-                <Label className="text-sm text-muted-foreground">送金金額</Label>
+                <Label className="text-sm text-muted-foreground">{t('confirmation.amount')}</Label>
                 <div className="text-2xl font-bold">
                   {amount} {selectedCurrency}
                 </div>
@@ -298,7 +300,7 @@ const Transfer = () => {
               {/* 説明 */}
               {description && (
                 <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground">説明</Label>
+                  <Label className="text-sm text-muted-foreground">{t('confirmation.description')}</Label>
                   <p className="text-sm p-3 bg-muted/50 rounded-lg">{description}</p>
                 </div>
               )}
@@ -312,14 +314,14 @@ const Transfer = () => {
                   className="flex-1"
                   onClick={() => setShowConfirmation(false)}
                 >
-                  キャンセル
+                  {t('confirmation.cancel')}
                 </Button>
                 <Button
                   className="flex-1"
                   onClick={handleTransfer}
                   disabled={isTransferring}
                 >
-                  {isTransferring ? '送金中...' : '送金実行'}
+                  {isTransferring ? t('confirmation.processing') : t('confirmation.execute')}
                 </Button>
               </div>
             </CardContent>
@@ -332,10 +334,10 @@ const Transfer = () => {
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-2xl md:text-2xl font-bold">送金</h1>
+        <h1 className="text-2xl md:text-2xl font-bold">{t('pageTitle')}</h1>
 
         {/* デモモード制限通知 */}
-        {isDemoMode && <DemoRestrictionNotice feature="送金" className="mb-6" />}
+        {isDemoMode && <DemoRestrictionNotice feature={t('feature')} className="mb-6" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* メインフォーム */}
@@ -345,17 +347,17 @@ const Transfer = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5" />
-                  送金先を選択
+                  {t('recipient.cardTitle')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4" style={{ overflow: 'visible', position: 'relative' }}>
                 <div className="space-y-2">
-                  <Label htmlFor="recipient">ユーザーID、メールアドレス、または表示名</Label>
+                  <Label htmlFor="recipient">{t('recipient.label')}</Label>
                   <div className="relative" style={{ position: 'relative', zIndex: 1 }}>
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="recipient"
-                      placeholder="@username, email@example.com, または 表示名"
+                      placeholder={t('recipient.placeholder')}
                       value={recipientSearch}
                       onChange={(e) => {
                         setRecipientSearch(e.target.value);
@@ -421,7 +423,7 @@ const Transfer = () => {
                             <div className="p-3 text-center text-muted-foreground">
                               <div className="flex items-center justify-center gap-2">
                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                                検索中...
+                                {t('recipient.searching')}
                               </div>
                             </div>
                           )}
@@ -463,7 +465,7 @@ const Transfer = () => {
                           ))}
                           {!isSearching && searchResults.length === 0 && recipientSearch.length >= 2 && (
                             <div className="p-3 text-center text-muted-foreground">
-                              ユーザーが見つかりません
+                              {t('recipient.notFound')}
                             </div>
                           )}
                         </CardContent>
@@ -498,7 +500,7 @@ const Transfer = () => {
                       }}
                       className="text-green-700 border-green-300 hover:bg-green-100"
                     >
-                      変更
+                      {t('recipient.change')}
                     </Button>
                   </div>
                 )}
@@ -510,16 +512,16 @@ const Transfer = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Wallet className="h-5 w-5" />
-                  送金金額
+                  {t('amount.cardTitle')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="currency">通貨</Label>
+                    <Label htmlFor="currency">{t('amount.currencyLabel')}</Label>
                     <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
                       <SelectTrigger>
-                        <SelectValue placeholder="通貨を選択" />
+                        <SelectValue placeholder={t('amount.currencyPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
                         {userAssets.map((asset) => {
@@ -541,7 +543,7 @@ const Transfer = () => {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="amount">数量選択</Label>
+                      <Label htmlFor="amount">{t('amount.quantityLabel')}</Label>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -577,7 +579,7 @@ const Transfer = () => {
                         }}
                         disabled={!selectedCurrency}
                       >
-                        最大
+                        {t('amount.max')}
                       </Button>
                     </div>
                   </div>
@@ -591,17 +593,17 @@ const Transfer = () => {
                       if (!selectedAsset) return null;
                       const availableBalance = selectedAsset.balance - (selectedAsset.locked_balance || 0);
                       return (
-                        <p>利用可能残高: {showBalance ? availableBalance.toFixed(8) : '••••••••'} {selectedCurrency}</p>
+                        <p>{t('amount.available')} {showBalance ? availableBalance.toFixed(8) : '••••••••'} {selectedCurrency}</p>
                       );
                     })()}
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">説明（オプション）</Label>
+                  <Label htmlFor="description">{t('description.label')}</Label>
                   <Textarea
                     id="description"
-                    placeholder="送金の理由や説明を入力..."
+                    placeholder={t('description.placeholder')}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
@@ -620,7 +622,7 @@ const Transfer = () => {
                   disabled={isDemoMode || !canSubmit}
                 >
                   <Send className="h-4 w-4 mr-2" />
-                  送金内容を確認
+                  {t('submit')}
                 </Button>
               </CardContent>
             </Card>
@@ -633,13 +635,13 @@ const Transfer = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <AlertCircle className="h-5 w-5 text-amber-600" />
-                  ご注意
+                  {t('notice.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-sm space-y-2">
-                <p>• 送金は即座に実行され、キャンセルできません</p>
-                <p>• 送金先ユーザーIDを必ずご確認ください</p>
-                <p>• ネットワーク手数料は発生しません</p>
+                <p>• {t('notice.items.immediate')}</p>
+                <p>• {t('notice.items.confirm')}</p>
+                <p>• {t('notice.items.noFee')}</p>
               </CardContent>
             </Card>
 
@@ -648,12 +650,12 @@ const Transfer = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
-                  保有資産
+                  {t('assets.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {userAssets.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">送金可能な資産がありません</p>
+                  <p className="text-sm text-muted-foreground">{t('assets.empty')}</p>
                 ) : (
                   userAssets.map((asset) => {
                     const availableBalance = asset.balance - (asset.locked_balance || 0);

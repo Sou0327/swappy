@@ -1,0 +1,59 @@
+{
+  "pageTitle": "両替",
+  "error": {
+    "title": "エラー",
+    "fetchAssets": "資産情報の取得に失敗しました。",
+    "invalidAmount": "有効な金額を入力してください。",
+    "insufficientBalance": "残高が不足しています。",
+    "conversionFailed": "両替処理に失敗しました。",
+    "fetchHistory": "両替履歴の取得に失敗しました。"
+  },
+  "success": {
+    "title": "成功",
+    "converted": "{{from}} {{fromCurrency}} を {{to}} {{toCurrency}} に両替しました。手数料: {{fee}} {{fromCurrency}}"
+  },
+  "form": {
+    "from": "交換元",
+    "to": "受取",
+    "available": "利用可能:",
+    "enterAmount": "金額を入力",
+    "max": "最大",
+    "balance": "残高:",
+    "exchangeRate": "為替レート:",
+    "convert": "両替",
+    "processing": "処理中..."
+  },
+  "fee": {
+    "title": "手数料情報",
+    "rate": "手数料率:",
+    "amount": "手数料:",
+    "netAmount": "実際の交換額:",
+    "expectedAmount": "受取予定額:"
+  },
+  "history": {
+    "title": "最近の両替履歴",
+    "showAll": "すべて表示",
+    "table": {
+      "dateTime": "日付 & 時間",
+      "pair": "ペア",
+      "rate": "レート",
+      "paymentAmount": "支払い金額",
+      "fee": "手数料",
+      "receiveAmount": "受け取り金額",
+      "status": "ステータス"
+    },
+    "mobile": {
+      "dateTime": "日時:",
+      "rate": "レート:",
+      "payment": "支払い:",
+      "fee": "手数料:",
+      "receive": "受取:"
+    },
+    "status": {
+      "completed": "完了",
+      "pending": "処理中",
+      "failed": "失敗"
+    },
+    "noRecords": "記録が見つかりません"
+  }
+}

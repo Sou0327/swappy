@@ -1,4 +1,5 @@
 import { useState, useEffect, memo } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -15,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import MobileBottomNavigation from "./MobileBottomNavigation";
 import DemoBanner from "./DemoBanner";
 import { PLATFORM_NAME } from "@/config/branding";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import {
   LayoutDashboard,
   Wallet,
@@ -41,6 +43,8 @@ import {
 } from "lucide-react";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  const { t } = useTranslation('navigation');
+  const { t: tMessages } = useTranslation('messages');
   // 稼ぐメニューは非表示のため、展開状態は不要
   const [settingsExpanded, setSettingsExpanded] = useState(false);
   const [adminMenuExpanded, setAdminMenuExpanded] = useState(false);
@@ -64,15 +68,15 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     try {
       await supabase.auth.signOut();
       toast({
-        title: "ログアウトしました",
-        description: "正常にログアウトされました。",
+        title: tMessages('toast.success.loggedOut'),
+        description: tMessages('toast.success.loggedOutDesc'),
       });
       navigate("/auth");
     } catch (error) {
       console.error("Error signing out:", error);
       toast({
-        title: "ログアウトエラー",
-        description: "ログアウト中にエラーが発生しました。",
+        title: tMessages('toast.error.logoutError'),
+        description: tMessages('toast.error.logoutErrorDesc'),
         variant: "destructive",
       });
     }
@@ -81,42 +85,42 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const isActive = (path: string) => location.pathname === path;
 
   const sidebarItems = [
-    { icon: LayoutDashboard, label: "ダッシュボード", path: "/dashboard" },
-    { icon: Megaphone, label: "お知らせ", path: "/announcements" },
-    { icon: Wallet, label: "ウォレット", path: "/wallet" },
-    { icon: Send, label: "送金", path: "/transfer" },
+    { icon: LayoutDashboard, label: t('sidebar.dashboard'), path: "/dashboard" },
+    { icon: Megaphone, label: t('sidebar.announcements'), path: "/announcements" },
+    { icon: Wallet, label: t('sidebar.wallet'), path: "/wallet" },
+    { icon: Send, label: t('sidebar.transfer'), path: "/transfer" },
     // 稼ぐメニューは画面上から非表示（ルートは残置）
-    { icon: ArrowLeftRight, label: "両替", path: "/convert" },
-    { icon: Users, label: "紹介プログラム", path: "/referral" },
+    { icon: ArrowLeftRight, label: t('sidebar.convert'), path: "/convert" },
+    { icon: Users, label: t('sidebar.referral'), path: "/referral" },
     {
       icon: Settings,
-      label: "設定",
+      label: t('sidebar.settings'),
       expandable: true,
       expanded: settingsExpanded,
       setExpanded: setSettingsExpanded,
       subItems: [
-        { label: "マイアカウント", path: "/my-account" },
-        { label: "セキュリティ", path: "/security" },
-        { label: "KYC", path: "/kyc" },
-        { label: "履歴", path: "/history" },
-        { label: "サポート", path: "/support" }
+        { label: t('sidebar.myAccount'), path: "/my-account" },
+        { label: t('sidebar.security'), path: "/security" },
+        { label: t('sidebar.kyc'), path: "/kyc" },
+        { label: t('sidebar.history'), path: "/history" },
+        { label: t('sidebar.support'), path: "/support" }
       ]
     },
     // 管理者専用メニュー
     ...(userRole === 'admin' ? [{
       icon: Shield,
-      label: "管理者メニュー",
+      label: t('sidebar.adminMenu'),
       expandable: true,
       expanded: adminMenuExpanded,
       setExpanded: setAdminMenuExpanded,
       subItems: [
-        { label: "管理ダッシュボード", path: "/admin" },
-        { label: "ウォレット管理", path: "/admin/wallets" },
-        { label: "HDウォレット", path: "/admin/hdwallet" },
-        { label: "スイープ管理", path: "/admin/sweep-manager" },
-        { label: "お知らせ管理", path: "/admin/announcements" },
-        { label: "紹介管理", path: "/admin/referrals" },
-        { label: "トークン管理", path: "/admin/tokens" }
+        { label: t('sidebar.adminDashboard'), path: "/admin" },
+        { label: t('sidebar.walletManagement'), path: "/admin/wallets" },
+        { label: t('sidebar.hdWallet'), path: "/admin/hdwallet" },
+        { label: t('sidebar.sweepManager'), path: "/admin/sweep-manager" },
+        { label: t('sidebar.announcementManagement'), path: "/admin/announcements" },
+        { label: t('sidebar.referralManagement'), path: "/admin/referrals" },
+        { label: t('sidebar.tokenManagement'), path: "/admin/tokens" }
       ]
     }] : [])
   ];
@@ -210,7 +214,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           ) : (
             <LogOut className="mr-3 h-4 w-4" />
           )}
-          {isDemoMode ? "ホームに戻る" : "サインアウト"}
+          {isDemoMode ? t('sidebar.returnHome') : t('sidebar.signOut')}
         </button>
       </div>
     </nav>
@@ -241,8 +245,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-80 bg-white border-r border-gray-200">
-                <SheetTitle className="sr-only">メニュー</SheetTitle>
+                <SheetTitle className="sr-only">{t('sidebar.settings')}</SheetTitle>
                 <div className="mt-8">
+                  {/* Mobile Language Switcher in sidebar */}
+                  <div className="mb-4 px-3">
+                    <LanguageSwitcher variant="outline" className="w-full justify-center" />
+                  </div>
                   <SidebarContent onItemClick={() => setMobileMenuOpen(false)} />
                 </div>
               </SheetContent>
@@ -265,21 +273,21 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/markets") ? "text-primary" : "text-gray-600"
                   }`}
               >
-                マーケット
+                {t('topBar.markets')}
               </Link>
               <Link
                 to="/trade"
                 className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/trade") ? "text-primary" : "text-gray-600"
                   }`}
               >
-                取引
+                {t('topBar.trade')}
               </Link>
               <Link
                 to="/transfer"
                 className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/transfer") ? "text-primary" : "text-gray-600"
                   }`}
               >
-                送金
+                {t('topBar.transfer')}
               </Link>
               {/* 稼ぐは非表示 */}
               <Link
@@ -287,7 +295,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/convert") ? "text-primary" : "text-gray-600"
                   }`}
               >
-                両替
+                {t('topBar.convert')}
               </Link>
               {userRole === 'admin' && (
                 <Link
@@ -295,7 +303,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/admin") ? "text-primary" : "text-gray-600"
                     }`}
                 >
-                  管理画面
+                  {t('topBar.admin')}
                 </Link>
               )}
             </nav>
@@ -321,7 +329,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               className="bg-primary hover:bg-primary/90 active:bg-primary/80 text-xs px-3 md:px-4 md:text-sm transition-all duration-200 active:scale-95"
               onClick={() => navigate("/deposit")}
             >
-              入金
+              {t('buttons.deposit')}
             </Button>
 
             {/* Hide withdraw button on mobile, show on md+ */}
@@ -331,8 +339,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               className="hidden md:inline-flex text-xs md:text-sm px-2 md:px-4 transition-all duration-200 active:scale-95"
               onClick={() => navigate("/withdraw")}
             >
-              出金
+              {t('buttons.withdraw')}
             </Button>
+
+            {/* Desktop Language Switcher */}
+            <div className="hidden md:block">
+              <LanguageSwitcher compact />
+            </div>
 
             {/* 通知アイコン - Hide on mobile */}
             <DropdownMenu>
@@ -356,7 +369,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               >
                 <div className="p-4 border-b">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold">通知</h3>
+                    <h3 className="font-semibold">{tMessages('notifications.title')}</h3>
                     {unreadCount > 0 && (
                       <Button
                         variant="ghost"
@@ -364,7 +377,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                         className="text-xs"
                         onClick={markAllAsRead}
                       >
-                        すべて既読
+                        {tMessages('notifications.markAllRead')}
                       </Button>
                     )}
                   </div>
@@ -373,7 +386,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 <div className="max-h-64 overflow-y-auto">
                   {notificationsLoading ? (
                     <div className="p-4 text-center text-sm text-muted-foreground">
-                      読み込み中...
+                      {tMessages('notifications.loading')}
                     </div>
                   ) : notifications && notifications.length > 0 ? (
                     notifications.slice(0, 10).map((notification) => (
@@ -425,7 +438,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     ))
                   ) : (
                     <div className="p-4 text-center text-sm text-muted-foreground">
-                      新しい通知はありません
+                      {tMessages('notifications.noNotifications')}
                     </div>
                   )}
                 </div>
@@ -438,7 +451,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                       className="w-full text-xs"
                       onClick={() => navigate("/notifications")}
                     >
-                      すべての通知を見る
+                      {tMessages('notifications.viewAll')}
                     </Button>
                   </div>
                 )}

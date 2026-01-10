@@ -1,0 +1,60 @@
+{
+  "pageTitle": "Transfer",
+  "feature": "Transfer",
+  "error": {
+    "searchTitle": "Search Error",
+    "searchFailed": "An error occurred while searching for users",
+    "unexpectedError": "An unexpected error occurred",
+    "transferTitle": "Transfer Error",
+    "transferFailed": "Transfer failed",
+    "transferFailedRetry": "Transfer failed. Please try again."
+  },
+  "success": {
+    "title": "Transfer Complete",
+    "message": "Transferred {{amount}} {{currency}} to @{{handle}}\nReference: {{reference}}"
+  },
+  "confirmation": {
+    "back": "← Back",
+    "pageTitle": "Confirm Transfer",
+    "cardTitle": "Confirm Transfer Details",
+    "recipient": "Recipient",
+    "amount": "Amount",
+    "description": "Description",
+    "cancel": "Cancel",
+    "processing": "Transferring...",
+    "execute": "Execute Transfer"
+  },
+  "recipient": {
+    "cardTitle": "Select Recipient",
+    "label": "User ID, email address, or display name",
+    "placeholder": "@username, email@example.com, or display name",
+    "searching": "Searching...",
+    "notFound": "User not found",
+    "change": "Change"
+  },
+  "amount": {
+    "cardTitle": "Transfer Amount",
+    "currencyLabel": "Currency",
+    "currencyPlaceholder": "Select currency",
+    "quantityLabel": "Amount",
+    "max": "Max",
+    "available": "Available:"
+  },
+  "description": {
+    "label": "Description (Optional)",
+    "placeholder": "Enter transfer reason or description..."
+  },
+  "submit": "Review Transfer",
+  "notice": {
+    "title": "Notice",
+    "items": {
+      "immediate": "Transfers are executed immediately and cannot be cancelled",
+      "confirm": "Please verify the recipient's user ID",
+      "noFee": "No network fees apply"
+    }
+  },
+  "assets": {
+    "title": "Your Assets",
+    "empty": "No assets available for transfer"
+  }
+}

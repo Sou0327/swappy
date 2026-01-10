@@ -1,0 +1,60 @@
+{
+  "pageTitle": "Earn <1>Passive Income</1>",
+  "pageSubtitle": "Multiple ways to grow your crypto with competitive yields and flexible terms",
+  "stats": {
+    "totalAssets": "Total Value Locked",
+    "activeStakers": "Active Stakers",
+    "avgApy": "Average APY"
+  },
+  "selectStrategy": "Choose Your Earning Strategy",
+  "apy": "APY",
+  "riskLevel": "Risk Level:",
+  "lockup": "Lock-up:",
+  "startEarning": "Start Earning",
+  "options": {
+    "flexible": {
+      "title": "Flexible Staking",
+      "description": "Earn rewards with no lock-up period"
+    },
+    "fixed": {
+      "title": "Fixed Staking",
+      "description": "Higher rewards for fixed terms"
+    },
+    "liquidity": {
+      "title": "Liquidity Mining",
+      "description": "Provide liquidity and earn fees"
+    },
+    "launchpad": {
+      "title": "Launchpad Staking",
+      "description": "Stake to participate in new projects"
+    }
+  },
+  "risk": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "lockupOptions": {
+    "none": "No Lock",
+    "days30to90": "30-90 Days",
+    "variable": "Variable",
+    "projectBased": "Project Based"
+  },
+  "pools": {
+    "title": "Top Earning Pools",
+    "subtitle": "Join the most active and profitable staking pools",
+    "participants": "Participants:",
+    "stakeNow": "Stake Now"
+  },
+  "poolNames": {
+    "btcFlexible": "BTC Flexible",
+    "ethFixed30": "ETH Fixed 30D",
+    "solUsdcLp": "SOL-USDC LP",
+    "maticStaking": "MATIC Staking"
+  },
+  "cta": {
+    "title": "Ready to Start Earning?",
+    "subtitle": "Join tens of thousands of users already earning passive income on {{platform}}",
+    "button": "Explore All Pools"
+  }
+}

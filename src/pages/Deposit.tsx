@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -61,6 +62,7 @@ interface DepositHistory {
 }
 
 const Deposit = () => {
+  const { t } = useTranslation('wallet');
   const [selectedChain, setSelectedChain] = useState<SupportedChain>("eth");
   const [selectedAsset, setSelectedAsset] = useState<SupportedAsset>("ETH");
   const [selectedNetwork, setSelectedNetwork] = useState<SupportedNetwork>("mainnet");
@@ -79,32 +81,32 @@ const Deposit = () => {
     enableNotifications: true, // プッシュ通知を有効化
     onConnectionChange: (connected, quality) => {
       if (!connected && quality === 'disconnected') {
-        toast.showWarning('リアルタイム監視', {
-          description: 'リアルタイム入金監視との接続が切断されました。手動更新をお試しください。',
-          context: { operation: 'リアルタイム監視', connectivity: 'disconnected' },
+        toast.showWarning(t('deposit.toast.realtimeMonitoring'), {
+          description: t('deposit.toast.connectionLost'),
+          context: { operation: t('deposit.toast.realtimeMonitoring'), connectivity: 'disconnected' },
           actions: [{
-            label: '再接続',
+            label: t('deposit.actions.reconnect'),
             onClick: () => realtimeDeposits.retryConnection()
           }]
         });
       } else if (connected && quality === 'good') {
         toast.dismissAll(); // 再接続成功時は関連する警告を消去
-        toast.showSuccess('リアルタイム監視復旧', {
-          description: 'リアルタイム入金監視が復旧しました。',
-          context: { operation: 'リアルタイム監視', connectivity: 'restored' },
+        toast.showSuccess(t('deposit.toast.connectionRestored'), {
+          description: t('deposit.toast.connectionRestoredDesc'),
+          context: { operation: t('deposit.toast.realtimeMonitoring'), connectivity: 'restored' },
           duration: 3000
         });
       }
     },
     onError: (error) => {
       const enhancedError = analyzeError(error, {
-        operation: 'リアルタイム監視'
+        operation: t('deposit.toast.realtimeMonitoring')
       });
-      toast.showError('監視エラー', {
+      toast.showError(t('deposit.toast.monitoringError'), {
         description: enhancedError.userMessage,
-        context: { operation: 'リアルタイム監視', error: error.message },
+        context: { operation: t('deposit.toast.realtimeMonitoring'), error: error.message },
         actions: [{
-          label: '再試行',
+          label: t('deposit.actions.retry'),
           onClick: () => realtimeDeposits.retryConnection()
         }],
         persistent: enhancedError.severity === 'critical'
@@ -188,13 +190,13 @@ const Deposit = () => {
   // マルチチェーンアドレス取得・生成（拡張エラー処理付き）
   const getOrCreateDepositAddress = useCallback(async (chain: SupportedChain, network: SupportedNetwork, asset: SupportedAsset): Promise<DepositAddress> => {
     if (!user?.id) {
-      const error = new Error('ユーザー認証が必要です');
-      const enhancedError = analyzeError(error, { chain, network, asset, operation: 'アドレス生成' });
-      toast.showError('認証エラー', {
+      const error = new Error(t('deposit.toast.authRequired'));
+      const enhancedError = analyzeError(error, { chain, network, asset, operation: t('deposit.toast.addressGeneration') });
+      toast.showError(t('deposit.toast.authError'), {
         description: enhancedError.userMessage,
-        context: { chain, network, asset, operation: 'アドレス生成' },
+        context: { chain, network, asset, operation: t('deposit.toast.addressGeneration') },
         actions: [{
-          label: 'ログイン画面へ',
+          label: t('deposit.toast.goToLogin'),
           onClick: () => navigate('/auth')
         }]
       });
@@ -202,10 +204,10 @@ const Deposit = () => {
     }
 
     // プログレス通知開始
-    const progressToastId = toast.showLoading('アドレス生成中', {
-      description: 'ウォレットアドレスを生成しています...',
-      context: { chain, network, asset, operation: 'アドレス生成' },
-      category: 'アドレス生成'
+    const progressToastId = toast.showLoading(t('deposit.toast.addressGeneration'), {
+      description: t('deposit.toast.generatingWallet'),
+      context: { chain, network, asset, operation: t('deposit.toast.addressGeneration') },
+      category: t('deposit.toast.addressGeneration')
     });
 
     try {
@@ -261,7 +263,7 @@ const Deposit = () => {
         // 新しいXRP入金情報を生成
         // XRP は mainnet/testnet のみサポート（型絞り込み）
         if (network !== 'mainnet' && network !== 'testnet') {
-          throw new Error('XRP は mainnet/testnet のみサポートしています');
+          throw new Error(t('deposit.errors.xrpNetworkOnly'));
         }
         const xrpInfo = await generateXRPDepositInfo(supabase, user.id, network);
 
@@ -516,7 +518,7 @@ const Deposit = () => {
 
       if (!data?.success) {
         console.error('サブスクリプション作成失敗:', data?.error);
-        throw new Error(data?.error || 'サブスクリプション作成に失敗しました');
+        throw new Error(data?.error || t('deposit.errors.subscriptionFailed'));
       }
 
     } catch (error) {
@@ -663,8 +665,8 @@ const Deposit = () => {
 
   const handleCopyAddress = async () => {
     if (!currentAddressState.data) {
-      toast.showWarning('コピーエラー', {
-        description: 'コピーするアドレスが見つかりません。',
+      toast.showWarning(t('deposit.toast.copyError'), {
+        description: t('deposit.toast.noAddressToCopy'),
         context: { chain: selectedChain, network: selectedNetwork, asset: selectedAsset }
       });
       return;
@@ -692,25 +694,25 @@ const Deposit = () => {
         copyText = addressData;
         addressFormatted = `${copyText.slice(0, 10)}...${copyText.slice(-6)}`;
       } else {
-        throw new Error('アドレス形式が無効です');
+        throw new Error(t('deposit.errors.invalidAddressFormat'));
       }
 
       await navigator.clipboard.writeText(copyText);
 
       // 成功通知（拡張版）
-      toast.showSuccess('アドレス情報をコピーしました', {
+      toast.showSuccess(t('deposit.toast.addressCopied'), {
         description: selectedChain === 'xrp'
-          ? 'XRPアドレスとDestination Tagがコピーされました。'
-          : 'ウォレットアドレスがクリップボードにコピーされました。',
+          ? t('deposit.toast.xrpAddressCopied')
+          : t('deposit.toast.walletAddressCopied'),
         context: {
           chain: selectedChain,
           network: selectedNetwork,
           asset: selectedAsset,
           address: copyText,
-          operation: 'アドレスコピー'
+          operation: t('deposit.actions.copy')
         },
         actions: [{
-          label: '送金ガイドを表示',
+          label: t('deposit.actions.showGuide'),
           onClick: () => {
             // 送金ガイドセクションにスクロール（後で実装）
             document.getElementById('sending-guidance')?.scrollIntoView({ behavior: 'smooth' });
@@ -727,16 +729,16 @@ const Deposit = () => {
         operation: 'アドレスコピー'
       });
 
-      toast.showError('コピー失敗', {
-        description: enhancedError.details || 'クリップボードへのコピーに失敗しました。',
+      toast.showError(t('deposit.toast.copyFailed'), {
+        description: enhancedError.details || t('deposit.toast.clipboardError'),
         context: {
           chain: selectedChain,
           network: selectedNetwork,
           asset: selectedAsset,
-          operation: 'アドレスコピー'
+          operation: t('deposit.actions.copy')
         },
         actions: [{
-          label: '再試行',
+          label: t('deposit.actions.retry'),
           onClick: handleCopyAddress
         }]
       });
@@ -746,13 +748,13 @@ const Deposit = () => {
   const handleDownloadQR = async () => {
     try {
       // QRコード要素を取得してダウンロード処理（簡易版）
-      toast.showInfo('QRコードダウンロード', {
-        description: 'QRコードのダウンロードを開始します。',
+      toast.showInfo(t('deposit.toast.qrDownload'), {
+        description: t('deposit.toast.qrDownloadStarted'),
         context: {
           chain: selectedChain,
           network: selectedNetwork,
           asset: selectedAsset,
-          operation: 'QRダウンロード'
+          operation: t('deposit.toast.qrDownload')
         }
       });
 
@@ -764,16 +766,16 @@ const Deposit = () => {
         chain: selectedChain,
         network: selectedNetwork,
         asset: selectedAsset,
-        operation: 'QRダウンロード'
+        operation: t('deposit.toast.qrDownload')
       });
 
-      toast.showError('ダウンロード失敗', {
-        description: enhancedError.details || 'QRコードのダウンロードに失敗しました。',
+      toast.showError(t('deposit.toast.downloadFailed'), {
+        description: enhancedError.details || t('deposit.toast.qrDownloadError'),
         context: {
           chain: selectedChain,
           network: selectedNetwork,
           asset: selectedAsset,
-          operation: 'QRダウンロード'
+          operation: t('deposit.toast.qrDownload')
         }
       });
     }
@@ -845,16 +847,16 @@ const Deposit = () => {
           }
 
           // 入金検知の通知
-          toast.showSuccess('入金を検知しました', {
-            description: `${deposit.amount} ${deposit.asset} の入金が検知されました。確認をお待ちください。`,
+          toast.showSuccess(t('deposit.toast.depositDetected'), {
+            description: t('deposit.toast.depositDetectedDesc', { amount: deposit.amount, asset: deposit.asset }),
             context: {
-              operation: '入金検知',
+              operation: t('deposit.toast.depositDetected'),
               amount: deposit.amount.toString(),
               asset: deposit.asset,
               txHash: deposit.transaction_hash
             },
             actions: deposit.transaction_hash ? [{
-              label: 'トランザクション確認',
+              label: t('deposit.toast.viewTransaction'),
               onClick: () => {
                 const explorerUrl = txLink(selectedChain, selectedNetwork, deposit.transaction_hash!);
                 if (explorerUrl) {
@@ -883,10 +885,10 @@ const Deposit = () => {
 
             if (confirmations >= required) {
               setDepositStep('completed');
-              toast.showSuccess('入金が完了しました', {
-                description: `${newDeposit.amount} ${newDeposit.asset} の入金が完了し、残高に反映されました。`,
+              toast.showSuccess(t('deposit.toast.depositComplete'), {
+                description: t('deposit.toast.depositCompleteDesc', { amount: newDeposit.amount, asset: newDeposit.asset }),
                 context: {
-                  operation: '入金完了',
+                  operation: t('deposit.toast.depositComplete'),
                   amount: newDeposit.amount.toString(),
                   asset: newDeposit.asset,
                   confirmations: confirmations
@@ -895,10 +897,10 @@ const Deposit = () => {
               });
             } else {
               setDepositStep('confirming');
-              toast.showInfo('確認進行中', {
-                description: `確認数: ${confirmations}/${required} - 入金確認が進行中です。`,
+              toast.showInfo(t('deposit.toast.confirming'), {
+                description: t('deposit.toast.confirmingDesc', { current: confirmations, required: required }),
                 context: {
-                  operation: '入金確認',
+                  operation: t('deposit.toast.confirming'),
                   confirmations: confirmations,
                   required: required
                 },
@@ -915,10 +917,10 @@ const Deposit = () => {
               setDepositStep('completed');
             } else if (newDeposit.status === 'failed') {
               setDepositStep('failed');
-              toast.showError('入金処理エラー', {
-                description: '入金処理中にエラーが発生しました。サポートにお問い合わせください。',
+              toast.showError(t('deposit.toast.depositError'), {
+                description: t('deposit.toast.depositErrorDesc'),
                 context: {
-                  operation: '入金処理',
+                  operation: t('deposit.toast.depositError'),
                   status: newDeposit.status,
                   txHash: newDeposit.transaction_hash
                 },
@@ -965,44 +967,37 @@ const Deposit = () => {
   const buildFaqItems = () => {
     const minConf = chainConfigState.data?.min_confirmations || 1;
     const minDep = chainConfigState.data?.min_deposit || getMinimumDepositAmount(selectedChain, selectedNetwork, selectedAsset);
-    const rangeHints: Partial<Record<SupportedChain, string>> = {
-      btc: '推奨範囲: 0.0001〜0.001 BTC',
-      eth: '推奨範囲: 0.01〜0.05 ETH',
-      xrp: '推奨範囲: 20〜50 XRP',
-      trc: selectedAsset === 'TRX' ? '推奨範囲: 10〜100 TRX' : undefined,
-      ada: '推奨範囲: 1〜10 ADA'
-    };
     const common = [
       {
-        question: `${selectedAsset}の入金方法は？`,
-        answer: `${selectedAsset} を選択したネットワーク（${selectedNetwork}）で送金してください。最小入金額は ${minDep} ${selectedAsset}、必要確認数は ${minConf} です。${rangeHints[selectedChain] ? `（${rangeHints[selectedChain]}）` : ''}`
+        question: t('deposit.faq.howToDeposit', { asset: selectedAsset }),
+        answer: t('deposit.faq.howToDepositAnswer', { asset: selectedAsset, network: selectedNetwork, minDeposit: minDep, minConf: minConf })
       },
       {
-        question: '入金はいつ反映されますか？',
-        answer: `ブロックチェーン上で ${minConf} 回の確認が取れた後に残高へ反映します。ネットワーク状況により時間は前後します。`
+        question: t('deposit.faq.whenReflected'),
+        answer: t('deposit.faq.whenReflectedAnswer', { minConf: minConf })
       },
       {
-        question: '間違ったネットワークで送金した場合',
-        answer: `選択したチェーン/ネットワーク以外に送金された資金は回復できない場合があります。送金前に必ずネットワークを確認してください。`
+        question: t('deposit.faq.wrongNetwork'),
+        answer: t('deposit.faq.wrongNetworkAnswer')
       }
     ];
     const extras: { question: string; answer: string }[] = [];
     if (selectedChain === 'xrp') {
       extras.push({
-        question: 'XRPのDestination Tagは必須ですか？',
-        answer: 'はい。必ず指定のDestination Tagを入力してください。未入力・誤入力の場合、資金が失われる可能性があります。'
+        question: t('deposit.faq.xrpTagRequired'),
+        answer: t('deposit.faq.xrpTagRequiredAnswer')
       });
     }
     if (selectedChain === 'trc') {
       extras.push({
-        question: 'TRONの確定目安は？',
-        answer: '目安として19ブロックで確定とみなします（ネットワーク状況に依存）。TRC-20(USDT)も同様にTransferイベントの確定待ちが必要です。'
+        question: t('deposit.faq.tronConfirmation'),
+        answer: t('deposit.faq.tronConfirmationAnswer')
       });
     }
     if (selectedChain === 'ada') {
       extras.push({
-        question: 'ADAはUTXOで何か注意点はありますか？',
-        answer: 'CardanoはUTXOモデルのため、複数の入出力に分割されることがあります。履歴の反映に差が出る場合があります。'
+        question: t('deposit.faq.adaUtxo'),
+        answer: t('deposit.faq.adaUtxoAnswer')
       });
     }
     return [...common, ...extras];
@@ -1021,14 +1016,14 @@ const Deposit = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-foreground">入金</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('deposit.title')}</h1>
             <Badge variant="outline" className="text-blue-600">
-              フェーズ2: リアルタイム監視対応
+              {t('deposit.phase2Badge')}
             </Badge>
             {!networkStatus.isOnline && (
               <Badge variant="destructive" className="flex items-center gap-1">
                 <WifiOff className="h-3 w-3" />
-                オフライン
+                {t('deposit.status.offline')}
               </Badge>
             )}
             {/* リアルタイム監視状態インジケーター */}
@@ -1045,14 +1040,14 @@ const Deposit = () => {
                 ) : (
                   <Clock className="h-3 w-3" />
                 )}
-                {realtimeDeposits.state.connectionState.isConnected ? 'リアルタイム監視中' : '監視待機中'}
+                {realtimeDeposits.state.connectionState.isConnected ? t('deposit.status.monitoring') : t('deposit.status.waiting')}
               </Badge>
             )}
           </div>
         </div>
 
         {/* デモモード制限通知 */}
-        {isDemoMode && <DemoRestrictionNotice feature="入金" className="mb-6" />}
+        {isDemoMode && <DemoRestrictionNotice feature={t('deposit.featureName')} className="mb-6" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Deposit Form */}
@@ -1062,16 +1057,16 @@ const Deposit = () => {
                 <CardHeader>
                   <CardTitle className="text-xl font-semibold flex items-center gap-2 text-gray-900">
                     <AlertCircle className="h-6 w-6 text-yellow-600" />
-                    入金機能の一時停止
+                    {t('deposit.serviceSuspended.title')}
                   </CardTitle>
                   <CardDescription className="text-gray-600">
-                    現在、新規入金の受付を一時的に停止しております
+                    {t('deposit.serviceSuspended.description')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">お知らせ</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('deposit.serviceSuspended.notice')}</h4>
                       <div className="text-sm text-gray-700 space-y-2 whitespace-pre-line">
                         {SERVICE_RESTRICTIONS.getRestrictionMessage()}
                       </div>
@@ -1088,7 +1083,7 @@ const Deposit = () => {
                     <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
                       1
                     </div>
-                    <label className="text-sm font-medium">資産</label>
+                    <label className="text-sm font-medium">{t('deposit.form.asset')}</label>
                   </div>
                   <Select value={selectedAsset} onValueChange={(value) => setSelectedAsset(value as SupportedAsset)}>
                     <SelectTrigger className="w-full">
@@ -1122,7 +1117,7 @@ const Deposit = () => {
                     <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
                       2
                     </div>
-                    <label className="text-sm font-medium">チェーン</label>
+                    <label className="text-sm font-medium">{t('deposit.form.chain')}</label>
                   </div>
                   <Select value={selectedChain} onValueChange={(value) => setSelectedChain(value as SupportedChain)}>
                     <SelectTrigger className="w-full">
@@ -1144,12 +1139,12 @@ const Deposit = () => {
                       </Badge>
                       {selectedAsset === 'USDT' && selectedChain === 'eth' && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          ERC-20トークンとして送金してください
+                          {t('deposit.erc20Notice')}
                         </p>
                       )}
                       {selectedAsset === 'USDT' && selectedChain === 'trc' && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          TRC-20トークンとして送金してください
+                          {t('deposit.trc20Notice')}
                         </p>
                       )}
                     </div>
@@ -1163,7 +1158,7 @@ const Deposit = () => {
                       <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
                         3
                       </div>
-                      <label className="text-sm font-medium">ネットワーク</label>
+                      <label className="text-sm font-medium">{t('deposit.form.network')}</label>
                     </div>
                     <Select value={selectedNetwork} onValueChange={(value) => setSelectedNetwork(value as SupportedNetwork)}>
                       <SelectTrigger className="w-full">
@@ -1268,7 +1263,7 @@ const Deposit = () => {
                           { context: 'チェーン設定の取得', showErrorToast: false }
                         );
                       }}
-                      loadingComponent={<div className="text-xs text-muted-foreground">設定を読み込み中...</div>}
+                      loadingComponent={<div className="text-xs text-muted-foreground">{t('deposit.loadingConfig')}</div>}
                     >
                       {chainConfigState.data && (
                         <div className="bg-muted/50 p-3 rounded-lg space-y-1">
@@ -1279,12 +1274,12 @@ const Deposit = () => {
                               <AlertTriangle className="h-4 w-4 text-red-600" />
                             )}
                             <span className="text-sm font-medium">
-                              {chainConfigState.data.deposit_enabled ? '入金受付中' : '入金停止中'}
+                              {chainConfigState.data.deposit_enabled ? t('deposit.status.accepting') : t('deposit.status.suspended')}
                             </span>
                           </div>
                           <div className="text-xs text-muted-foreground space-y-1">
-                            <p>最小入金額: {chainConfigState.data.min_deposit} {selectedAsset}</p>
-                            <p>必要確認数: {chainConfigState.data.min_confirmations} ブロック</p>
+                            <p>{t('deposit.notices.minDepositAmount', { amount: chainConfigState.data.min_deposit, asset: selectedAsset })}</p>
+                            <p>{t('deposit.notices.confirmationsRequired', { count: chainConfigState.data.min_confirmations })}</p>
                           </div>
                         </div>
                       )}
@@ -1299,7 +1294,7 @@ const Deposit = () => {
                       4
                     </div>
                     <label className="text-sm font-medium">
-                      {selectedChain === 'xrp' ? '入金情報' : 'ウォレットアドレス'}
+                      {selectedChain === 'xrp' ? t('deposit.depositInfo') : t('deposit.walletAddress')}
                     </label>
                   </div>
 
@@ -1362,7 +1357,7 @@ const Deposit = () => {
                               })()}
                               readOnly
                               className="flex-1 font-mono text-sm"
-                              placeholder="XRPアドレスを生成中..."
+                              placeholder={t('deposit.generatingXrpAddress')}
                             />
                             <Button
                               variant="outline"
@@ -1370,7 +1365,7 @@ const Deposit = () => {
                               disabled={!currentAddressState.data}
                             >
                               <Copy className="h-4 w-4 mr-1" />
-                              コピー
+                              {t('deposit.actions.copy')}
                             </Button>
                           </div>
                           {(() => {
@@ -1383,7 +1378,7 @@ const Deposit = () => {
                                 <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg">
                                   <div className="flex items-center gap-2 mb-2">
                                     <AlertTriangle className="h-4 w-4 text-amber-600" />
-                                    <span className="font-medium text-amber-800">Destination Tag (必須)</span>
+                                    <span className="font-medium text-amber-800">{t('deposit.xrp.destinationTagRequired')}</span>
                                   </div>
                                   <div className="flex gap-2">
                                     <Input
@@ -1393,8 +1388,7 @@ const Deposit = () => {
                                     />
                                   </div>
                                   <p className="text-xs text-amber-700 mt-2">
-                                    XRP送金時は必ずこのDestination Tagを入力してください。
-                                    入力を忘れると資金を失う可能性があります。
+                                    {t('deposit.xrp.destinationTagWarning')}
                                   </p>
                                 </div>
                               ) : null;
@@ -1417,7 +1411,7 @@ const Deposit = () => {
                             }
                             readOnly
                             className="flex-1 font-mono text-sm"
-                            placeholder="アドレスを生成中..."
+                            placeholder={t('deposit.generatingAddress')}
                           />
                           <Button
                             variant="outline"
@@ -1425,7 +1419,7 @@ const Deposit = () => {
                             disabled={!currentAddressState.data}
                           >
                             <Copy className="h-4 w-4 mr-1" />
-                            コピー
+                            {t('deposit.actions.copy')}
                           </Button>
                         </div>
                       )}
@@ -1438,7 +1432,7 @@ const Deposit = () => {
                           </div>
                           <Button variant="outline" onClick={handleDownloadQR}>
                             <Download className="h-4 w-4 mr-1" />
-                            ダウンロード
+                            {t('deposit.actions.download')}
                           </Button>
                         </div>
                       )}
@@ -1450,15 +1444,15 @@ const Deposit = () => {
                     <div className="flex items-start gap-2">
                       <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5" />
                       <div className="text-sm text-amber-800">
-                        <p className="font-medium">重要な注意事項</p>
+                        <p className="font-medium">{t('deposit.notices.important')}</p>
                         <ul className="mt-1 space-y-1 text-xs">
-                          <li>• {chainConfig?.name || selectedChain}ネットワークのみ対応</li>
-                          <li>• 最小入金額: {chainConfigState.data?.min_deposit || '—'} {selectedAsset}</li>
-                          <li>• 入金反映まで{chainConfigState.data?.min_confirmations || '—'}ブロック確認が必要</li>
+                          <li>• {t('deposit.notices.networkOnly', { network: chainConfig?.name || selectedChain })}</li>
+                          <li>• {t('deposit.notices.minDepositAmount', { amount: chainConfigState.data?.min_deposit || '—', asset: selectedAsset })}</li>
+                          <li>• {t('deposit.notices.confirmationsRequired', { count: chainConfigState.data?.min_confirmations || '—' })}</li>
                           {selectedChain === 'xrp' && (
-                            <li>• <strong>Destination Tagの入力は必須です</strong></li>
+                            <li>• <strong>{t('deposit.notices.destinationTagMandatory')}</strong></li>
                           )}
-                          <li>• 他のネットワークからの送金は資産を失う可能性があります</li>
+                          <li>• {t('deposit.notices.wrongNetworkWarning')}</li>
                         </ul>
                       </div>
                     </div>
@@ -1471,20 +1465,20 @@ const Deposit = () => {
             {/* Recent Deposit History */}
             <Card>
               <CardHeader>
-                <CardTitle>最近の入金履歴</CardTitle>
+                <CardTitle>{t('deposit.historyTable.title')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-3">日時</th>
-                        <th className="text-left p-3">資産</th>
-                        <th className="text-left p-3">ネットワーク</th>
-                        <th className="text-left p-3">トランザクション</th>
-                        <th className="text-left p-3">金額</th>
-                        <th className="text-left p-3">確認数</th>
-                        <th className="text-left p-3">ステータス</th>
+                        <th className="text-left p-3">{t('deposit.historyTable.datetime')}</th>
+                        <th className="text-left p-3">{t('deposit.historyTable.asset')}</th>
+                        <th className="text-left p-3">{t('deposit.historyTable.network')}</th>
+                        <th className="text-left p-3">{t('deposit.historyTable.transaction')}</th>
+                        <th className="text-left p-3">{t('deposit.historyTable.amount')}</th>
+                        <th className="text-left p-3">{t('deposit.historyTable.confirmations')}</th>
+                        <th className="text-left p-3">{t('deposit.historyTable.status')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1531,7 +1525,7 @@ const Deposit = () => {
                                     operation: '入金履歴読み込み'
                                   })}
                                   recoveryActions={[{
-                                    label: '再試行',
+                                    label: t('deposit.actions.retry'),
                                     action: () => {
                                       depositHistoryState.execute(
                                         async () => {
@@ -1563,7 +1557,7 @@ const Deposit = () => {
                                 <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                                   <Clock className="w-6 h-6 bg-muted-foreground/20" />
                                 </div>
-                                入金履歴がありません
+                                {t('deposit.historyTable.noHistory')}
                               </div>
                             </td>
                           </tr>
@@ -1638,18 +1632,18 @@ const Deposit = () => {
               chain={selectedChain}
               asset={selectedAsset}
               expectedAmount={expectedAmount}
-              estimatedTime={chainConfigState.data ? `${chainConfigState.data.min_confirmations * (selectedChain === 'eth' ? 15 : selectedChain === 'btc' ? 10 : 3)}秒` : undefined}
+              estimatedTime={chainConfigState.data ? t('deposit.estimatedTimeSeconds', { count: chainConfigState.data.min_confirmations * (selectedChain === 'eth' ? 15 : selectedChain === 'btc' ? 10 : 3) }) : undefined}
               lastUpdated={new Date()}
               networkStatus={networkStatus.isOnline ? 'normal' as const : 'slow' as const}
               onRefresh={() => {
                 // リアルタイム監視システムとの連携による手動更新
-                toast.showInfo('更新中', {
-                  description: '最新の入金状況を確認しています...',
+                toast.showInfo(t('deposit.toast.refreshing'), {
+                  description: t('deposit.toast.refreshingDesc'),
                   context: {
                     chain: selectedChain,
                     network: selectedNetwork,
                     asset: selectedAsset,
-                    operation: '入金状況更新'
+                    operation: 'deposit status refresh'
                   }
                 });
 
@@ -1694,14 +1688,14 @@ const Deposit = () => {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Settings className="h-5 w-5" />
-                    通知設定
+                    {t('deposit.notifications.title')}
                   </CardTitle>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setShowNotificationSettings(!showNotificationSettings)}
                   >
-                    {showNotificationSettings ? '設定を閉じる' : '設定を開く'}
+                    {showNotificationSettings ? t('deposit.actions.closeSettings') : t('deposit.actions.openSettings')}
                   </Button>
                 </div>
               </CardHeader>
@@ -1709,9 +1703,9 @@ const Deposit = () => {
                 <CardContent>
                   <NotificationSettings
                     onSettingsChange={(settings) => {
-                      toast.showSuccess('通知設定更新', {
-                        description: '設定が正常に保存されました。',
-                        context: { operation: '通知設定更新' },
+                      toast.showSuccess(t('deposit.notifications.settingsUpdated'), {
+                        description: t('deposit.notifications.settingsSaved'),
+                        context: { operation: 'notification settings' },
                         duration: 3000
                       });
                     }}
@@ -1723,7 +1717,7 @@ const Deposit = () => {
             {/* FAQ Section */}
             <Card>
               <CardHeader>
-                <CardTitle>よくある質問</CardTitle>
+                <CardTitle>{t('deposit.faq.title')}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 <Accordion type="single" collapsible className="w-full">

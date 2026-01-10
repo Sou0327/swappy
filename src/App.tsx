@@ -7,6 +7,8 @@ import { EnhancedToastProvider } from "@/components/EnhancedToast";
 import AdminRoute from "./components/AdminRoute";
 import AuthRedirect from "./components/AuthRedirect";
 import { SERVICE_RESTRICTIONS } from "@/lib/service-restrictions";
+// i18n 初期化
+import '@/i18n';
 // 重要なページは即座読み込み
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";

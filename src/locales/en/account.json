@@ -1,0 +1,47 @@
+{
+  "pageTitle": "My Account",
+  "profile": {
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "notSet": "Not Set",
+    "noInfo": "No Info"
+  },
+  "accountInfo": {
+    "title": "Account Information",
+    "userId": "User ID",
+    "copy": "Copy",
+    "lastLogin": "Last Login",
+    "createdAt": "Account Created"
+  },
+  "basicInfo": {
+    "title": "Basic Information",
+    "fullNameRequired": "Full Name *"
+  },
+  "actions": {
+    "save": "Save",
+    "saving": "Saving..."
+  },
+  "toast": {
+    "saved": "Saved successfully",
+    "saveFailed": "Save failed",
+    "retryMessage": "Please try again"
+  },
+  "kyc": {
+    "title": "Identity Verification (KYC) - Sumsub Integration",
+    "sumsubTitle": "Sumsub External KYC Integration",
+    "sumsubDescription": "Uses professional identity verification services.",
+    "testMessage": "Sumsub KYC component test display.",
+    "testButton": "Test KYC Feature",
+    "testSuccess": "Test Successful",
+    "testSuccessDesc": "KYC section is working properly"
+  },
+  "logout": {
+    "title": "Logout",
+    "description": "Log out of your account",
+    "button": "Logout",
+    "loggingOut": "Logging out...",
+    "pleaseWait": "Please wait",
+    "complete": "Logout Complete",
+    "completeDesc": "We look forward to seeing you again"
+  }
+}

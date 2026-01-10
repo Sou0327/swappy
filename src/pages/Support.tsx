@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +33,7 @@ interface SupportReply {
 }
 
 const Support = () => {
+  const { t } = useTranslation('support');
   const { user, userRole } = useAuth();
   const { toast } = useToast();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
@@ -88,10 +90,10 @@ const Support = () => {
 
       setReplies(repliesWithAdminFlag);
     } catch (error) {
-      console.error('返信の取得エラー:', error);
+      console.error('Reply load error:', error);
       toast({
-        title: "エラー",
-        description: "返信の取得に失敗しました",
+        title: t('toast.error'),
+        description: t('toast.loadRepliesFailed'),
         variant: "destructive"
       });
     } finally {
@@ -117,14 +119,14 @@ const Support = () => {
       setNewReply("");
       await loadReplies(selectedTicket.id);
       toast({
-        title: "成功",
-        description: "返信を送信しました"
+        title: t('toast.success'),
+        description: t('toast.replySent')
       });
     } catch (error) {
-      console.error('返信送信エラー:', error);
+      console.error('Reply send error:', error);
       toast({
-        title: "エラー",
-        description: "返信の送信に失敗しました",
+        title: t('toast.error'),
+        description: t('toast.sendReplyFailed'),
         variant: "destructive"
       });
     }
@@ -136,9 +138,9 @@ const Support = () => {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">サポート</h1>
+          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">{t('pageTitle')}</h1>
           <Button onClick={() => setOpen(true)} className="transition-all duration-200 active:scale-95">
-            チケット作成
+            {t('createTicket')}
           </Button>
         </div>
 
@@ -150,42 +152,41 @@ const Support = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left p-4 font-medium text-sm">チケットID</th>
-                    <th className="text-left p-4 font-medium text-sm">件名</th>
-                    <th className="text-left p-4 font-medium text-sm">ステータス</th>
-                    <th className="text-left p-4 font-medium text-sm">作成日</th>
-                    <th className="text-left p-4 font-medium text-sm">アクション</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('table.ticketId')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('table.subject')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('table.status')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('table.createdAt')}</th>
+                    <th className="text-left p-4 font-medium text-sm">{t('table.action')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tickets.length === 0 ? (
-                    <tr><td colSpan={5} className="text-center py-8 text-muted-foreground">記録が見つかりません</td></tr>
-                  ) : tickets.map(t => (
-                    <tr key={t.id} className="border-b hover:bg-muted/40">
-                      <td className="p-4 font-mono text-xs">{t.id.slice(0, 8)}…</td>
-                      <td className="p-4 text-sm">{t.subject}</td>
+                    <tr><td colSpan={5} className="text-center py-8 text-muted-foreground">{t('noRecords')}</td></tr>
+                  ) : tickets.map(ticket => (
+                    <tr key={ticket.id} className="border-b hover:bg-muted/40">
+                      <td className="p-4 font-mono text-xs">{ticket.id.slice(0, 8)}…</td>
+                      <td className="p-4 text-sm">{ticket.subject}</td>
                       <td className="p-4 text-sm">
                         <Badge variant={
-                          t.status === 'open' ? 'default' :
-                            t.status === 'pending' ? 'secondary' : 'outline'
+                          ticket.status === 'open' ? 'default' :
+                            ticket.status === 'pending' ? 'secondary' : 'outline'
                         }>
-                          {t.status === 'open' ? '未対応' :
-                            t.status === 'pending' ? '対応中' : 'クローズ'}
+                          {t(`status.${ticket.status}`)}
                         </Badge>
                       </td>
-                      <td className="p-4 text-sm">{new Date(t.created_at).toLocaleString()}</td>
+                      <td className="p-4 text-sm">{new Date(ticket.created_at).toLocaleString()}</td>
                       <td className="p-4">
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => {
-                            setSelectedTicket(t);
-                            loadReplies(t.id);
+                            setSelectedTicket(ticket);
+                            loadReplies(ticket.id);
                           }}
                           className="transition-all duration-200 active:scale-95"
                         >
                           <MessageCircle className="h-4 w-4 mr-1" />
-                          詳細
+                          {t('details')}
                         </Button>
                       </td>
                     </tr>
@@ -199,29 +200,28 @@ const Support = () => {
               {tickets.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-4">🔍</div>
-                  <p className="text-muted-foreground">記録が見つかりません</p>
+                  <p className="text-muted-foreground">{t('noRecords')}</p>
                 </div>
-              ) : tickets.map(t => (
-                <Card key={t.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
+              ) : tickets.map(ticket => (
+                <Card key={ticket.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <MessageCircle className="h-4 w-4 text-primary" />
-                        <span className="font-mono text-xs">{t.id.slice(0, 8)}…</span>
+                        <span className="font-mono text-xs">{ticket.id.slice(0, 8)}…</span>
                       </div>
                       <Badge variant={
-                        t.status === 'open' ? 'default' :
-                          t.status === 'pending' ? 'secondary' : 'outline'
+                        ticket.status === 'open' ? 'default' :
+                          ticket.status === 'pending' ? 'secondary' : 'outline'
                       }>
-                        {t.status === 'open' ? '未対応' :
-                          t.status === 'pending' ? '対応中' : 'クローズ'}
+                        {t(`status.${ticket.status}`)}
                       </Badge>
                     </div>
-                    
+
                     <div className="space-y-2 mb-3">
-                      <div className="font-semibold text-sm line-clamp-2">{t.subject}</div>
+                      <div className="font-semibold text-sm line-clamp-2">{ticket.subject}</div>
                       <div className="text-xs text-muted-foreground">
-                        {new Date(t.created_at).toLocaleString('ja-JP', {
+                        {new Date(ticket.created_at).toLocaleString('ja-JP', {
                           month: '2-digit',
                           day: '2-digit',
                           hour: '2-digit',
@@ -229,18 +229,18 @@ const Support = () => {
                         })}
                       </div>
                     </div>
-                    
+
                     <Button
                       size="sm"
                       variant="outline"
                       className="w-full transition-all duration-200 active:scale-95"
                       onClick={() => {
-                        setSelectedTicket(t);
-                        loadReplies(t.id);
+                        setSelectedTicket(ticket);
+                        loadReplies(ticket.id);
                       }}
                     >
                       <MessageCircle className="h-4 w-4 mr-1" />
-                      詳細を表示
+                      {t('showDetails')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -252,65 +252,65 @@ const Support = () => {
         {open && (
           <Card>
             <CardHeader>
-              <CardTitle>新規チケット</CardTitle>
+              <CardTitle>{t('newTicket.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 p-4 md:p-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">件名</label>
-                <Input 
-                  value={subject} 
-                  onChange={(e) => setSubject(e.target.value)} 
-                  placeholder="件名を入力" 
+                <label className="text-sm font-medium">{t('newTicket.subjectLabel')}</label>
+                <Input
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder={t('newTicket.subjectPlaceholder')}
                   className="w-full"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">本文</label>
-                <Textarea 
-                  value={body} 
-                  onChange={(e) => setBody(e.target.value)} 
-                  placeholder="問題の詳細を入力" 
+                <label className="text-sm font-medium">{t('newTicket.bodyLabel')}</label>
+                <Textarea
+                  value={body}
+                  onChange={(e) => setBody(e.target.value)}
+                  placeholder={t('newTicket.bodyPlaceholder')}
                   rows={4}
                   className="w-full"
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
-                <Button 
+                <Button
                   onClick={async () => {
                     if (!user?.id) return;
-                    if (!subject.trim()) { toast({ title: '件名が必要です', variant: 'destructive' }); return; }
+                    if (!subject.trim()) { toast({ title: t('toast.subjectRequired'), variant: 'destructive' }); return; }
                     const { error } = await supabase.from('support_tickets').insert({ user_id: user.id, subject, body });
-                    if (error) { toast({ title: '作成失敗', description: error.message, variant: 'destructive' }); } else { toast({ title: '作成しました' }); setSubject(''); setBody(''); setOpen(false); load(); }
+                    if (error) { toast({ title: t('toast.createFailed'), description: error.message, variant: 'destructive' }); } else { toast({ title: t('toast.created') }); setSubject(''); setBody(''); setOpen(false); load(); }
                   }}
                   className="flex-1 sm:flex-none transition-all duration-200 active:scale-95"
                 >
-                  送信
+                  {t('newTicket.submit')}
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setOpen(false)}
                   className="flex-1 sm:flex-none transition-all duration-200 active:scale-95"
                 >
-                  キャンセル
+                  {t('newTicket.cancel')}
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* チケット詳細ダイアログ */}
+        {/* Ticket Detail Dialog */}
         <Dialog open={!!selectedTicket} onOpenChange={() => setSelectedTicket(null)}>
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto w-[95vw] sm:w-full">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <MessageCircle className="h-5 w-5" />
-                チケット詳細: {selectedTicket?.subject}
+                {t('ticketDetail.title', { subject: selectedTicket?.subject })}
               </DialogTitle>
             </DialogHeader>
 
             {selectedTicket && (
               <div className="space-y-4">
-                {/* チケット情報 */}
+                {/* Ticket Info */}
                 <Card>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
@@ -319,8 +319,7 @@ const Support = () => {
                           selectedTicket.status === 'open' ? 'default' :
                             selectedTicket.status === 'pending' ? 'secondary' : 'outline'
                         }>
-                          {selectedTicket.status === 'open' ? '未対応' :
-                            selectedTicket.status === 'pending' ? '対応中' : 'クローズ'}
+                          {t(`status.${selectedTicket.status}`)}
                         </Badge>
                         {selectedTicket.priority && <Badge variant="outline">{selectedTicket.priority}</Badge>}
                       </div>
@@ -336,20 +335,20 @@ const Support = () => {
                   </CardContent>
                 </Card>
 
-                {/* 返信リスト */}
+                {/* Reply List */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">返信履歴</CardTitle>
+                    <CardTitle className="text-base">{t('ticketDetail.replyHistory')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {loadingReplies ? (
                       <div className="text-center py-4">
                         <Clock className="h-5 w-5 animate-spin mx-auto mb-2" />
-                        <p className="text-muted-foreground">返信を読み込み中...</p>
+                        <p className="text-muted-foreground">{t('ticketDetail.loadingReplies')}</p>
                       </div>
                     ) : replies.length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
-                        まだ返信がありません
+                        {t('ticketDetail.noReplies')}
                       </div>
                     ) : (
                       replies.map((reply) => (
@@ -381,17 +380,17 @@ const Support = () => {
                               {reply.is_admin ? (
                                 <>
                                   <UserCog className="h-3 w-3" />
-                                  <span>サポート担当</span>
+                                  <span>{t('ticketDetail.supportStaff')}</span>
                                 </>
                               ) : reply.user_id === user?.id ? (
                                 <>
                                   <User className="h-3 w-3" />
-                                  <span>あなた</span>
+                                  <span>{t('ticketDetail.you')}</span>
                                 </>
                               ) : (
                                 <>
                                   <User className="h-3 w-3" />
-                                  <span>ユーザー</span>
+                                  <span>{t('ticketDetail.user')}</span>
                                 </>
                               )}
                               <span>•</span>
@@ -402,14 +401,14 @@ const Support = () => {
                       ))
                     )}
 
-                    {/* 返信入力フォーム */}
+                    {/* Reply Input Form */}
                     <div className="border-t pt-4 mt-6">
                       <div className="space-y-3">
-                        <label className="text-sm font-medium">返信を追加</label>
+                        <label className="text-sm font-medium">{t('ticketDetail.addReply')}</label>
                         <Textarea
                           value={newReply}
                           onChange={(e) => setNewReply(e.target.value)}
-                          placeholder="返信内容を入力してください..."
+                          placeholder={t('ticketDetail.replyPlaceholder')}
                           rows={3}
                         />
                         <div className="flex justify-end">
@@ -417,7 +416,7 @@ const Support = () => {
                             onClick={sendReply}
                             disabled={!newReply.trim()}
                           >
-                            返信を送信
+                            {t('ticketDetail.sendReply')}
                           </Button>
                         </div>
                       </div>

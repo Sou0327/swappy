@@ -1,0 +1,252 @@
+{
+  "title": "ウォレット",
+  "overview": {
+    "title": "ウォレット概要",
+    "totalAssets": "総資産",
+    "totalAssetValue": "合計資産評価額",
+    "availableBalance": "利用可能残高",
+    "lockedBalance": "ロック中残高"
+  },
+  "search": {
+    "placeholder": "検索",
+    "noMatchSearch": "検索条件に一致する銘柄がありません",
+    "noMatchFilter": "表示条件に一致する銘柄がありません",
+    "noDepositableAssets": "入金可能な銘柄がありません"
+  },
+  "filter": {
+    "hideSmallAssets": "小額資産を非表示",
+    "hideSmallAssetsShort": "小額非表示"
+  },
+  "table": {
+    "coin": "コイン",
+    "balance": "残高",
+    "actions": "操作"
+  },
+  "deposit": {
+    "title": "入金",
+    "selectCurrency": "通貨を選択",
+    "depositAddress": "入金アドレス",
+    "copyAddress": "アドレスをコピー",
+    "qrCode": "QRコード",
+    "minDeposit": "最小入金額",
+    "confirmations": "必要承認数",
+    "warning": "このアドレスには{{currency}}のみを送金してください。他の資産を送ると永久に失われる可能性があります。",
+    "pending": "入金待ち",
+    "history": "入金履歴",
+    "phase2Badge": "フェーズ2: リアルタイム監視対応",
+    "depositInfo": "入金情報",
+    "walletAddress": "ウォレットアドレス",
+    "generatingAddress": "アドレスを生成中...",
+    "generatingXrpAddress": "XRPアドレスを生成中...",
+    "status": {
+      "offline": "オフライン",
+      "monitoring": "リアルタイム監視中",
+      "waiting": "監視待機中",
+      "accepting": "入金受付中",
+      "suspended": "入金停止中"
+    },
+    "form": {
+      "asset": "資産",
+      "chain": "チェーン",
+      "network": "ネットワーク",
+      "step": "ステップ"
+    },
+    "actions": {
+      "copy": "コピー",
+      "download": "ダウンロード",
+      "retry": "再試行",
+      "reconnect": "再接続",
+      "showGuide": "送金ガイドを表示",
+      "openSettings": "設定を開く",
+      "closeSettings": "設定を閉じる"
+    },
+    "xrp": {
+      "destinationTagRequired": "Destination Tag (必須)",
+      "destinationTagWarning": "XRP送金時は必ずこのDestination Tagを入力してください。入力を忘れると資金を失う可能性があります。"
+    },
+    "notices": {
+      "important": "重要な注意事項",
+      "networkOnly": "{{network}}ネットワークのみ対応",
+      "minDepositAmount": "最小入金額: {{amount}} {{asset}}",
+      "confirmationsRequired": "入金反映まで{{count}}ブロック確認が必要",
+      "destinationTagMandatory": "Destination Tagの入力は必須です",
+      "wrongNetworkWarning": "他のネットワークからの送金は資産を失う可能性があります"
+    },
+    "historyTable": {
+      "title": "最近の入金履歴",
+      "datetime": "日時",
+      "asset": "資産",
+      "network": "ネットワーク",
+      "transaction": "トランザクション",
+      "amount": "金額",
+      "confirmations": "確認数",
+      "status": "ステータス",
+      "noHistory": "入金履歴がありません"
+    },
+    "notifications": {
+      "title": "通知設定",
+      "settingsUpdated": "通知設定更新",
+      "settingsSaved": "設定が正常に保存されました。"
+    },
+    "faq": {
+      "title": "よくある質問",
+      "howToDeposit": "{{asset}}の入金方法は？",
+      "howToDepositAnswer": "{{asset}}を選択したネットワーク（{{network}}）で送金してください。最小入金額は{{minDeposit}} {{asset}}、必要確認数は{{minConf}}です。",
+      "whenReflected": "入金はいつ反映されますか？",
+      "whenReflectedAnswer": "ブロックチェーン上で{{minConf}}回の確認が取れた後に残高へ反映します。ネットワーク状況により時間は前後します。",
+      "wrongNetwork": "間違ったネットワークで送金した場合",
+      "wrongNetworkAnswer": "選択したチェーン/ネットワーク以外に送金された資金は回復できない場合があります。送金前に必ずネットワークを確認してください。",
+      "xrpTagRequired": "XRPのDestination Tagは必須ですか？",
+      "xrpTagRequiredAnswer": "はい。必ず指定のDestination Tagを入力してください。未入力・誤入力の場合、資金が失われる可能性があります。",
+      "tronConfirmation": "TRONの確定目安は？",
+      "tronConfirmationAnswer": "目安として19ブロックで確定とみなします（ネットワーク状況に依存）。TRC-20(USDT)も同様にTransferイベントの確定待ちが必要です。",
+      "adaUtxo": "ADAはUTXOで何か注意点はありますか？",
+      "adaUtxoAnswer": "CardanoはUTXOモデルのため、複数の入出力に分割されることがあります。履歴の反映に差が出る場合があります。"
+    },
+    "toast": {
+      "realtimeMonitoring": "リアルタイム監視",
+      "connectionLost": "リアルタイム入金監視との接続が切断されました。手動更新をお試しください。",
+      "connectionRestored": "リアルタイム監視復旧",
+      "connectionRestoredDesc": "リアルタイム入金監視が復旧しました。",
+      "monitoringError": "監視エラー",
+      "addressGeneration": "アドレス生成中",
+      "generatingWallet": "ウォレットアドレスを生成しています...",
+      "authError": "認証エラー",
+      "authRequired": "ユーザー認証が必要です",
+      "goToLogin": "ログイン画面へ",
+      "copyError": "コピーエラー",
+      "noAddressToCopy": "コピーするアドレスが見つかりません。",
+      "addressCopied": "アドレス情報をコピーしました",
+      "xrpAddressCopied": "XRPアドレスとDestination Tagがコピーされました。",
+      "walletAddressCopied": "ウォレットアドレスがクリップボードにコピーされました。",
+      "copyFailed": "コピー失敗",
+      "clipboardError": "クリップボードへのコピーに失敗しました。",
+      "qrDownload": "QRコードダウンロード",
+      "qrDownloadStarted": "QRコードのダウンロードを開始します。",
+      "downloadFailed": "ダウンロード失敗",
+      "qrDownloadError": "QRコードのダウンロードに失敗しました。",
+      "depositDetected": "入金を検知しました",
+      "depositDetectedDesc": "{{amount}} {{asset}} の入金が検知されました。確認をお待ちください。",
+      "viewTransaction": "トランザクション確認",
+      "confirming": "確認進行中",
+      "confirmingDesc": "確認数: {{current}}/{{required}} - 入金確認が進行中です。",
+      "depositComplete": "入金が完了しました",
+      "depositCompleteDesc": "{{amount}} {{asset}} の入金が完了し、残高に反映されました。",
+      "depositError": "入金処理エラー",
+      "depositErrorDesc": "入金処理中にエラーが発生しました。サポートにお問い合わせください。",
+      "refreshing": "更新中",
+      "refreshingDesc": "最新の入金状況を確認しています..."
+    },
+    "serviceSuspended": {
+      "title": "入金機能の一時停止",
+      "description": "現在、新規入金の受付を一時的に停止しております",
+      "notice": "お知らせ"
+    },
+    "estimatedTimeSeconds": "{{count}}秒",
+    "featureName": "入金",
+    "erc20Notice": "ERC-20トークンとして送金してください",
+    "trc20Notice": "TRC-20トークンとして送金してください",
+    "loadingConfig": "設定を読み込み中...",
+    "errors": {
+      "xrpNetworkOnly": "XRP は mainnet/testnet のみサポートしています",
+      "subscriptionFailed": "サブスクリプション作成に失敗しました",
+      "invalidAddressFormat": "アドレス形式が無効です"
+    }
+  },
+  "withdraw": {
+    "title": "出金",
+    "pageTitle": "出金 | {{platform}}",
+    "pageDescription": "暗号資産の出金: 資産とネットワークを選択し、出金先アドレスと金額を入力して出金します。",
+    "selectCurrency": "通貨を選択",
+    "withdrawAddress": "出金アドレス",
+    "amount": "金額",
+    "available": "利用可能",
+    "max": "MAX",
+    "fee": "ネットワーク手数料",
+    "receiveAmount": "受取額",
+    "minWithdraw": "最小出金額",
+    "submit": "出金申請",
+    "submitting": "送信中...",
+    "pending": "出金待ち",
+    "history": "出金履歴",
+    "featureName": "出金",
+    "formTitle": "出金フォーム",
+    "form": {
+      "coinLabel": "コイン / トークン",
+      "selectPlaceholder": "選択してください",
+      "networkLabel": "ネットワーク",
+      "networkPlaceholder": "ネットワークを選択",
+      "addressLabel": "出金先アドレス",
+      "addressPlaceholder": "出金先アドレスを入力",
+      "tagLabel": "タグ / メモ（任意）",
+      "tagPlaceholder": "タグ/メモを入力（任意）",
+      "amountLabel": "出金数量",
+      "amountPlaceholder": "数量を入力"
+    },
+    "balance": {
+      "insufficient": "残高不足",
+      "insufficientMessage": "利用可能残高 {{balance}} {{coin}} を超えています。100%ボタンで最大出金可能額を入力してください。",
+      "minWithdraw": "最小出金: {{amount}} {{coin}}",
+      "maxWithdraw": "最大出金: {{amount}} {{coin}}",
+      "available": "利用可能残高: {{amount}} {{coin}}"
+    },
+    "notices": {
+      "title": "注意事項",
+      "addressMatch": "アドレスとネットワークが一致していることを必ず確認してください。誤送金は資金の損失につながる可能性があります。",
+      "networkCongestion": "ネットワークの混雑により処理に時間がかかる場合があります。"
+    },
+    "toast": {
+      "submitted": "出金リクエストを送信しました",
+      "submittedDesc": "{{coin}} を {{amount}} 、ネットワーク {{network}} に出金申請しました。",
+      "error": "エラー",
+      "errorDefault": "申請に失敗しました"
+    },
+    "confirm": {
+      "title": "出金確認",
+      "message": "以下の出金内容を確認してください。",
+      "currency": "通貨",
+      "address": "アドレス",
+      "amount": "金額",
+      "fee": "手数料",
+      "total": "合計"
+    }
+  },
+  "transfer": {
+    "title": "送金",
+    "recipient": "送金先メールアドレス",
+    "selectCurrency": "通貨を選択",
+    "amount": "金額",
+    "available": "利用可能",
+    "memo": "メモ（任意）",
+    "submit": "送金する",
+    "confirm": {
+      "title": "送金確認",
+      "message": "以下の送金内容を確認してください。",
+      "recipient": "送金先",
+      "currency": "通貨",
+      "amount": "金額"
+    },
+    "history": "送金履歴"
+  },
+  "convert": {
+    "title": "両替",
+    "from": "変換元",
+    "to": "変換先",
+    "rate": "交換レート",
+    "fee": "両替手数料",
+    "submit": "両替する",
+    "confirm": {
+      "title": "両替確認",
+      "message": "以下の両替内容を確認してください。"
+    }
+  },
+  "assets": {
+    "title": "資産",
+    "currency": "通貨",
+    "available": "利用可能",
+    "locked": "ロック中",
+    "total": "合計",
+    "actions": "操作",
+    "noAssets": "資産が見つかりません"
+  }
+}

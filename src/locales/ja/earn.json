@@ -1,0 +1,60 @@
+{
+  "pageTitle": "<1>パッシブ収入</1>を稼ぐ",
+  "pageSubtitle": "競争力のある利回りと柔軟な条件で暗号資産を成長させる多数の方法",
+  "stats": {
+    "totalAssets": "総預かり資産",
+    "activeStakers": "アクティブステーカー",
+    "avgApy": "平均年利"
+  },
+  "selectStrategy": "収益戦略を選択",
+  "apy": "年利",
+  "riskLevel": "リスクレベル:",
+  "lockup": "ロックアップ:",
+  "startEarning": "稼ぎ始める",
+  "options": {
+    "flexible": {
+      "title": "フレキシブルステーキング",
+      "description": "ロックアップ期間なしで報酬を獲得"
+    },
+    "fixed": {
+      "title": "固定ステーキング",
+      "description": "固定期間でより高い報酬"
+    },
+    "liquidity": {
+      "title": "流動性マイニング",
+      "description": "流動性を提供して手数料を獲得"
+    },
+    "launchpad": {
+      "title": "ローンチパッドステーキング",
+      "description": "新プロジェクトへの参加のためにステーキング"
+    }
+  },
+  "risk": {
+    "low": "低",
+    "medium": "中",
+    "high": "高"
+  },
+  "lockupOptions": {
+    "none": "ロックなし",
+    "days30to90": "30-90日",
+    "variable": "変動",
+    "projectBased": "プロジェクト依存"
+  },
+  "pools": {
+    "title": "人気の収益プール",
+    "subtitle": "最もアクティブで収益性の高いステーキングプールに参加",
+    "participants": "参加者:",
+    "stakeNow": "今すぐステーキング"
+  },
+  "poolNames": {
+    "btcFlexible": "BTC フレキシブル",
+    "ethFixed30": "ETH 固定 30日",
+    "solUsdcLp": "SOL-USDC LP",
+    "maticStaking": "MATIC ステーキング"
+  },
+  "cta": {
+    "title": "稼ぎ始める準備はできましたか？",
+    "subtitle": "{{platform}}で既にパッシブ収入を得ている数万人のユーザーに参加しましょう",
+    "button": "全プールを探索"
+  }
+}

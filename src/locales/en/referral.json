@@ -1,0 +1,53 @@
+{
+  "pageTitle": "Referral Program",
+  "pageSubtitle": "Invite friends and use the platform together",
+  "toast": {
+    "copied": {
+      "title": "Copied",
+      "description": "Copied to clipboard."
+    },
+    "created": {
+      "title": "Referral code created",
+      "description": "Your referral code has been created successfully."
+    },
+    "createFailed": {
+      "title": "Creation failed",
+      "description": "Failed to create referral code."
+    }
+  },
+  "stats": {
+    "totalReferrals": "Total Referrals",
+    "count": "{{count}} users",
+    "registeredUsers": "Registered users"
+  },
+  "code": {
+    "title": "Your Referral Code",
+    "description": "Share the link or code below with your friends",
+    "loading": "Loading...",
+    "error": "An error occurred: {{message}}",
+    "linkLabel": "Referral Link",
+    "codeLabel": "Referral Code",
+    "codeHint": "When your friends enter this code during registration, the referral will be recorded",
+    "noCode": "You haven't created a referral code yet.",
+    "creating": "Creating...",
+    "createButton": "Create Referral Code"
+  },
+  "list": {
+    "title": "Referred Users",
+    "description": "List of users you have referred",
+    "table": {
+      "number": "#",
+      "user": "User",
+      "registrationDate": "Registration Date"
+    },
+    "loading": "Loading...",
+    "empty": "You haven't referred anyone yet"
+  },
+  "info": {
+    "title": "About the Referral Program",
+    "howTo": {
+      "title": "How to Refer",
+      "description": "Share your referral link or code with friends.\nWhen they enter the code during registration, the referral will be recorded."
+    }
+  }
+}

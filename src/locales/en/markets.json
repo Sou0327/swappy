@@ -1,0 +1,27 @@
+{
+  "pageTitle": "Markets",
+  "pageSubtitle": "Check the latest prices and trades",
+  "error": {
+    "title": "Error",
+    "fetchFailed": "Failed to fetch market data"
+  },
+  "card": {
+    "pair": "Pair",
+    "lastPrice": "Last Price",
+    "volume24h": "24h Volume",
+    "startTrading": "Start Trading"
+  },
+  "table": {
+    "title": "Tradable Pairs",
+    "pair": "Pair",
+    "lastPrice": "Last Price",
+    "change24h": "24h Change",
+    "volume24h": "24h Volume",
+    "action": "Action",
+    "trade": "Trade"
+  },
+  "empty": {
+    "title": "No market data available",
+    "subtitle": "Please wait a moment"
+  }
+}

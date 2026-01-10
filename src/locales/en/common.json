@@ -1,0 +1,114 @@
+{
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "close": "Close",
+  "back": "Back",
+  "next": "Next",
+  "submit": "Submit",
+  "search": "Search",
+  "noData": "No data available",
+  "required": "Required",
+  "optional": "Optional",
+  "yes": "Yes",
+  "no": "No",
+  "or": "or",
+  "and": "and",
+  "all": "All",
+  "none": "None",
+  "copy": "Copy",
+  "copied": "Copied!",
+  "more": "More",
+  "less": "Less",
+  "showMore": "Show more",
+  "showLess": "Show less",
+  "viewAll": "View all",
+  "learnMore": "Learn more",
+  "getStarted": "Get Started",
+  "signIn": "Sign In",
+  "signOut": "Sign Out",
+  "signUp": "Sign Up",
+  "home": "Home",
+  "returnHome": "Return to Home",
+  "menu": "Menu",
+  "settings": "Settings",
+  "profile": "Profile",
+  "account": "Account",
+  "security": "Security",
+  "notifications": "Notifications",
+  "help": "Help",
+  "support": "Support",
+  "about": "About",
+  "privacy": "Privacy",
+  "terms": "Terms",
+  "language": "Language",
+  "english": "English",
+  "japanese": "Japanese",
+
+  "hero": {
+    "title": "Beautiful Trading Experience",
+    "titleWith": "",
+    "subtitle": "Simple and intuitive. Secure and fast.",
+    "subtitleSecond": "The new standard in cryptocurrency trading",
+    "getStarted": "Get Started",
+    "tryDemo": "Try Demo",
+    "exploreMarkets": "Explore Markets",
+    "features": {
+      "trading": {
+        "title": "Advanced Trading Tools",
+        "description": "From professional chart analysis to automated trading, all tools in one platform."
+      },
+      "security": {
+        "title": "Top-tier Security",
+        "description": "Bank-level encryption and multi-layer defense systems protect your assets completely."
+      },
+      "speed": {
+        "title": "Instant Trade Execution",
+        "description": "State-of-the-art matching engine enables high-speed trading in milliseconds."
+      }
+    }
+  },
+
+  "howItWorks": {
+    "title": "Simple",
+    "titleHighlight": " 3 Steps",
+    "subtitle": "Here's how you can start trading cryptocurrency and generate profits",
+    "steps": {
+      "signup": {
+        "title": "Create Account",
+        "description": "Sign up in minutes with just your email"
+      },
+      "deposit": {
+        "title": "Fund Your Wallet",
+        "description": "Deposit crypto or purchase with credit card"
+      },
+      "trade": {
+        "title": "Start Trading",
+        "description": "Execute trades instantly in real-time markets"
+      }
+    },
+    "features": {
+      "noKyc": "Start instantly without KYC",
+      "support": "24/7 Support",
+      "instant": "Instant deposits & withdrawals"
+    }
+  },
+
+  "footer": {
+    "description": "Next-generation cryptocurrency trading platform built for everyone.",
+    "products": "Products",
+    "spotTrading": "Spot Trading",
+    "support": "Support",
+    "contact": "Contact Us",
+    "legal": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "riskDisclosure": "Risk Disclosure",
+    "copyright": "All rights reserved."
+  }
+}

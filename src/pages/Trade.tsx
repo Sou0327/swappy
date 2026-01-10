@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import { TradingSimulator, OrderBookLevel, TradeRecord, SimulatedOrder } from "@
 import { formatPrice as formatPriceUtil } from "@/lib/format";
 
 const Trade = () => {
+  const { t } = useTranslation('trade');
   const { toast } = useToast();
   const { user, loading: authLoading, isDemoMode } = useAuth();
   const [searchParams] = useSearchParams();
@@ -478,7 +480,7 @@ const Trade = () => {
     // デモモードでの取引を防止（防御的コーディング）
     if (isDemoMode) return;
     try {
-      if (!user) { toast({ title: '要ログイン', description: 'ログインすると発注できます', variant: 'destructive' }); return; }
+      if (!user) { toast({ title: t('toast.loginRequired'), description: t('toast.loginRequiredDesc'), variant: 'destructive' }); return; }
       const orderType = side === 'buy' ? buyOrderType : sellOrderType;
       const qty = Number(side === 'buy' ? buyQty : sellQty);
       if (!selectedMarket || !qty || qty <= 0) return;
@@ -490,8 +492,8 @@ const Trade = () => {
       // 価格のバリデーション
       if (!price || price <= 0 || !Number.isFinite(price)) {
         toast({
-          title: 'エラー',
-          description: `価格を取得できません。${orderType === 'limit' ? '価格を入力してください' : '板情報を読み込み中です'}`,
+          title: t('toast.error'),
+          description: `${t('toast.priceError')}${orderType === 'limit' ? t('toast.priceErrorLimit') : t('toast.priceErrorMarket')}`,
           variant: 'destructive'
         });
         return;
@@ -512,7 +514,7 @@ const Trade = () => {
           user.id
         );
 
-        toast({ title: '注文送信（シミュレーション）', description: `${orderType === 'market' ? '成行' : '指値'}で${side === 'buy' ? '買い' : '売り'}注文を送信しました` });
+        toast({ title: t('toast.orderSubmittedSim'), description: t('toast.orderSubmittedSimDesc', { orderType: orderType === 'market' ? t('orderForm.market') : t('orderForm.limit'), side: side === 'buy' ? t('orderForm.buy') : t('orderForm.sell') }) });
 
         const userOrders = tradingSimulatorRef.current.orderSimulator.getOrdersByUser(user.id!, selectedMarket);
         setSimulatedOrders(userOrders);
@@ -557,13 +559,13 @@ const Trade = () => {
         // 通知表示
         if (orderType === 'market') {
           toast({
-            title: '注文約定',
-            description: `成行${side === 'buy' ? '買い' : '売り'}注文が約定しました（価格: ${price.toFixed(2)} USDT）`
+            title: t('toast.orderFilled'),
+            description: t('toast.orderFilledDesc', { side: side === 'buy' ? t('orderForm.buy') : t('orderForm.sell'), price: price.toFixed(2) })
           });
         } else {
           toast({
-            title: '注文送信成功',
-            description: `指値${side === 'buy' ? '買い' : '売り'}注文を送信しました（注文ID: ${orderId}）`
+            title: t('toast.orderSubmitted'),
+            description: t('toast.orderSubmittedDesc', { side: side === 'buy' ? t('orderForm.buy') : t('orderForm.sell'), orderId })
           });
         }
       }
@@ -573,7 +575,7 @@ const Trade = () => {
       else { setSellQty(""); if (orderType === 'limit') setSellPrice(""); }
     } catch (e: unknown) {
       const error = e as Error;
-      toast({ title: 'エラー', description: error.message || '注文に失敗しました', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: error.message || t('toast.orderFailed'), variant: 'destructive' });
     }
   };
 
@@ -586,7 +588,7 @@ const Trade = () => {
         if (tradingSimulatorRef.current) {
           const success = tradingSimulatorRef.current.orderSimulator.cancelOrder(id);
           if (success) {
-            toast({ title: '注文取消（シミュレーション）', description: `注文を取消しました` });
+            toast({ title: t('toast.canceledSim'), description: t('toast.canceledSimDesc') });
             const userOrders = tradingSimulatorRef.current.orderSimulator.getOrdersByUser(user.id!, selectedMarket);
             setSimulatedOrders(userOrders);
             await refreshMyOrders(selectedMarket);
@@ -600,7 +602,7 @@ const Trade = () => {
 
         if (error) throw error;
 
-        toast({ title: '注文取消成功', description: '注文を取消しました' });
+        toast({ title: t('toast.cancelSuccess'), description: t('toast.cancelSuccessDesc') });
 
         // リフレッシュ
         await refreshMyOrders(selectedMarket);
@@ -608,7 +610,7 @@ const Trade = () => {
       }
     } catch (e: unknown) {
       const error = e as Error;
-      toast({ title: 'エラー', description: error.message || '取消に失敗しました', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: error.message || t('toast.cancelFailed'), variant: 'destructive' });
     }
   };
 
@@ -630,7 +632,7 @@ const Trade = () => {
             }
           }
 
-          toast({ title: '一括取消（シミュレーション）', description: `${canceledCount}件の注文を取消しました` });
+          toast({ title: t('toast.cancelAllSim'), description: t('toast.cancelAllSimDesc', { count: canceledCount }) });
           const updatedOrders = tradingSimulatorRef.current.orderSimulator.getOrdersByUser(user.id!, selectedMarket);
           setSimulatedOrders(updatedOrders);
           await refreshMyOrders(selectedMarket);
@@ -658,12 +660,12 @@ const Trade = () => {
 
         if (failedCount > 0) {
           toast({
-            title: '一括取消完了（一部失敗）',
-            description: `${canceledCount}件を取消、${failedCount}件失敗しました`,
+            title: t('toast.cancelAllPartial'),
+            description: t('toast.cancelAllPartialDesc', { success: canceledCount, failed: failedCount }),
             variant: 'destructive'
           });
         } else {
-          toast({ title: '一括取消成功', description: `${canceledCount}件の注文を取消しました` });
+          toast({ title: t('toast.cancelAllSuccess'), description: t('toast.cancelAllSuccessDesc', { count: canceledCount }) });
         }
 
         // リフレッシュ
@@ -672,7 +674,7 @@ const Trade = () => {
       }
     } catch (e: unknown) {
       const error = e as Error;
-      toast({ title: 'エラー', description: error.message || '一括取消に失敗しました', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: error.message || t('toast.cancelAllFailed'), variant: 'destructive' });
     } finally {
       setCancelingAll(false);
     }
@@ -709,7 +711,7 @@ const Trade = () => {
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <h1 className="text-2xl md:text-2xl font-bold text-gray-900">取引</h1>
+              <h1 className="text-2xl md:text-2xl font-bold text-gray-900">{t('title')}</h1>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-blue-50 rounded-xl flex items-center justify-center">
                   <Activity className="h-4 w-4 text-blue-600" />
@@ -732,7 +734,7 @@ const Trade = () => {
             {/* 現在価格表示 */}
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <div className="text-sm text-gray-500">現在価格</div>
+                <div className="text-sm text-gray-500">{t('header.currentPrice')}</div>
                 <div className="text-base font-bold text-gray-900">¥{formatPrice(currentPrice)}</div>
               </div>
               {simulationEnabled && (
@@ -750,7 +752,7 @@ const Trade = () => {
         </div>
 
         {/* デモモード制限通知 */}
-        {isDemoMode && <DemoRestrictionNotice feature="取引" className="mb-6" />}
+        {isDemoMode && <DemoRestrictionNotice feature={t('featureName')} className="mb-6" />}
 
         {/* Current Price Display */}
         {simulationEnabled && (
@@ -774,11 +776,11 @@ const Trade = () => {
                   <Activity className="h-4 w-4" />
                   {simulationRunning ? (
                     <Badge variant="outline" className="text-green-600">
-                      ライブ シミュレーション
+                      {t('header.liveSimulation')}
                     </Badge>
                   ) : (
                     <Badge variant="outline">
-                      シミュレーション停止中
+                      {t('header.simulationStopped')}
                     </Badge>
                   )}
                 </div>
@@ -798,11 +800,11 @@ const Trade = () => {
                       <Volume2 className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">価格チャート</h3>
-                      <p className="text-sm text-gray-500">TradingView ライブチャート</p>
+                      <h3 className="font-semibold text-gray-900">{t('chart.priceChart')}</h3>
+                      <p className="text-sm text-gray-500">{t('chart.tradingViewLive')}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-blue-200">Live Data</Badge>
+                  <Badge variant="outline" className="bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-blue-200">{t('chart.liveData')}</Badge>
                 </div>
               </div>
               <div className="p-0">
@@ -826,8 +828,8 @@ const Trade = () => {
                     <Activity className="h-4 w-4 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">取引履歴</h3>
-                    <p className="text-sm text-gray-500">最近20件の取引記録</p>
+                    <h3 className="font-semibold text-gray-900">{t('tradeHistory.title')}</h3>
+                    <p className="text-sm text-gray-500">{t('tradeHistory.subtitle')}</p>
                   </div>
                 </div>
               </div>
@@ -838,10 +840,10 @@ const Trade = () => {
                     <table className="w-full text-sm">
                       <thead className="sticky top-0 bg-background">
                         <tr className="border-b">
-                          <th className="text-left p-2">時刻</th>
-                          <th className="text-right p-2">価格</th>
-                          <th className="text-right p-2">数量</th>
-                          {simulationEnabled && <th className="text-center p-2">売買</th>}
+                          <th className="text-left p-2">{t('tradeHistory.time')}</th>
+                          <th className="text-right p-2">{t('tradeHistory.price')}</th>
+                          <th className="text-right p-2">{t('tradeHistory.quantity')}</th>
+                          {simulationEnabled && <th className="text-center p-2">{t('tradeHistory.side')}</th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -853,7 +855,7 @@ const Trade = () => {
                             {simulationEnabled && 'side' in trade && (
                               <td className="p-2 text-center">
                                 <Badge variant={trade.side === 'buy' ? 'default' : 'destructive'} className="text-xs">
-                                  {trade.side === 'buy' ? '買い' : '売り'}
+                                  {trade.side === 'buy' ? t('tradeHistory.buy') : t('tradeHistory.sell')}
                                 </Badge>
                               </td>
                             )}
@@ -871,7 +873,7 @@ const Trade = () => {
                           <span className="text-xs text-gray-600">{trade.time}</span>
                           {simulationEnabled && 'side' in trade && (
                             <Badge variant={trade.side === 'buy' ? 'default' : 'destructive'} className="text-xs">
-                              {trade.side === 'buy' ? '買い' : '売り'}
+                              {trade.side === 'buy' ? t('tradeHistory.buy') : t('tradeHistory.sell')}
                             </Badge>
                           )}
                         </div>
@@ -885,7 +887,7 @@ const Trade = () => {
 
                   {trades.length === 0 && (
                     <div className="text-center py-8 text-gray-600 text-sm">
-                      取引履歴がありません
+                      {t('tradeHistory.noHistory')}
                     </div>
                   )}
                 </div>
@@ -903,8 +905,8 @@ const Trade = () => {
                     <Activity className="h-4 w-4 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">板情報</h3>
-                    <p className="text-sm text-gray-500">買い・売り注文一覧</p>
+                    <h3 className="font-semibold text-gray-900">{t('orderBook.title')}</h3>
+                    <p className="text-sm text-gray-500">{t('orderBook.subtitle')}</p>
                   </div>
                 </div>
               </div>
@@ -912,7 +914,7 @@ const Trade = () => {
                 <div className="space-y-2">
                   {/* Asks (売り板) */}
                   <div className="px-3 md:px-4 py-2">
-                    <div className="text-xs text-gray-600 mb-2">売り</div>
+                    <div className="text-xs text-gray-600 mb-2">{t('orderBook.asks')}</div>
                     {asks.slice(0, 5).reverse().map((ask, index) => (
                       <div
                         key={index}
@@ -933,7 +935,7 @@ const Trade = () => {
 
                   {/* Bids (買い板) */}
                   <div className="px-3 md:px-4 py-2">
-                    <div className="text-xs text-gray-600 mb-2">買い</div>
+                    <div className="text-xs text-gray-600 mb-2">{t('orderBook.bids')}</div>
                     {bids.slice(0, 5).map((bid, index) => (
                       <div
                         key={index}
@@ -957,33 +959,33 @@ const Trade = () => {
                     <Activity className="h-4 w-4 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">注文</h3>
-                    <p className="text-sm text-gray-500">売買注文を発行</p>
+                    <h3 className="font-semibold text-gray-900">{t('orderForm.title')}</h3>
+                    <p className="text-sm text-gray-500">{t('orderForm.subtitle')}</p>
                   </div>
                 </div>
               </div>
               <div className="p-6">
                 <Tabs defaultValue="buy" className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="buy">買い</TabsTrigger>
-                    <TabsTrigger value="sell">売り</TabsTrigger>
+                    <TabsTrigger value="buy">{t('orderForm.buy')}</TabsTrigger>
+                    <TabsTrigger value="sell">{t('orderForm.sell')}</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="buy" className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm">注文タイプ</label>
+                      <label className="text-sm">{t('orderForm.orderType')}</label>
                       <Select value={buyOrderType} onValueChange={(v) => setBuyOrderType(v as 'limit' | 'market')}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="limit">指値</SelectItem>
-                          <SelectItem value="market">成行</SelectItem>
+                          <SelectItem value="limit">{t('orderForm.limit')}</SelectItem>
+                          <SelectItem value="market">{t('orderForm.market')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm">価格</label>
+                      <label className="text-sm">{t('orderForm.price')}</label>
                       <Input
                         placeholder="0.00"
                         value={buyPrice}
@@ -993,11 +995,11 @@ const Trade = () => {
                         disabled={buyOrderType === 'market'}
                       />
                       {buyOrderType === 'market' && (
-                        <div className="text-xs text-gray-600">成行: 最良売気配で即時約定します</div>
+                        <div className="text-xs text-gray-600">{t('orderForm.marketBuyNote')}</div>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm">数量</label>
+                      <label className="text-sm">{t('orderForm.amount')}</label>
                       <Input
                         placeholder="0.00"
                         value={buyQty}
@@ -1046,32 +1048,32 @@ const Trade = () => {
                       </div>
                     </div>
                     <div className="text-xs text-gray-600">
-                      利用可能: {quoteAvail} USDT
+                      {t('orderForm.available')}: {quoteAvail} USDT
                     </div>
                     <Button
                       className="w-full bg-green-600 hover:bg-green-700 active:bg-green-800 transition-all duration-200 active:scale-95"
                       onClick={() => placeOrder('buy')}
                       disabled={isDemoMode || (!buyQty) || (buyOrderType === 'limit' && !buyPrice)}
                     >
-                      買い注文
+                      {t('orderForm.buyOrder')}
                     </Button>
                   </TabsContent>
 
                   <TabsContent value="sell" className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm">注文タイプ</label>
+                      <label className="text-sm">{t('orderForm.orderType')}</label>
                       <Select value={sellOrderType} onValueChange={(v) => setSellOrderType(v as 'limit' | 'market')}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="limit">指値</SelectItem>
-                          <SelectItem value="market">成行</SelectItem>
+                          <SelectItem value="limit">{t('orderForm.limit')}</SelectItem>
+                          <SelectItem value="market">{t('orderForm.market')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm">価格</label>
+                      <label className="text-sm">{t('orderForm.price')}</label>
                       <Input
                         placeholder="0.00"
                         value={sellPrice}
@@ -1081,11 +1083,11 @@ const Trade = () => {
                         disabled={sellOrderType === 'market'}
                       />
                       {sellOrderType === 'market' && (
-                        <div className="text-xs text-gray-600">成行: 最良買気配で即時約定します</div>
+                        <div className="text-xs text-gray-600">{t('orderForm.marketSellNote')}</div>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm">数量</label>
+                      <label className="text-sm">{t('orderForm.amount')}</label>
                       <Input
                         placeholder="0.00"
                         value={sellQty}
@@ -1118,14 +1120,14 @@ const Trade = () => {
                       </div>
                     </div>
                     <div className="text-xs text-gray-600">
-                      利用可能: {baseAvail} BTC
+                      {t('orderForm.available')}: {baseAvail} BTC
                     </div>
                     <Button
                       className="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 transition-all duration-200 active:scale-95"
                       onClick={() => placeOrder('sell')}
                       disabled={isDemoMode || (!sellQty) || (sellOrderType === 'limit' && !sellPrice)}
                     >
-                      売り注文
+                      {t('orderForm.sellOrder')}
                     </Button>
                   </TabsContent>
                 </Tabs>
@@ -1139,15 +1141,15 @@ const Trade = () => {
                   <Activity className="h-4 w-4 text-indigo-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">注文管理</h3>
-                  <p className="text-sm text-gray-500">未約定注文と履歴</p>
+                  <h3 className="font-semibold text-gray-900">{t('orders.title')}</h3>
+                  <p className="text-sm text-gray-500">{t('orders.subtitle')}</p>
                 </div>
               </div>
               <div className="p-6">
                 <Tabs value={historyTab} onValueChange={(v) => setHistoryTab(v as 'active' | 'history')}>
                   <TabsList className="grid w-full grid-cols-2 mb-4">
-                    <TabsTrigger value="active">未約定注文</TabsTrigger>
-                    <TabsTrigger value="history">注文履歴</TabsTrigger>
+                    <TabsTrigger value="active">{t('orders.openOrders')}</TabsTrigger>
+                    <TabsTrigger value="history">{t('orders.orderHistory')}</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="active" className="space-y-4">
@@ -1159,13 +1161,13 @@ const Trade = () => {
                         disabled={cancelingAll}
                         className="w-full transition-all duration-200 active:scale-95"
                       >
-                        {cancelingAll ? "取消中..." : "全て取消"}
+                        {cancelingAll ? t('orders.canceling') : t('orders.cancelAll')}
                       </Button>
                     )}
                     <div className="max-h-64 overflow-y-auto">
                       {myOrders.length === 0 ? (
                         <div className="text-center py-8 text-gray-600">
-                          アクティブな注文がありません
+                          {t('orders.noActiveOrders')}
                         </div>
                       ) : (
                         <div className="space-y-3">
@@ -1173,7 +1175,7 @@ const Trade = () => {
                             <div key={order.id} className="bg-gray-50/50 rounded-xl p-4 space-y-3">
                               <div className="flex justify-between items-center">
                                 <Badge variant={order.side === 'buy' ? 'default' : 'destructive'} className="rounded-full">
-                                  {order.side === 'buy' ? '買い' : '売り'}
+                                  {order.side === 'buy' ? t('orderForm.buy') : t('orderForm.sell')}
                                 </Badge>
                                 <Badge variant="outline" className="rounded-full">
                                   {order.status}
@@ -1181,15 +1183,15 @@ const Trade = () => {
                               </div>
                               <div className="text-sm space-y-1">
                                 <div className="flex justify-between">
-                                  <span className="text-gray-600">価格:</span>
+                                  <span className="text-gray-600">{t('orders.fields.price')}:</span>
                                   <span className="font-mono">¥{formatPrice(order.price)}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                  <span className="text-gray-600">数量:</span>
+                                  <span className="text-gray-600">{t('orders.fields.quantity')}:</span>
                                   <span className="font-mono">{order.qty.toFixed(4)}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                  <span className="text-gray-600">約定:</span>
+                                  <span className="text-gray-600">{t('orders.fields.filled')}:</span>
                                   <span className="font-mono">{order.filled_qty.toFixed(4)}</span>
                                 </div>
                               </div>
@@ -1200,7 +1202,7 @@ const Trade = () => {
                                   className="w-full rounded-xl transition-all duration-200 active:scale-95 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
                                   onClick={() => cancelOrder(order.id)}
                                 >
-                                  取消
+                                  {t('orders.cancel')}
                                 </Button>
                               )}
                             </div>
@@ -1214,20 +1216,20 @@ const Trade = () => {
                     <div className="max-h-64 overflow-y-auto">
                       {orderHistory.length === 0 ? (
                         <div className="text-center py-8 text-gray-600">
-                          注文履歴がありません
+                          {t('orders.noOrderHistory')}
                         </div>
                       ) : (
                         <div className="space-y-3">
                           {orderHistory.map((order) => {
                             const fillPercent = order.qty > 0 ? (order.filled_qty / order.qty * 100) : 0;
-                            const statusText = order.status === 'filled' ? '約定' : order.status === 'canceled' ? '取消' : '拒否';
+                            const statusText = order.status === 'filled' ? t('status.filled') : order.status === 'canceled' ? t('status.cancelled') : t('status.rejected');
                             const statusVariant = order.status === 'filled' ? 'default' : order.status === 'canceled' ? 'secondary' : 'destructive';
 
                             return (
                               <div key={order.id} className="bg-gray-50/50 rounded-xl p-4 space-y-3">
                                 <div className="flex justify-between items-center">
                                   <Badge variant={order.side === 'buy' ? 'default' : 'destructive'} className="rounded-full">
-                                    {order.side === 'buy' ? '買い' : '売り'}
+                                    {order.side === 'buy' ? t('orderForm.buy') : t('orderForm.sell')}
                                   </Badge>
                                   <Badge variant={statusVariant} className="rounded-full">
                                     {statusText}
@@ -1235,19 +1237,19 @@ const Trade = () => {
                                 </div>
                                 <div className="text-sm space-y-1">
                                   <div className="flex justify-between">
-                                    <span className="text-gray-600">価格:</span>
+                                    <span className="text-gray-600">{t('orders.fields.price')}:</span>
                                     <span className="font-mono">¥{formatPrice(order.price)}</span>
                                   </div>
                                   <div className="flex justify-between">
-                                    <span className="text-gray-600">数量:</span>
+                                    <span className="text-gray-600">{t('orders.fields.quantity')}:</span>
                                     <span className="font-mono">{order.qty.toFixed(4)}</span>
                                   </div>
                                   <div className="flex justify-between">
-                                    <span className="text-gray-600">約定:</span>
+                                    <span className="text-gray-600">{t('orders.fields.filled')}:</span>
                                     <span className="font-mono">{order.filled_qty.toFixed(4)} ({fillPercent.toFixed(1)}%)</span>
                                   </div>
                                   <div className="flex justify-between">
-                                    <span className="text-gray-600">完了日時:</span>
+                                    <span className="text-gray-600">{t('orders.fields.completedAt')}:</span>
                                     <span className="text-xs">{new Date(order.updated_at).toLocaleString('ja-JP')}</span>
                                   </div>
                                 </div>

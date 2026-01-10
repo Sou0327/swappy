@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,6 +18,7 @@ const Withdraw = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, isDemoMode } = useAuth();
+  const { t } = useTranslation('wallet');
 
   const cryptoOptions = useMemo(() => [
     { value: "USDT", label: "USDT", networks: ["ERC20", "TRC20", "BEP20", "Polygon"] },
@@ -143,15 +145,15 @@ const Withdraw = () => {
       });
       if (error) throw error;
       toast({
-        title: "出金リクエストを送信しました",
-        description: `${coin} を ${amount} 、ネットワーク ${network} に出金申請しました。`,
+        title: t('withdraw.toast.submitted'),
+        description: t('withdraw.toast.submittedDesc', { coin, amount, network }),
       });
       setAmount("");
       // ロックが反映された利用可能残高を再取得
       await loadAvailable();
     } catch (e: unknown) {
       const error = e as Error;
-      toast({ title: 'エラー', description: error.message || '申請に失敗しました', variant: 'destructive' });
+      toast({ title: t('withdraw.toast.error'), description: error.message || t('withdraw.toast.errorDefault'), variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }
@@ -159,8 +161,8 @@ const Withdraw = () => {
 
   // SEO: title, description, canonical
   useEffect(() => {
-    document.title = `出金 | ${PLATFORM_NAME}`;
-    const descText = "暗号資産の出金: 資産とネットワークを選択し、出金先アドレスと金額を入力して出金します。";
+    document.title = t('withdraw.pageTitle', { platform: PLATFORM_NAME });
+    const descText = t('withdraw.pageDescription');
     let desc = document.querySelector('meta[name="description"]');
     if (!desc) {
       desc = document.createElement("meta");
@@ -196,28 +198,28 @@ const Withdraw = () => {
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-bold">出金</h1>
+          <h1 className="text-2xl font-bold">{t('withdraw.title')}</h1>
         </div>
 
         {/* デモモード制限通知 */}
-        {isDemoMode && <DemoRestrictionNotice feature="出金" className="mb-6" />}
+        {isDemoMode && <DemoRestrictionNotice feature={t('withdraw.featureName')} className="mb-6" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>出金フォーム</CardTitle>
+                <CardTitle>{t('withdraw.formTitle')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Step 1 */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                    <label className="text-sm font-medium">コイン / トークン</label>
+                    <label className="text-sm font-medium">{t('withdraw.form.coinLabel')}</label>
                   </div>
                   <Select value={coin} onValueChange={(v) => setCoin(v)}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="選択してください" />
+                      <SelectValue placeholder={t('withdraw.form.selectPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {cryptoOptions.map(c => (
@@ -252,11 +254,11 @@ const Withdraw = () => {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                    <label className="text-sm font-medium">ネットワーク</label>
+                    <label className="text-sm font-medium">{t('withdraw.form.networkLabel')}</label>
                   </div>
                   <Select value={network} onValueChange={setNetwork}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="ネットワークを選択" />
+                      <SelectValue placeholder={t('withdraw.form.networkPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {networks.map(n => (
@@ -270,19 +272,19 @@ const Withdraw = () => {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                    <label className="text-sm font-medium">出金先アドレス</label>
+                    <label className="text-sm font-medium">{t('withdraw.form.addressLabel')}</label>
                   </div>
                   <Input
-                    placeholder="出金先アドレスを入力"
+                    placeholder={t('withdraw.form.addressPlaceholder')}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     className="font-mono"
                   />
                   {coin === "XRP" && (
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">タグ / メモ（任意）</label>
+                      <label className="text-sm font-medium">{t('withdraw.form.tagLabel')}</label>
                       <Input
-                        placeholder="タグ/メモを入力（任意）"
+                        placeholder={t('withdraw.form.tagPlaceholder')}
                         value={memoTag}
                         onChange={(e) => setMemoTag(e.target.value)}
                       />
@@ -292,11 +294,11 @@ const Withdraw = () => {
 
                 {/* Amount */}
                 <div className="space-y-3">
-                  <label className="text-sm font-medium">出金数量</label>
+                  <label className="text-sm font-medium">{t('withdraw.form.amountLabel')}</label>
                   <Input
                     type="number"
                     inputMode="decimal"
-                    placeholder="数量を入力"
+                    placeholder={t('withdraw.form.amountPlaceholder')}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     className={Number(amount) > available ? "border-red-500 focus:border-red-500" : ""}
@@ -308,11 +310,10 @@ const Withdraw = () => {
                         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
-                        <span className="text-sm font-medium">残高不足</span>
+                        <span className="text-sm font-medium">{t('withdraw.balance.insufficient')}</span>
                       </div>
                       <p className="text-sm text-red-600 mt-1">
-                        利用可能残高 {available.toFixed(decimalsFor(coin))} {coin} を超えています。
-                        100%ボタンで最大出金可能額を入力してください。
+                        {t('withdraw.balance.insufficientMessage', { balance: available.toFixed(decimalsFor(coin)), coin })}
                       </p>
                     </div>
                   )}
@@ -326,14 +327,14 @@ const Withdraw = () => {
 
                 <div>
                   <Button className="w-full" onClick={handleSubmit} disabled={isDemoMode || !canSubmit() || submitting}>
-                    {submitting ? "送信中..." : "出金申請"}
+                    {submitting ? t('withdraw.submitting') : t('withdraw.submit')}
                   </Button>
                   <div className="mt-4 text-sm space-y-2">
-                    <div className="text-gray-600">最小出金: {minWithdraw} {coin}</div>
-                    <div className="text-gray-600">最大出金: {maxWithdraw.toFixed(decimalsFor(coin))} {coin}</div>
+                    <div className="text-gray-600">{t('withdraw.balance.minWithdraw', { amount: minWithdraw, coin })}</div>
+                    <div className="text-gray-600">{t('withdraw.balance.maxWithdraw', { amount: maxWithdraw.toFixed(decimalsFor(coin)), coin })}</div>
                     <div className="bg-blue-50 border border-blue-200 rounded-md p-2">
                       <span className="text-blue-700 font-medium">
-                        利用可能残高: {available.toFixed(decimalsFor(coin))} {coin}
+                        {t('withdraw.balance.available', { amount: available.toFixed(decimalsFor(coin)), coin })}
                       </span>
                     </div>
                   </div>
@@ -346,11 +347,11 @@ const Withdraw = () => {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>注意事項</CardTitle>
+                <CardTitle>{t('withdraw.notices.title')}</CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-gray-600 space-y-2">
-                <p>アドレスとネットワークが一致していることを必ず確認してください。誤送金は資金の損失につながる可能性があります。</p>
-                <p>ネットワークの混雑により処理に時間がかかる場合があります。</p>
+                <p>{t('withdraw.notices.addressMatch')}</p>
+                <p>{t('withdraw.notices.networkCongestion')}</p>
               </CardContent>
             </Card>
           </div>

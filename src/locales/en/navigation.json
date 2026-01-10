@@ -1,0 +1,54 @@
+{
+  "header": {
+    "trade": "Trade",
+    "markets": "Markets",
+    "features": "Features",
+    "about": "About",
+    "admin": "Admin",
+    "login": "Login",
+    "signUp": "Sign Up",
+    "myPage": "My Page",
+    "viewOnGithub": "View on GitHub"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "announcements": "Announcements",
+    "wallet": "Wallet",
+    "transfer": "Transfer",
+    "convert": "Convert",
+    "referral": "Referral Program",
+    "settings": "Settings",
+    "myAccount": "My Account",
+    "security": "Security",
+    "kyc": "KYC",
+    "history": "History",
+    "support": "Support",
+    "adminMenu": "Admin Menu",
+    "adminDashboard": "Admin Dashboard",
+    "walletManagement": "Wallet Management",
+    "hdWallet": "HD Wallet",
+    "sweepManager": "Sweep Manager",
+    "announcementManagement": "Announcement Management",
+    "referralManagement": "Referral Management",
+    "tokenManagement": "Token Management",
+    "returnHome": "Return to Home",
+    "signOut": "Sign Out"
+  },
+  "topBar": {
+    "markets": "Markets",
+    "trade": "Trade",
+    "transfer": "Transfer",
+    "convert": "Convert",
+    "admin": "Admin"
+  },
+  "buttons": {
+    "deposit": "Deposit",
+    "withdraw": "Withdraw"
+  },
+  "mobile": {
+    "home": "Home",
+    "wallet": "Wallet",
+    "trade": "Trade",
+    "account": "Account"
+  }
+}

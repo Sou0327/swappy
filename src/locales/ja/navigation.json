@@ -1,0 +1,54 @@
+{
+  "header": {
+    "trade": "取引",
+    "markets": "マーケット",
+    "features": "機能",
+    "about": "会社概要",
+    "admin": "管理画面",
+    "login": "ログイン",
+    "signUp": "新規登録",
+    "myPage": "マイページ",
+    "viewOnGithub": "GitHub を見る"
+  },
+  "sidebar": {
+    "dashboard": "ダッシュボード",
+    "announcements": "お知らせ",
+    "wallet": "ウォレット",
+    "transfer": "送金",
+    "convert": "両替",
+    "referral": "紹介プログラム",
+    "settings": "設定",
+    "myAccount": "マイアカウント",
+    "security": "セキュリティ",
+    "kyc": "KYC",
+    "history": "履歴",
+    "support": "サポート",
+    "adminMenu": "管理者メニュー",
+    "adminDashboard": "管理ダッシュボード",
+    "walletManagement": "ウォレット管理",
+    "hdWallet": "HDウォレット",
+    "sweepManager": "スイープ管理",
+    "announcementManagement": "お知らせ管理",
+    "referralManagement": "紹介管理",
+    "tokenManagement": "トークン管理",
+    "returnHome": "ホームに戻る",
+    "signOut": "サインアウト"
+  },
+  "topBar": {
+    "markets": "マーケット",
+    "trade": "取引",
+    "transfer": "送金",
+    "convert": "両替",
+    "admin": "管理画面"
+  },
+  "buttons": {
+    "deposit": "入金",
+    "withdraw": "出金"
+  },
+  "mobile": {
+    "home": "ホーム",
+    "wallet": "ウォレット",
+    "trade": "取引",
+    "account": "アカウント"
+  }
+}

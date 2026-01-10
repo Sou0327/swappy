@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Eye, Search } from "lucide-react";
 import { getPriceSnapshot } from "@/lib/price-service";
 import { getAllDepositableAssets } from "@/lib/multichain-wallet-utils";
+import { useTranslation } from "react-i18next";
 
 
 interface AssetBalance {
@@ -46,6 +47,7 @@ const DEMO_TOTAL_BALANCE = 0.12345678 * 97000 + 2.5 * 3500 + 5000 + 1500 * 2.5; 
 const WalletOverview = () => {
   const navigate = useNavigate();
   const { user, isDemoMode } = useAuth();
+  const { t } = useTranslation('wallet');
   const [hideSmallAssets, setHideSmallAssets] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [balances, setBalances] = useState<AssetBalance[]>([]);
@@ -145,7 +147,7 @@ const WalletOverview = () => {
       <div className="space-y-1">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
-          <h1 className="text-2xl sm:text-2xl font-bold text-gray-900">ウォレット概要</h1>
+          <h1 className="text-2xl sm:text-2xl font-bold text-gray-900">{t('overview.title')}</h1>
         </div>
 
         {/* Total Asset Valuation */}
@@ -154,7 +156,7 @@ const WalletOverview = () => {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-1.5 mb-1">
               <div className="flex-1">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <span className="text-sm text-gray-600">合計資産評価額</span>
+                  <span className="text-sm text-gray-600">{t('overview.totalAssetValue')}</span>
                   <Eye className="h-4 w-4 text-gray-600" />
                 </div>
                 <div className="text-2xl sm:text-2xl font-bold">
@@ -164,12 +166,12 @@ const WalletOverview = () => {
               </div>
               <div className="flex gap-1.5 justify-start lg:justify-end">
                 <Button size="sm" onClick={() => navigate("/deposit")}>
-                  <span className="hidden sm:inline">入金</span>
-                  <span className="sm:hidden">入</span>
+                  <span className="hidden sm:inline">{t('deposit.title')}</span>
+                  <span className="sm:hidden">{t('deposit.title').charAt(0)}</span>
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => navigate("/withdraw")}>
-                  <span className="hidden sm:inline">出金</span>
-                  <span className="sm:hidden">出</span>
+                  <span className="hidden sm:inline">{t('withdraw.title')}</span>
+                  <span className="sm:hidden">{t('withdraw.title').charAt(0)}</span>
                 </Button>
               </div>
             </div>
@@ -181,14 +183,14 @@ const WalletOverview = () => {
           <div className="relative flex-1 max-w-full sm:max-w-sm">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
             <Input
-              placeholder="検索"
+              placeholder={t('search.placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 w-full"
             />
           </div>
           <div className="flex items-center space-x-2 shrink-0">
-            <Checkbox 
+            <Checkbox
               id="hideSmallAssets"
               checked={hideSmallAssets}
               onCheckedChange={(checked) => setHideSmallAssets(checked === true)}
@@ -197,8 +199,8 @@ const WalletOverview = () => {
               htmlFor="hideSmallAssets"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap"
             >
-              <span className="hidden sm:inline">小額資産を非表示</span>
-              <span className="sm:hidden">小額非表示</span>
+              <span className="hidden sm:inline">{t('filter.hideSmallAssets')}</span>
+              <span className="sm:hidden">{t('filter.hideSmallAssetsShort')}</span>
             </label>
           </div>
         </div>
@@ -210,9 +212,9 @@ const WalletOverview = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left p-4 font-medium text-sm text-gray-900">コイン</th>
-                    <th className="text-left p-4 font-medium text-sm text-gray-900">残高</th>
-                    <th className="text-left p-4 font-medium text-sm text-gray-900">操作</th>
+                    <th className="text-left p-4 font-medium text-sm text-gray-900">{t('table.coin')}</th>
+                    <th className="text-left p-4 font-medium text-sm text-gray-900">{t('table.balance')}</th>
+                    <th className="text-left p-4 font-medium text-sm text-gray-900">{t('table.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -248,15 +250,15 @@ const WalletOverview = () => {
                       <td className="p-2">
                         <div className="space-y-1">
                           <div className="text-sm font-mono">
-                            利用可能: <span className={asset.availableBalance < 0 ? 'text-red-600' : ''}>{asset.availableBalance.toFixed(8)}</span>
+                            {t('assets.available')}: <span className={asset.availableBalance < 0 ? 'text-red-600' : ''}>{asset.availableBalance.toFixed(8)}</span>
                           </div>
                           {asset.inOrder > 0 && (
                             <div className="text-xs text-gray-600 font-mono">
-                              ロック中: {asset.inOrder.toFixed(8)}
+                              {t('assets.locked')}: {asset.inOrder.toFixed(8)}
                             </div>
                           )}
                           <div className="text-xs text-gray-600 font-mono">
-                            合計: <span className={asset.totalBalance < 0 ? 'text-red-600' : ''}>{asset.totalBalance.toFixed(8)}</span>
+                            {t('assets.total')}: <span className={asset.totalBalance < 0 ? 'text-red-600' : ''}>{asset.totalBalance.toFixed(8)}</span>
                           </div>
                           <div className="text-xs text-gray-600">$ {asset.availableUsdValue.toFixed(2)}</div>
                         </div>
@@ -264,10 +266,10 @@ const WalletOverview = () => {
                       <td className="p-2">
                         <div className="flex gap-1.5">
                           <Button variant="link" size="sm" className="text-primary p-0 h-auto text-xs" onClick={() => navigate("/deposit")}>
-                            入金
+                            {t('deposit.title')}
                           </Button>
                           <Button variant="link" size="sm" className="text-primary p-0 h-auto text-xs" onClick={() => navigate("/withdraw")}>
-                            出金
+                            {t('withdraw.title')}
                           </Button>
                         </div>
                       </td>
@@ -312,30 +314,30 @@ const WalletOverview = () => {
                   </div>
                   <div className="flex gap-1.5">
                     <Button variant="outline" size="sm" className="text-xs px-3 py-1 transition-all duration-200 active:scale-95" onClick={() => navigate("/deposit")}>
-                      入金
+                      {t('deposit.title')}
                     </Button>
                     <Button variant="outline" size="sm" className="text-xs px-3 py-1 transition-all duration-200 active:scale-95" onClick={() => navigate("/withdraw")}>
-                      出金
+                      {t('withdraw.title')}
                     </Button>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-1.5 text-sm">
                   <div>
-                    <div className="text-xs text-gray-600 mb-1">利用可能</div>
+                    <div className="text-xs text-gray-600 mb-1">{t('assets.available')}</div>
                     <div className="font-mono text-sm">
                       <span className={asset.availableBalance < 0 ? 'text-red-600' : ''}>{asset.availableBalance.toFixed(8)}</span>
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-600 mb-1">合計</div>
+                    <div className="text-xs text-gray-600 mb-1">{t('assets.total')}</div>
                     <div className="font-mono text-sm">
                       <span className={asset.totalBalance < 0 ? 'text-red-600' : ''}>{asset.totalBalance.toFixed(8)}</span>
                     </div>
                   </div>
                   {asset.inOrder > 0 && (
                     <div className="col-span-2">
-                      <div className="text-xs text-gray-600 mb-1">ロック中</div>
+                      <div className="text-xs text-gray-600 mb-1">{t('assets.locked')}</div>
                       <div className="font-mono text-sm text-gray-600">{asset.inOrder.toFixed(8)}</div>
                     </div>
                   )}
@@ -360,9 +362,9 @@ const WalletOverview = () => {
                   <Search className="h-5 w-5 text-gray-600" />
                 </div>
                 <p className="text-gray-600 text-sm">
-                  {searchQuery ? '検索条件に一致する銘柄がありません' : 
-                   hideSmallAssets ? '表示条件に一致する銘柄がありません' : 
-                   '入金可能な銘柄がありません'}
+                  {searchQuery ? t('search.noMatchSearch') :
+                   hideSmallAssets ? t('search.noMatchFilter') :
+                   t('search.noDepositableAssets')}
                 </p>
               </div>
             </CardContent>
