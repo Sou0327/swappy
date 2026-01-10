@@ -83,11 +83,6 @@ export const SumsubKYC = ({ onComplete, onError }: SumsubKYCProps) => {
         })
         .eq('id', user.id);
 
-      // 簡単なログ記録（テーブルが存在しない場合はスキップ）
-      if (payload.applicantId) {
-        console.log('申請ID:', payload.applicantId, 'ステータス:', kycStatus);
-      }
-
       if (payload.applicantId) {
         onComplete?.(payload.applicantId, kycStatus);
       }
@@ -123,27 +118,21 @@ export const SumsubKYC = ({ onComplete, onError }: SumsubKYCProps) => {
         email: user?.email,
         phone: '', // 電話番号があれば設定
         onMessage: (type: string, payload: Record<string, unknown>) => {
-          console.log('Sumsub message:', type, payload);
-
           switch (type) {
             case 'idCheck.stepCompleted':
-              console.log('ステップ完了:', payload);
               break;
 
             case 'idCheck.applicantLoaded':
-              console.log('申請者読み込み完了:', payload);
               if (typeof payload.applicantId === 'string') {
                 setApplicantId(payload.applicantId);
               }
               break;
 
             case 'idCheck.applicantStatus':
-              console.log('審査ステータス変更:', payload);
               handleStatusUpdate(payload);
               break;
 
             case 'idCheck.applicantSubmitted':
-              console.log('申請提出完了:', payload);
               if (typeof payload.applicantId === 'string') {
                 onComplete?.(payload.applicantId, 'submitted');
               }

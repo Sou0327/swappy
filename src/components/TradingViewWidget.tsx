@@ -32,11 +32,6 @@ export default function TradingViewWidget({ symbol, interval = '60', theme = 'li
 
     const initWidget = () => {
       if (!window.TradingView || !container.current || !isComponentMounted) {
-        console.log('🔄 [TradingView] 初期化条件が揃っていません', {
-          TradingView: !!window.TradingView,
-          container: !!container.current,
-          mounted: isComponentMounted
-        });
         return;
       }
 
@@ -44,8 +39,6 @@ export default function TradingViewWidget({ symbol, interval = '60', theme = 'li
         // DOM要素が完全にレンダリングされるまで待機
         requestAnimationFrame(() => {
           if (!container.current || !isComponentMounted) return;
-
-          console.log('🎯 [TradingView] ウィジェット初期化開始', { symbol, containerId });
 
           // 既存のウィジェットを安全にクリア
           const containerElement = container.current;
@@ -72,13 +65,6 @@ export default function TradingViewWidget({ symbol, interval = '60', theme = 'li
                 return;
               }
 
-              console.log('✅ [TradingView] DOM要素検証完了', {
-                elementFound: !!domElement,
-                hasParentNode: !!domElement.parentNode,
-                isConnected: domElement.isConnected,
-                tagName: domElement.tagName
-              });
-
               try {
                 widgetInstance = new window.TradingView.widget({
                   symbol,
@@ -102,16 +88,8 @@ export default function TradingViewWidget({ symbol, interval = '60', theme = 'li
                   fullscreen: false,
                   show_popup_button: false,
                 });
-                console.log('✅ [TradingView] ウィジェット作成成功', { symbol, containerId });
               } catch (widgetError) {
                 console.error('❌ [TradingView] ウィジェット作成エラー:', widgetError);
-                console.error('❌ [TradingView] エラー詳細:', {
-                  message: widgetError.message,
-                  stack: widgetError.stack,
-                  containerId,
-                  domElement: !!domElement,
-                  parentNode: !!domElement?.parentNode
-                });
               }
             }, 100); // 待機時間を短縮
           }
@@ -123,13 +101,11 @@ export default function TradingViewWidget({ symbol, interval = '60', theme = 'li
 
     const loadScript = () => {
       if (!document.getElementById('tradingview-widget-script')) {
-        console.log('📦 [TradingView] スクリプト読み込み開始');
         const script = document.createElement('script');
         script.id = 'tradingview-widget-script';
         script.src = 'https://s3.tradingview.com/tv.js';
         script.type = 'text/javascript';
         script.onload = () => {
-          console.log('📥 [TradingView] スクリプト読み込み完了');
           setTimeout(initWidget, 50);
         };
         script.onerror = (error) => {
@@ -137,7 +113,6 @@ export default function TradingViewWidget({ symbol, interval = '60', theme = 'li
         };
         document.body.appendChild(script);
       } else {
-        console.log('📋 [TradingView] スクリプト既に読み込み済み');
         setTimeout(initWidget, 10);
       }
     };
@@ -147,13 +122,11 @@ export default function TradingViewWidget({ symbol, interval = '60', theme = 'li
     // クリーンアップ関数
     return () => {
       isComponentMounted = false;
-      console.log('🧹 [TradingView] コンポーネント クリーンアップ', { symbol, containerId });
 
       // ウィジェットインスタンスの明示的なクリーンアップ
       if (widgetInstance && typeof widgetInstance.remove === 'function') {
         try {
           widgetInstance.remove();
-          console.log('✅ [TradingView] ウィジェットインスタンス削除完了');
         } catch (error) {
           console.warn('⚠️ [TradingView] ウィジェット削除時エラー:', error);
         }

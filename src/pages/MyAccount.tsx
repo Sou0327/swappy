@@ -235,9 +235,6 @@ const MyAccount = () => {
                         }
                         console.warn('セッション既に無効:', error);
                       }
-                    } else {
-                      // セッションがない場合は直接クリーンアップへ
-                      console.log('セッション不在のためクリーンアップのみ実行');
                     }
                   } catch (error: unknown) {
                     console.error('ログアウトエラー:', error);

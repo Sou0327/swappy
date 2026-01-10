@@ -120,32 +120,24 @@ export const useKYC = () => {
 
   // 初期データ読み込み
   useEffect(() => {
-    console.log('🔄 useKYC useEffect実行 - ユーザーID:', user?.id);
-
     if (user?.id) {
-      console.log('📋 KYC初期化開始');
-
       // KYC設定を読み込み
-      console.log('⚙️ KYC設定読み込み開始');
       kycSettingsState.execute(loadKYCSettings, {
         context: 'KYC設定の読み込み',
         showErrorToast: true
       });
 
       // ユーザーのKYC情報を読み込み
-      console.log('👤 ユーザーKYC情報読み込み開始');
       loadUserKYCInfo(user.id)
         .then((info) => {
-          console.log('✅ ユーザーKYC情報読み込み完了:', info);
           setKycInfo(info);
         })
         .catch(error => {
-          console.error('❌ ユーザーKYC情報読み込み失敗:', error);
+          console.error('ユーザーKYC情報読み込み失敗:', error);
           handleError(error, 'ユーザーKYC情報の読み込み');
         });
 
       // KYC書類を読み込み
-      console.log('📄 KYC書類読み込み開始');
       kycDocumentsState.execute(
         () => loadKYCDocuments(user.id),
         {
@@ -194,17 +186,12 @@ export const useKYC = () => {
       .replace(/[^a-zA-Z0-9.-_]/g, '_')  // 英数字、ピリオド、ハイフン、アンダースコア以外を_に置換
       .replace(/_{2,}/g, '_');  // 連続するアンダースコアを単一に
 
-    console.log('📁 ファイル名サニタイズ:', { original: file.name, sanitized: sanitizedFileName });
-
     // Supabase Storageにファイルをアップロード
     const fileName = `${user.id}/${documentType}/${Date.now()}_${sanitizedFileName}`;
 
-    console.log('📤 ファイルアップロード開始:', fileName);
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('kyc-documents')
       .upload(fileName, file);
-
-    console.log('📤 ファイルアップロード結果:', { uploadData, uploadError });
 
     if (uploadError) throw uploadError;
 
@@ -227,7 +214,6 @@ export const useKYC = () => {
 
     // KYCが拒否状態の場合、自動的にpendingに戻す
     if (kycInfo.status === 'rejected') {
-      console.log('KYCステータスがrejectedのため、pendingに変更します');
       const { error: updateError } = await supabase
         .from('profiles')
         .update({
@@ -271,8 +257,6 @@ export const useKYC = () => {
   const submitKYCApplication = async (): Promise<void> => {
     if (!user?.id) throw new Error('ユーザー認証が必要です');
 
-    console.log('KYC申請開始 - ユーザーID:', user.id);
-
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -282,8 +266,6 @@ export const useKYC = () => {
         })
         .eq('id', user.id)
         .select();
-
-      console.log('KYC申請結果:', { data, error });
 
       if (error) {
         console.error('KYC申請エラーの詳細:', {

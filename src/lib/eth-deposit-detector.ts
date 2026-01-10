@@ -179,7 +179,6 @@ export class EthDepositDetector {
         .single();
 
       if (existing) {
-        console.log(`Transaction ${transactionHash} already recorded`);
         return;
       }
 
@@ -204,8 +203,6 @@ export class EthDepositDetector {
         console.error('Failed to record deposit:', error);
         throw error;
       }
-
-      console.log(`Recorded ETH deposit: ${amount} ETH from ${transactionHash}`);
     } catch (error) {
       console.error('Error recording deposit:', error);
       throw error;
@@ -280,11 +277,8 @@ export class EthDepositDetector {
     const depositAddresses = await this.getDepositAddresses();
 
     if (depositAddresses.length === 0) {
-      console.log('No deposit addresses found');
       return results;
     }
-
-    console.log(`Scanning blocks ${fromBlock} to ${toBlock} for ETH deposits...`);
 
     for (let blockNum = fromBlock; blockNum <= toBlock; blockNum++) {
       try {
@@ -315,8 +309,6 @@ export class EthDepositDetector {
               blockNumber: blockNum,
               confirmations
             });
-
-            console.log(`Found ETH deposit: ${amount} ETH to ${tx.to} (${tx.hash})`);
           }
         }
       } catch (error) {

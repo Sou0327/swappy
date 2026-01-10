@@ -362,11 +362,9 @@ export class DepositDetectionManager {
    */
   async startMonitoring(): Promise<void> {
     if (this.isRunning) {
-      console.log('Deposit monitoring is already running');
       return;
     }
 
-    console.log('Starting deposit detection monitoring...');
     this.isRunning = true;
 
     const configs = await this.getChainConfigs();
@@ -376,19 +374,12 @@ export class DepositDetectionManager {
       
       const interval = setInterval(async () => {
         if (!this.isRunning) return;
-        
-        console.log(`Scanning ${key} deposits...`);
-        const results = await this.scanChainDeposits(config.chain, config.network);
-        
-        if (results.length > 0) {
-          console.log(`Found ${results.length} new deposits on ${key}`);
-        }
+
+        await this.scanChainDeposits(config.chain, config.network);
       }, config.scanIntervalMs);
-      
+
       this.intervals.set(key, interval);
     }
-
-    console.log(`Started monitoring ${configs.filter(c => c.enabled).length} chains`);
   }
 
   /**
@@ -396,28 +387,23 @@ export class DepositDetectionManager {
    */
   stopMonitoring(): void {
     if (!this.isRunning) {
-      console.log('Deposit monitoring is not running');
       return;
     }
 
-    console.log('Stopping deposit detection monitoring...');
     this.isRunning = false;
 
     // すべてのインターバルをクリア
-    for (const [key, interval] of this.intervals.entries()) {
+    for (const [, interval] of this.intervals.entries()) {
       clearInterval(interval);
-      console.log(`Stopped monitoring ${key}`);
     }
-    
+
     this.intervals.clear();
-    console.log('Deposit monitoring stopped');
   }
 
   /**
    * 手動で全チェーンをスキャン
    */
   async scanAllChains(): Promise<UnifiedDepositResult[]> {
-    console.log('Manual scan of all chains started...');
     const configs = await this.getChainConfigs();
     const allResults: UnifiedDepositResult[] = [];
 
@@ -426,7 +412,6 @@ export class DepositDetectionManager {
       allResults.push(...results);
     }
 
-    console.log(`Manual scan completed. Found ${allResults.length} total deposits.`);
     return allResults;
   }
 

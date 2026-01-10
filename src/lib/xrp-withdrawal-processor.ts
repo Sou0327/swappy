@@ -116,7 +116,6 @@ export class XRPWithdrawalProcessor {
       if (!this.isConnected) {
         await this.client.connect();
         this.isConnected = true;
-        console.log(`XRPL接続成功: ${this.networkConfig.name}`);
       }
     } catch (error) {
       throw new Error(`XRPL接続に失敗: ${error.message}`);
@@ -131,7 +130,6 @@ export class XRPWithdrawalProcessor {
       if (this.isConnected) {
         await this.client.disconnect();
         this.isConnected = false;
-        console.log('XRPL切断完了');
       }
     } catch (error) {
       console.warn('XRPL切断エラー:', error);
@@ -433,7 +431,6 @@ export class XRPWithdrawalProcessor {
             response.result.engine_result === 'terPRE_SEQ') {
           
           if (attempt < this.config.retryAttempts) {
-            console.log(`XRP送金リトライ ${attempt}/${this.config.retryAttempts} (${withdrawalId}): ${response.result.engine_result}`);
             await new Promise(resolve => setTimeout(resolve, this.config.retryDelayMs * attempt));
             continue;
           }
@@ -446,7 +443,6 @@ export class XRPWithdrawalProcessor {
         lastError = error as Error;
         
         if (attempt < this.config.retryAttempts) {
-          console.log(`XRP送金リトライ ${attempt}/${this.config.retryAttempts} (${withdrawalId}): ${error.message}`);
           await new Promise(resolve => setTimeout(resolve, this.config.retryDelayMs * attempt));
         }
       }
@@ -465,7 +461,6 @@ export class XRPWithdrawalProcessor {
       // データベースも更新。admin_walletsテーブルにはsequenceカラムがないため、
       // 実装時には別途シーケンス管理テーブルを作成するか、
       // メモリ内で管理することを推奨
-      console.log(`XRPウォレットシーケンス更新: ${hotWallet.address} -> ${newSequence}`);
 
     } catch (error) {
       console.error('ウォレットシーケンス更新エラー:', error);
@@ -663,8 +658,6 @@ export class XRPWithdrawalProcessor {
           },
           { userId: withdrawal.user_id as string, riskLevel: 'medium' }
         );
-
-        console.log(`XRP出金確認完了: ${withdrawal.id} (レジャー: ${txResponse.result.ledger_index})`);
       }
 
     } catch (error) {

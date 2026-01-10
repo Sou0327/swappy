@@ -140,10 +140,6 @@ export async function createLimitOrderExecutedNotification(
       };
     }
 
-    console.log(
-      `[Notification] Created limit order notification for user ${info.userId}, order ${info.orderId} using template system`
-    );
-
     return {
       success: true,
       notificationId: data.id,

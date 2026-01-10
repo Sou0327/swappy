@@ -104,8 +104,6 @@ export class RealtimeDepositClient {
       // ハートビート開始
       this.startHeartbeat();
 
-      console.log(`🔔 Real-time deposit monitoring started for user: ${this.userId}`);
-
     } catch (error) {
       console.error('Failed to subscribe to real-time deposits:', error);
       this.emitError(new Error(`Subscription failed: ${error instanceof Error ? error.message : 'Unknown error'}`));
@@ -129,8 +127,6 @@ export class RealtimeDepositClient {
       this.connectionState.quality = 'disconnected';
       this.emitConnectionChange();
 
-      console.log(`🔕 Real-time deposit monitoring stopped for user: ${this.userId}`);
-
     } catch (error) {
       console.error('Failed to unsubscribe from real-time deposits:', error);
       this.emitError(new Error(`Unsubscription failed: ${error instanceof Error ? error.message : 'Unknown error'}`));
@@ -152,7 +148,6 @@ export class RealtimeDepositClient {
   async retryConnection(): Promise<void> {
     if (this.isDestroyed) return;
 
-    console.log('🔄 Manual reconnection requested');
     this.connectionState.reconnectionAttempts = 0; // リセット
     await this.attemptReconnection();
   }
@@ -200,12 +195,6 @@ export class RealtimeDepositClient {
         timestamp: new Date(),
         userId: this.userId
       };
-
-      console.log('📥 Deposit event received:', {
-        event: eventData.event,
-        depositId: eventData.new_record?.id || eventData.old_record?.id,
-        status: eventData.new_record?.status || eventData.old_record?.status
-      });
 
       // 接続品質更新
       this.updateConnectionQuality('good');
@@ -277,8 +266,6 @@ export class RealtimeDepositClient {
    * サブスクリプション状態処理
    */
   private handleSubscriptionStatus(status: string): void {
-    console.log(`📡 Subscription status: ${status}`);
-
     switch (status) {
       case 'SUBSCRIBED':
         this.connectionState.isConnected = true;
@@ -316,8 +303,6 @@ export class RealtimeDepositClient {
     // 指数バックオフ（1秒、2秒、4秒、8秒、16秒）
     const delay = Math.min(1000 * Math.pow(2, this.connectionState.reconnectionAttempts), 16000);
 
-    console.log(`⏱️ Scheduling reconnection in ${delay}ms (attempt ${this.connectionState.reconnectionAttempts + 1})`);
-
     this.reconnectionTimeout = setTimeout(() => {
       this.attemptReconnection();
     }, delay);
@@ -330,7 +315,6 @@ export class RealtimeDepositClient {
     if (this.isDestroyed) return;
 
     this.connectionState.reconnectionAttempts++;
-    console.log(`🔄 Reconnection attempt ${this.connectionState.reconnectionAttempts}`);
 
     try {
       // 現在のサブスクリプションを再初期化

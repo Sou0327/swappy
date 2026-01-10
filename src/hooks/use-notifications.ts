@@ -160,8 +160,6 @@ export const useNotifications = () => {
           filter: `user_id=eq.${user.id}`
         },
         (payload) => {
-          console.log('新しい通知を受信:', payload);
-          
           // 新しい通知をリストの先頭に追加
           const newNotification: Notification = {
             id: payload.new.id,
@@ -193,8 +191,6 @@ export const useNotifications = () => {
           filter: `user_id=eq.${user.id}`
         },
         (payload) => {
-          console.log('通知が更新されました:', payload);
-          
           // 更新された通知を反映
           if (notificationsState.data) {
             const updatedNotifications = notificationsState.data.map(notification =>

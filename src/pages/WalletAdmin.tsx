@@ -143,12 +143,6 @@ const WalletAdmin = () => {
         description: `サブスクリプション: ${subscriptionCount}件, エラー: ${errorCount}件`
       });
 
-      console.log('✅ Tatum管理データ取得完了:', {
-        subscriptions: subscriptionCount,
-        webhookErrors: errorCount,
-        summary: result.summary
-      });
-
     } catch (error) {
       console.error('Tatumデータ読み込み失敗:', error);
 

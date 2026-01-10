@@ -120,12 +120,6 @@ export function useRealtimeDeposits(
 
   // 新規入金イベント処理
   const handleNewDeposit = useCallback((data: DepositEventData) => {
-    console.log('🆕 新規入金検知:', {
-      depositId: data.new_record?.id,
-      amount: data.new_record?.amount,
-      status: data.new_record?.status
-    });
-
     setState(prev => {
       const newDeposits = enableEventHistory
         ? [data, ...prev.deposits].slice(0, maxEvents)
@@ -159,12 +153,6 @@ export function useRealtimeDeposits(
 
   // 入金更新イベント処理
   const handleDepositUpdate = useCallback((data: DepositEventData) => {
-    console.log('🔄 入金状態更新:', {
-      depositId: data.new_record?.id,
-      oldStatus: data.old_record?.status,
-      newStatus: data.new_record?.status
-    });
-
     setState(prev => {
       const updatedDeposits = enableEventHistory
         ? [data, ...prev.deposits].slice(0, maxEvents)
@@ -186,12 +174,6 @@ export function useRealtimeDeposits(
 
   // ステータス変更イベント処理
   const handleStatusChange = useCallback((data: DepositEventData & { oldStatus?: string; newStatus: string }) => {
-    console.log('📈 入金ステータス変更:', {
-      depositId: data.new_record?.id,
-      oldStatus: data.oldStatus,
-      newStatus: data.newStatus
-    });
-
     setState(prev => ({
       ...prev,
       eventCounts: {
@@ -228,12 +210,6 @@ export function useRealtimeDeposits(
 
   // 確認数更新イベント処理
   const handleConfirmationUpdate = useCallback((data: DepositEventData & { oldConfirmations?: number; newConfirmations: number }) => {
-    console.log('✅ 確認数更新:', {
-      depositId: data.new_record?.id,
-      oldConfirmations: data.oldConfirmations,
-      newConfirmations: data.newConfirmations
-    });
-
     setState(prev => ({
       ...prev,
       eventCounts: {
@@ -278,8 +254,6 @@ export function useRealtimeDeposits(
 
   // 接続変更イベント処理
   const handleConnectionChange = useCallback((connected: boolean, quality: 'good' | 'poor' | 'disconnected') => {
-    console.log('📡 接続状態変更:', { connected, quality });
-
     setState(prev => ({
       ...prev,
       connectionState: {
@@ -314,9 +288,6 @@ export function useRealtimeDeposits(
         isSubscribed: true,
         connectionState: clientRef.current.getConnectionState()
       }));
-
-      console.log('🔔 リアルタイム入金監視開始');
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error('購読開始に失敗しました');
       handleError(err);
@@ -337,9 +308,6 @@ export function useRealtimeDeposits(
           quality: 'disconnected'
         }
       }));
-
-      console.log('🔕 リアルタイム入金監視停止');
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error('購読停止に失敗しました');
       handleError(err);
@@ -356,9 +324,6 @@ export function useRealtimeDeposits(
         ...prev,
         connectionState: clientRef.current.getConnectionState()
       }));
-
-      console.log('🔄 手動再接続実行');
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error('再接続に失敗しました');
       handleError(err);

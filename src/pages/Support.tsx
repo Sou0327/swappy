@@ -80,13 +80,6 @@ const Support = () => {
         // 現在のユーザーでない場合は管理者からの返信と判定
         const isAdmin = !isCurrentUser;
 
-        console.log(`ユーザー ${reply.user_id} の管理者判定:`, {
-          isCurrentUser,
-          isAdmin,
-          currentUserId: user?.id,
-          currentUserRole: userRole
-        });
-
         return {
           ...reply,
           is_admin: isAdmin

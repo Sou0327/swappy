@@ -172,19 +172,10 @@ export const tradingConfig = {
 
 /**
  * 設定をログ出力（デバッグ用、シークレットは除外）
+ * @deprecated デバッグログは削除されました。必要に応じて開発時のみ再実装してください。
  */
 export function logConfig(): void {
-  console.log('[Trading Config] Limit Order Monitor:', {
-    ...DEFAULT_LIMIT_ORDER_MONITOR_CONFIG,
-  });
-  console.log('[Trading Config] Binance API:', {
-    wsUrl: DEFAULT_BINANCE_API_CONFIG.wsUrl,
-    restApiUrl: DEFAULT_BINANCE_API_CONFIG.restApiUrl,
-    apiKeyConfigured: !!DEFAULT_BINANCE_API_CONFIG.apiKey,
-    apiSecretConfigured: !!DEFAULT_BINANCE_API_CONFIG.apiSecret,
-  });
-  console.log('[Trading Config] WebSocket:', WEBSOCKET_CONFIG);
-  console.log('[Trading Config] REST API:', REST_API_CONFIG);
+  // デバッグログは本番環境から削除されました
 }
 
 /**

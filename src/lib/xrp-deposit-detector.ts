@@ -75,7 +75,6 @@ export class XRPDepositDetector {
       if (!this.isConnected) {
         await this.client.connect();
         this.isConnected = true;
-        console.log(`XRPL接続成功: ${this.networkConfig.name}`);
       }
     } catch (error) {
       throw new Error(`XRPL接続に失敗: ${error.message}`);
@@ -90,7 +89,6 @@ export class XRPDepositDetector {
       if (this.isConnected) {
         await this.client.disconnect();
         this.isConnected = false;
-        console.log('XRPL切断完了');
       }
     } catch (error) {
       console.warn('XRPL切断エラー:', error);
@@ -103,8 +101,6 @@ export class XRPDepositDetector {
   async startDetection(): Promise<void> {
     await this.connect();
     await this.loadLastProcessedLedger();
-    
-    console.log(`XRP入金検知開始 (ネットワーク: ${this.network}, 最後の処理レジャー: ${this.lastProcessedLedger})`);
   }
 
   /**
@@ -202,13 +198,10 @@ export class XRPDepositDetector {
         return results;
       }
 
-      console.log(`XRP新レジャー検知: ${this.lastProcessedLedger + 1} -> ${latestLedger.ledgerIndex}`);
-
       // 管理対象のアドレス一覧を取得
       const depositAddresses = await this.getDepositAddresses();
       
       if (depositAddresses.length === 0) {
-        console.log('管理対象のXRPアドレスがありません');
         await this.saveLastProcessedLedger(latestLedger.ledgerIndex);
         return results;
       }
@@ -315,8 +308,6 @@ export class XRPDepositDetector {
           fee: feeXRP,
           sourceAddress: tx.Account
         });
-
-        console.log(`XRP入金検知: ${amountXRP} XRP -> ${address} (${tx.hash})`);
       }
 
     } catch (error) {
@@ -390,7 +381,6 @@ export class XRPDepositDetector {
         .single();
 
       if (existing) {
-        console.log(`XRP入金 ${transactionHash} は既に記録済み`);
         return;
       }
 
@@ -434,8 +424,6 @@ export class XRPDepositDetector {
         },
         { userId, riskLevel: 'medium' }
       );
-
-      console.log(`XRP入金記録完了: ${amount} XRP (${transactionHash})`);
 
     } catch (error) {
       console.error('XRP入金記録エラー:', error);

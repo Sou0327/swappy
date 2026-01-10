@@ -314,7 +314,6 @@ export function useNotifications(): UseNotificationsReturn {
     }
 
     if (!shouldNotify(data.type)) {
-      console.log('Notification blocked by user settings:', data.type);
       return false;
     }
 
@@ -336,7 +335,6 @@ export function useNotifications(): UseNotificationsReturn {
 
       // イベントリスナー設定
       notification.onclick = (event) => {
-        console.log('Notification clicked:', data.type);
         setStats(prev => ({ ...prev, clicked: prev.clicked + 1 }));
 
         // カスタムクリック処理
@@ -350,7 +348,6 @@ export function useNotifications(): UseNotificationsReturn {
       };
 
       notification.onclose = () => {
-        console.log('Notification closed:', data.type);
         setStats(prev => ({ ...prev, dismissed: prev.dismissed + 1 }));
       };
 
@@ -371,7 +368,6 @@ export function useNotifications(): UseNotificationsReturn {
         lastSent: new Date()
       }));
 
-      console.log('Notification sent successfully:', data.type);
       return true;
 
     } catch (error) {
@@ -386,9 +382,8 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   // 通知クリア
-  const clearNotifications = useCallback((tag?: string) => {
+  const clearNotifications = useCallback((_tag?: string) => {
     // Service Worker経由で通知をクリア（実装時に追加）
-    console.log('Clearing notifications:', tag || 'all');
   }, []);
 
   // テスト通知

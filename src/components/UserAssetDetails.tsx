@@ -54,7 +54,6 @@ export const UserAssetDetails: React.FC<UserAssetDetailsProps> = memo(({
       const rate = computePairRate(asset.currency, 'USDT', priceData);
       const usdtValue = totalBalance * rate;
 
-      console.log(`💎 ${asset.currency}: ${totalBalance} * ${rate} = ${usdtValue} USDT`);
       return usdtValue;
     } catch (error) {
       console.error(`通貨 ${asset.currency} のUSDT変換エラー:`, error);

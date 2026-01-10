@@ -89,8 +89,6 @@ export class StageLoadingManager {
 
   skipStage(reason?: string): void {
     if (this.currentStageIndex < this.stages.length) {
-      const currentStage = this.stages[this.currentStageIndex];
-      console.log(`ステージスキップ: ${currentStage.title}${reason ? ` (理由: ${reason})` : ''}`);
       this.nextStage();
     }
   }

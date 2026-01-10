@@ -323,18 +323,7 @@ const matchesCombination = (
   combination: CombinationDescriptor,
   address: UserDepositAddress
 ) => {
-  console.log(`🔍 [MATCH] Checking combination:`, {
-    combination,
-    address: {
-      currency: address.currency,
-      network: address.network,
-      address: address.address,
-      chain_hint: address.chain_hint
-    }
-  });
-
   if (address.currency !== combination.asset) {
-    console.log(`❌ [MATCH] Currency mismatch: ${address.currency} !== ${combination.asset}`);
     return false;
   }
 
@@ -343,7 +332,6 @@ const matchesCombination = (
   if (addressNetwork && combinationNetwork && addressNetwork !== combinationNetwork) {
     const isGenericMainnet = addressNetwork === 'mainnet' && combinationNetwork === 'mainnet';
     if (!isGenericMainnet) {
-      console.log(`❌ [MATCH] Network mismatch: ${addressNetwork} !== ${combinationNetwork}`);
       return false;
     }
   }
@@ -352,18 +340,10 @@ const matchesCombination = (
     ? address.chain_hint
     : detectChainFromAddress(address);
 
-  console.log(`🔍 [MATCH] Chain comparison:`, {
-    chainHint,
-    combinationChain: combination.chain,
-    match: chainHint === combination.chain
-  });
-
   if (chainHint && chainHint !== combination.chain) {
-    console.log(`❌ [MATCH] Chain mismatch: ${chainHint} !== ${combination.chain}`);
     return false;
   }
 
-  console.log(`✅ [MATCH] Match successful!`);
   return true;
 };
 
@@ -826,7 +806,6 @@ const AdminDashboard = () => {
   // KYC申請データを取得
   const fetchKYCApplications = useCallback(async () => {
     try {
-      console.log('KYC申請データ取得開始');
       const { data, error } = await supabase
         .from('profiles')
         .select(`
@@ -853,8 +832,6 @@ const AdminDashboard = () => {
         .not('kyc_status', 'is', null)
         .neq('kyc_status', 'none')
         .order('kyc_updated_at', { ascending: false });
-
-      console.log('KYC申請データ取得結果:', { data, error, count: data?.length });
 
       if (error) throw error;
 
@@ -959,7 +936,6 @@ const AdminDashboard = () => {
         // 各通貨をUSDTに変換
         const rate = computePairRate(asset.currency, 'USDT', priceData);
         const usdtValue = totalBalance * rate;
-        console.log(`💱 ${asset.currency}: ${totalBalance} * ${rate} = ${usdtValue} USDT`);
         return sum + usdtValue;
       } catch (error) {
         console.error(`通貨 ${asset.currency} のUSDT変換エラー:`, error);
@@ -967,7 +943,6 @@ const AdminDashboard = () => {
       }
     }, 0);
 
-    console.log(`💯 総評価額: ${totalUsdtValue} USDT`);
     return totalUsdtValue;
   }, [priceData]);
 
@@ -1408,16 +1383,6 @@ const AdminDashboard = () => {
 
   // ユーザー入金アドレス更新機能
   const updateUserDepositAddress = async (addressId: string, newAddressValue: string) => {
-    // デバッグログ: 更新開始時の詳細情報
-    const targetAddress = selectedUserAddresses.find(addr => addr.id === addressId);
-    console.log('💾 更新開始:', {
-      addressId,
-      newAddressValue,
-      targetCurrency: targetAddress?.currency,
-      targetNetwork: targetAddress?.network,
-      currentEditingAddress: editingAddress
-    });
-
     // 更新中の状態を設定（重複操作防止とローディング表示）
     setUpdatingAddress(addressId);
 
@@ -1506,25 +1471,6 @@ const AdminDashboard = () => {
   ) => {
     const combinationKey = getCombinationKey(combination);
 
-    // デバッグログ: 編集開始時の詳細情報と他のアドレス状態
-    console.log('🔧 編集開始 (キー固定版):', {
-      addressId: address.id,
-      currency: address.currency,
-      network: address.network,
-      combinationKey,
-      chain: combination.chain,
-      asset: combination.asset,
-      address: address.address,
-      currentEditingAddress: editingAddress,
-      currentEditingKey: editingKey,
-      allUserAddresses: selectedUserAddresses.map(addr => ({
-        id: addr.id,
-        currency: addr.currency,
-        network: addr.network,
-        addressPreview: addr.address.substring(0, 10) + '...'
-      }))
-    });
-
     setEditingAddress(address.id);
     setEditingKey(combinationKey);
     setNewAddress(address.address);
@@ -1539,7 +1485,6 @@ const AdminDashboard = () => {
   // 選択されたユーザーのアドレス一覧を取得
   const fetchSelectedUserAddresses = useCallback(async (userId: string) => {
     try {
-      console.log(`📡 [DEBUG] fetchSelectedUserAddresses - fetching data for userId: ${userId}`);
       const { data: addressData, error } = await supabase
         .from('user_deposit_addresses')
         .select('*')
@@ -1547,12 +1492,9 @@ const AdminDashboard = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error(`❌ [DEBUG] fetchSelectedUserAddresses - database error:`, error);
+        console.error('Error fetching user addresses:', error);
         throw error;
       }
-
-      console.log(`📊 [DEBUG] fetchSelectedUserAddresses - raw data received:`, addressData);
-      console.log(`📊 [DEBUG] fetchSelectedUserAddresses - data count: ${addressData?.length || 0}`);
 
       const formattedAddresses: UserDepositAddress[] = (addressData || []).map(addr => {
         const baseAddress = addr as UserDepositAddress;
@@ -1573,8 +1515,6 @@ const AdminDashboard = () => {
         };
       });
 
-      console.log(`🎯 [DEBUG] fetchSelectedUserAddresses - formatted addresses:`, formattedAddresses);
-      console.log(`🎯 [DEBUG] fetchSelectedUserAddresses - updating UI state with ${formattedAddresses.length} addresses`);
       setSelectedUserAddresses(formattedAddresses);
     } catch (error) {
       console.error('Error fetching user addresses:', error);
@@ -1593,15 +1533,12 @@ const AdminDashboard = () => {
     network: SupportedNetwork,
     asset: SupportedAsset
   ) => {
-    console.log(`🚀 [DEBUG] generateDepositAddress called: userId=${userId}, chain=${chain}, network=${network}, asset=${asset}`);
-
     const combinationDescriptor: CombinationDescriptor = { chain, network, asset };
     const key = getCombinationKey(combinationDescriptor);
     setGeneratingAddress(key);
 
     try {
       // 既存のアドレスチェック（チェーン識別対応）
-      console.log(`🔍 [DEBUG] Checking existing address for: ${userId} - ${chain} - ${asset} - ${network}`);
       const { data: existingRecords, error: existingFetchError } = await supabase
         .from('user_deposit_addresses')
         .select('*')
@@ -1610,11 +1547,9 @@ const AdminDashboard = () => {
         .eq('network', network);
 
       if (existingFetchError) {
-        console.error(`❌ [DEBUG] Database error:`, existingFetchError);
+        console.error('Error checking existing address:', existingFetchError);
         throw existingFetchError;
       }
-
-      console.log(`📊 [DEBUG] Found ${existingRecords?.length || 0} records for ${asset}-${network}`);
 
       // チェーン固有の既存アドレスをフィルタリング
       const chainSpecificRecord = existingRecords?.find(record => {
@@ -1628,7 +1563,6 @@ const AdminDashboard = () => {
       });
 
       if (chainSpecificRecord) {
-        console.log(`⚠️ [DEBUG] Chain-specific existing record found, early return:`, chainSpecificRecord);
         toast({
           title: "警告",
           description: "このユーザーは既にこの組み合わせのアドレスを持っています。",
@@ -1802,9 +1736,7 @@ const AdminDashboard = () => {
       });
 
       // 選択されたユーザーのアドレス一覧を再取得
-      console.log(`🔄 [DEBUG] Calling fetchSelectedUserAddresses for userId: ${userId}`);
       await fetchSelectedUserAddresses(userId);
-      console.log(`✅ [DEBUG] fetchSelectedUserAddresses completed for userId: ${userId}`);
     } catch (error) {
       console.error('Error generating address:', error);
 
@@ -3742,24 +3674,7 @@ const AdminDashboard = () => {
 
                                   {existingAddress ? (
                                     <div className="space-y-2">
-                                      {(() => {
-                                        const isEditingLegacy = editingAddress === existingAddress.id;
-                                        const isEditingFixed = editingKey === combinationKey;
-
-                                        console.log('🎨 UI描画状態 (キー固定版):', {
-                                          asset,
-                                          network: combination.network,
-                                          chainName: combination.chainName,
-                                          chain: combination.chain,
-                                          combinationKey,
-                                          addressId: existingAddress.id,
-                                          editingAddress,
-                                          editingKey,
-                                          isEditingLegacy,
-                                        });
-
-                                        return isEditingFixed;
-                                      })() ? (
+                                      {editingKey === combinationKey ? (
                                         <div className="space-y-2">
                                           <Input
                                             value={newAddress}

@@ -353,7 +353,6 @@ export class ERC20DepositDetector {
     const depositAddresses = await this.getDepositAddresses(tokenSymbol);
 
     if (depositAddresses.length === 0) {
-      console.log(`No deposit addresses found for ${tokenSymbol}`);
       return results;
     }
 

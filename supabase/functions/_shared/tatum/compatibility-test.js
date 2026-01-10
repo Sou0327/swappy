@@ -91,19 +91,19 @@ console.log('  ✅ コネクションプーリング');
 
 console.log('\n📊 チェーンマッピング互換性:');
 const chainMappings = [
-  { layerX: 'evm/ethereum', tatum: 'ETH', status: '✅' },
-  { layerX: 'evm/sepolia', tatum: 'ETH_SEPOLIA', status: '✅' },
-  { layerX: 'btc/mainnet', tatum: 'BTC', status: '✅' },
-  { layerX: 'btc/testnet', tatum: 'BTC_TESTNET', status: '✅' },
-  { layerX: 'xrp/mainnet', tatum: 'XRP', status: '✅' },
-  { layerX: 'xrp/testnet', tatum: 'XRP_TESTNET', status: '✅' },
-  { layerX: 'trc/mainnet', tatum: 'TRX', status: '✅' },
-  { layerX: 'trc/shasta', tatum: 'TRX_SHASTA', status: '✅' },
-  { layerX: 'ada/mainnet', tatum: 'ADA', status: '✅' }
+  { Undefined: 'evm/ethereum', tatum: 'ETH', status: '✅' },
+  { Undefined: 'evm/sepolia', tatum: 'ETH_SEPOLIA', status: '✅' },
+  { Undefined: 'btc/mainnet', tatum: 'BTC', status: '✅' },
+  { Undefined: 'btc/testnet', tatum: 'BTC_TESTNET', status: '✅' },
+  { Undefined: 'xrp/mainnet', tatum: 'XRP', status: '✅' },
+  { Undefined: 'xrp/testnet', tatum: 'XRP_TESTNET', status: '✅' },
+  { Undefined: 'trc/mainnet', tatum: 'TRX', status: '✅' },
+  { Undefined: 'trc/shasta', tatum: 'TRX_SHASTA', status: '✅' },
+  { Undefined: 'ada/mainnet', tatum: 'ADA', status: '✅' }
 ];
 
 chainMappings.forEach(mapping => {
-  console.log(`  ${mapping.status} ${mapping.layerX} → ${mapping.tatum}`);
+  console.log(`  ${mapping.status} ${mapping.Undefined} → ${mapping.tatum}`);
 });
 
 console.log('\n🔄 マイグレーション戦略:');

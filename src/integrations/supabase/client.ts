@@ -6,14 +6,6 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
 
-// セキュリティ考慮: 開発環境でのみ最小限のデバッグ情報を出力
-if (import.meta.env.DEV) {
-  console.log('🔍 [SUPABASE CONFIG] 開発環境デバッグ情報:');
-  console.log('VITE_SUPABASE_URL:', SUPABASE_URL);
-  console.log('VITE_SUPABASE_PUBLISHABLE_KEY:', SUPABASE_PUBLISHABLE_KEY ? '✅ 設定済み' : '❌ 未設定');
-  console.log('Environment mode:', import.meta.env.MODE);
-}
-
 if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
   // Fail fast to avoid accidentally using hard-coded secrets
   throw new Error(

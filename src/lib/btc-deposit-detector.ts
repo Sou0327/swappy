@@ -226,8 +226,6 @@ export class BTCDepositDetector {
   async startDetection(): Promise<void> {
     // 最後に処理したブロック高を取得
     await this.loadLastProcessedBlock();
-    
-    console.log(`Bitcoin入金検知開始 (ネットワーク: ${this.network}, 最小確認数: ${this.minConfirmations})`);
   }
 
   /**
@@ -296,13 +294,10 @@ export class BTCDepositDetector {
         return results;
       }
 
-      console.log(`Bitcoin新ブロック検知: ${this.lastProcessedBlock + 1} -> ${latestBlock.height}`);
-
       // 管理対象のアドレス一覧を取得
       const depositAddresses = await this.getDepositAddresses();
       
       if (depositAddresses.length === 0) {
-        console.log('管理対象のBitcoinアドレスがありません');
         await this.saveLastProcessedBlock(latestBlock.height);
         return results;
       }
@@ -414,8 +409,6 @@ export class BTCDepositDetector {
               addressType: addressInfo.type,
               timestamp: tx.time || Date.now() / 1000
             });
-
-            console.log(`Bitcoin入金検知: ${amountBTC} BTC -> ${address} (${txid}:${output.n})`);
           }
         }
       }
@@ -484,7 +477,6 @@ export class BTCDepositDetector {
         .single();
 
       if (existing) {
-        console.log(`Bitcoin入金 ${transactionHash}:${vout} は既に記録済み`);
         return;
       }
 
@@ -526,8 +518,6 @@ export class BTCDepositDetector {
         },
         { userId, riskLevel: 'medium' }
       );
-
-      console.log(`Bitcoin入金記録完了: ${amount} BTC (${transactionHash}:${vout})`);
 
     } catch (error) {
       console.error('Bitcoin入金記録エラー:', error);
@@ -583,8 +573,6 @@ export class BTCDepositDetector {
               },
               { userId: deposit.user_id, riskLevel: 'low' }
             );
-
-            console.log(`Bitcoin入金確認完了: ${deposit.transaction_hash} (${confirmations}確認)`);
           }
 
         } catch (error) {

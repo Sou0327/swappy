@@ -300,7 +300,6 @@ export class AdaDepositDetector {
         .single();
 
       if (existing) {
-        console.log(`ADA deposit ${transactionHash} already recorded`);
         return;
       }
 
@@ -326,8 +325,6 @@ export class AdaDepositDetector {
         console.error('Failed to record ADA deposit:', error);
         throw error;
       }
-
-      console.log(`Recorded ${tokenSymbol} deposit: ${amount} ${tokenSymbol} from ${transactionHash}`);
     } catch (error) {
       console.error('Error recording ADA deposit:', error);
       throw error;
@@ -402,7 +399,6 @@ export class AdaDepositDetector {
     const depositAddresses = await this.getDepositAddresses('ADA');
 
     if (depositAddresses.length === 0) {
-      console.log('No ADA deposit addresses found');
       return results;
     }
 
@@ -455,8 +451,6 @@ export class AdaDepositDetector {
                 blockHeight: tx.block_height,
                 blockTime: tx.block_time
               });
-
-              console.log(`Found ADA deposit: ${amount} ADA to ${addressInfo.address} (${tx.hash})`);
             }
           }
         }
@@ -484,7 +478,6 @@ export class AdaDepositDetector {
     const assetId = policyId + assetName;
 
     if (depositAddresses.length === 0) {
-      console.log(`No ${tokenSymbol} deposit addresses found`);
       return results;
     }
 
@@ -535,8 +528,6 @@ export class AdaDepositDetector {
                 blockHeight: tx.block_height,
                 blockTime: tx.block_time
               });
-
-              console.log(`Found ${tokenSymbol} deposit: ${amount} ${tokenSymbol} to ${addressInfo.address} (${tx.hash})`);
             }
           }
         }
@@ -554,8 +545,6 @@ export class AdaDepositDetector {
   async scanAllDeposits(fromSlot?: number): Promise<AdaDepositResult[]> {
     const latestBlock = await this.getLatestBlock();
     
-    console.log(`Scanning Cardano deposits from slot ${fromSlot || 'recent'} to ${latestBlock.slot}...`);
-
     const supportedTokens = await this.getSupportedTokens();
     const results: AdaDepositResult[] = [];
 

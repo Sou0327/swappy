@@ -111,7 +111,7 @@ export async function fetchPriceViaWebSocket(
 
       // 接続成功
       ws.onopen = () => {
-        console.log(`[WS Short] Connected to ${symbol}`);
+        // 接続成功
       };
 
       // メッセージ受信
@@ -133,7 +133,6 @@ export async function fetchPriceViaWebSocket(
             }
 
             // 価格取得成功
-            console.log(`[WS Short] Price received for ${symbol}: ${price}`);
             resolved = true;
             cleanup();
             resolve(price);
@@ -282,7 +281,6 @@ export class BinanceWebSocketClient {
         this.reconnectAttempt = 0;
         this.updateState('connected');
         this.startPingTimer();
-        console.log(`[Binance WS] Connected to ${this.symbol}`);
       };
 
       this.ws.onmessage = (event) => {
@@ -299,7 +297,6 @@ export class BinanceWebSocketClient {
       this.ws.onclose = () => {
         clearTimeout(connectionTimeout);
         this.stopPingTimer();
-        console.log(`[Binance WS] Disconnected from ${this.symbol}`);
 
         if (!this.manualClose) {
           this.scheduleReconnect();
@@ -402,12 +399,6 @@ export class BinanceWebSocketClient {
 
     this.updateState('reconnecting');
     const delay = calculateBackoffDelay(this.reconnectAttempt, this.config);
-
-    console.log(
-      `[Binance WS] Reconnecting ${this.symbol} in ${delay}ms (attempt ${
-        this.reconnectAttempt + 1
-      }/${this.config.maxReconnectAttempts})`
-    );
 
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
@@ -536,7 +527,6 @@ export class MultiSymbolWebSocketMonitor {
     if (client) {
       client.close();
       this.clients.delete(normalizedSymbol);
-      console.log(`[Multi WS] Stopped monitoring ${symbol}`);
     }
   }
 
@@ -544,9 +534,8 @@ export class MultiSymbolWebSocketMonitor {
    * すべてのシンボルの監視を停止
    */
   removeAllSymbols(): void {
-    for (const [symbol, client] of this.clients.entries()) {
+    for (const [, client] of this.clients.entries()) {
       client.close();
-      console.log(`[Multi WS] Stopped monitoring ${symbol}`);
     }
     this.clients.clear();
   }

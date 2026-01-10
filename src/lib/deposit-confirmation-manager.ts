@@ -119,8 +119,6 @@ export class DepositConfirmationManager {
         ]
       );
 
-      console.log(`[DepositConfirmationManager] Loading ${confirmationConfigs.length} chain configurations`);
-
       for (const config of confirmationConfigs) {
         const key = `${config.chain}-${config.network}`;
         this.configs.set(key, {
@@ -163,8 +161,6 @@ export class DepositConfirmationManager {
         { id: 'ada-mainnet-ada-auto', chain: 'ada', network: 'mainnet', asset: 'ADA', min_amount: 1, max_amount: 100000, auto_approve: true, requires_manual_approval: false, risk_level: 'low' }
       ];
 
-      console.log(`[DepositConfirmationManager] Loading ${approvalRules.length} approval rules`);
-
       for (const rule of approvalRules) {
         const key = `${rule.chain}-${rule.network}-${rule.asset}`;
         if (!this.approvalRules.has(key)) {
@@ -194,12 +190,10 @@ export class DepositConfirmationManager {
    */
   async startConfirmationProcess(): Promise<void> {
     if (this.isRunning) {
-      console.log('入金確認処理は既に実行中です');
       return;
     }
 
     this.isRunning = true;
-    console.log('入金確認・承認処理開始');
 
     try {
       // 未確認の入金を処理
@@ -229,8 +223,6 @@ export class DepositConfirmationManager {
       if (!pendingDeposits?.length) {
         return;
       }
-
-      console.log(`${pendingDeposits.length}件の未確認入金を処理中...`);
 
       for (const deposit of pendingDeposits) {
         await this.processDepositConfirmation(deposit);
@@ -440,8 +432,6 @@ export class DepositConfirmationManager {
         { userId: deposit.userId, riskLevel: 'medium' }
       );
 
-      console.log(`入金確認完了: ${deposit.id} (${deposit.amount} ${deposit.asset})`);
-
     } catch (error) {
       console.error(`入金確認マークエラー (${deposit.id}):`, error);
       throw error;
@@ -518,8 +508,6 @@ export class DepositConfirmationManager {
         { userId: deposit.userId, riskLevel: 'high' }
       );
 
-      console.log(`入金失敗マーク: ${deposit.id} (理由: ${reason})`);
-
     } catch (error) {
       console.error(`入金失敗マークエラー (${deposit.id}):`, error);
     }
@@ -539,8 +527,6 @@ export class DepositConfirmationManager {
       if (!confirmedDeposits?.length) {
         return;
       }
-
-      console.log(`${confirmedDeposits.length}件の確認済み入金を承認処理中...`);
 
       for (const deposit of confirmedDeposits) {
         await this.processDepositApproval(deposit);
@@ -725,8 +711,6 @@ export class DepositConfirmationManager {
         { userId: deposit.userId, riskLevel: 'low' }
       );
 
-      console.log(`入金承認完了: ${deposit.id} (${deposit.amount} ${deposit.asset})`);
-
     } catch (error) {
       console.error(`入金承認エラー (${deposit.id}):`, error);
       throw error;
@@ -738,9 +722,6 @@ export class DepositConfirmationManager {
    */
   private async requestManualApproval(deposit: DepositInfo, riskLevel: string): Promise<void> {
     try {
-      // 手動承認キューに追加（仮のログ出力）
-      console.log(`手動承認キューに追加: ${deposit.id} (リスクレベル: ${riskLevel})`);
-
       // 監査ログ記録
       await AuditLogger.log(
         AuditAction.DEPOSIT_CONFIRM,
@@ -751,8 +732,6 @@ export class DepositConfirmationManager {
         },
         { userId: deposit.userId, riskLevel: riskLevel as 'low' | 'medium' | 'high' }
       );
-
-      console.log(`手動承認リクエスト: ${deposit.id} (リスクレベル: ${riskLevel})`);
 
     } catch (error) {
       console.error(`手動承認リクエストエラー (${deposit.id}):`, error);
@@ -787,8 +766,6 @@ export class DepositConfirmationManager {
         },
         { userId: deposit.userId, riskLevel: 'high' }
       );
-
-      console.log(`入金拒否: ${deposit.id} (理由: ${reason})`);
 
     } catch (error) {
       console.error(`入金拒否エラー (${deposit.id}):`, error);

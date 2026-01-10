@@ -55,8 +55,6 @@ export class WalletIntegrationTester {
    * 全ウォレットシステムの統合テスト実行
    */
   async runCompleteIntegrationTest(): Promise<IntegrationTestSuite> {
-    console.log('🧪 ウォレットシステム統合テスト開始...');
-    
     this.results = [];
     const startTime = Date.now();
 
@@ -87,8 +85,6 @@ export class WalletIntegrationTester {
       auditLogging: this.results.filter(r => r.walletType === 'audit-logging' && r.success).length > 0
     };
 
-    console.log(`✅ 統合テスト完了: ${passedTests}/${this.results.length} 成功`);
-
     return {
       timestamp: startTime,
       totalTests: this.results.length,
@@ -103,8 +99,6 @@ export class WalletIntegrationTester {
    * Bitcoinウォレットシステムテスト
    */
   private async testBitcoinWalletSystem(): Promise<void> {
-    console.log('🔗 Bitcoin ウォレットシステムテスト...');
-
     // HD Wallet生成テスト
     try {
       const keyPair = await BitcoinHDWallet.generateHDWalletKeyPair(
@@ -187,8 +181,6 @@ export class WalletIntegrationTester {
    * XRPウォレットシステムテスト
    */
   private async testXRPWalletSystem(): Promise<void> {
-    console.log('💧 XRP ウォレットシステムテスト...');
-
     // XRP Wallet生成テスト
     try {
       const wallet = await XRPWalletManager.generateSecureWallet(this.testUserId, 'testnet');
@@ -254,8 +246,6 @@ export class WalletIntegrationTester {
    * Ethereumウォレットシステムテスト
    */
   private async testEthereumWalletSystem(): Promise<void> {
-    console.log('⚡ Ethereum ウォレットシステムテスト...');
-
     try {
       // ETH アドレス生成テスト
       const ethWallet = generateEVMAddress(this.testUserId, 'sepolia', 'ETH');
@@ -300,8 +290,6 @@ export class WalletIntegrationTester {
    * TRONウォレットシステムテスト
    */
   private async testTronWalletSystem(): Promise<void> {
-    console.log('🌐 TRON ウォレットシステムテスト...');
-
     try {
       // TRX アドレス生成テスト
       const tronWallet = generateMultichainAddress(this.testUserId, 'trc', 'shasta', 'TRX');
@@ -332,8 +320,6 @@ export class WalletIntegrationTester {
    * Cardanoウォレットシステムテスト
    */
   private async testCardanoWalletSystem(): Promise<void> {
-    console.log('🔷 Cardano ウォレットシステムテスト...');
-
     try {
       // ADA アドレス生成テスト
       const cardanoWallet = generateMultichainAddress(this.testUserId, 'ada', 'testnet', 'ADA');
@@ -364,8 +350,6 @@ export class WalletIntegrationTester {
    * アドレス検証システムテスト
    */
   private async testAddressValidationSystem(): Promise<void> {
-    console.log('🔍 アドレス検証システムテスト...');
-
     try {
       // Bitcoin アドレス形式テスト
       const btcTestResults = BTCAddressTester.testAllFormats();
@@ -418,8 +402,6 @@ export class WalletIntegrationTester {
    * UTXO管理システムテスト
    */
   private async testUTXOManagementSystem(): Promise<void> {
-    console.log('📦 UTXO管理システムテスト...');
-
     try {
       const utxoManager = new UTXOManager('testnet');
 
@@ -513,8 +495,6 @@ export class WalletIntegrationTester {
    * 監査ログシステムテスト
    */
   private async testAuditLoggingSystem(): Promise<void> {
-    console.log('📝 監査ログシステムテスト...');
-
     try {
       // テスト用監査ログ記録
       const logEntry = await AuditLogger.log(

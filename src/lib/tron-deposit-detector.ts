@@ -321,7 +321,6 @@ export class TronDepositDetector {
         .single();
 
       if (existing) {
-        console.log(`TRON deposit ${transactionHash} already recorded`);
         return;
       }
 
@@ -347,8 +346,6 @@ export class TronDepositDetector {
         console.error('Failed to record TRON deposit:', error);
         throw error;
       }
-
-      console.log(`Recorded ${tokenSymbol} deposit: ${amount} ${tokenSymbol} from ${transactionHash}`);
     } catch (error) {
       console.error('Error recording TRON deposit:', error);
       throw error;
@@ -423,7 +420,6 @@ export class TronDepositDetector {
     const depositAddresses = await this.getDepositAddresses('TRX');
 
     if (depositAddresses.length === 0) {
-      console.log('No TRX deposit addresses found');
       return results;
     }
 
@@ -465,8 +461,6 @@ export class TronDepositDetector {
                   blockNumber: tx.blockNumber,
                   timestamp: tx.blockTimeStamp
                 });
-
-                console.log(`Found TRX deposit: ${amount} TRX to ${addressInfo.address} (${tx.txID})`);
               }
             }
           }
@@ -493,7 +487,6 @@ export class TronDepositDetector {
     const depositAddresses = await this.getDepositAddresses(tokenSymbol);
 
     if (depositAddresses.length === 0) {
-      console.log(`No ${tokenSymbol} deposit addresses found`);
       return results;
     }
 
@@ -533,8 +526,6 @@ export class TronDepositDetector {
                 blockNumber: tx.block_number,
                 timestamp: tx.block_timestamp
               });
-
-              console.log(`Found ${tokenSymbol} deposit: ${amount} ${tokenSymbol} to ${addressInfo.address} (${tx.transaction_id})`);
             }
           }
         }
@@ -553,8 +544,6 @@ export class TronDepositDetector {
     const latestBlock = await this.getLatestBlock();
     const scanFromTimestamp = fromTimestamp ?? (latestBlock.timestamp - 300000); // 5分前
     const scanToTimestamp = toTimestamp ?? latestBlock.timestamp;
-
-    console.log(`Scanning TRON deposits from ${new Date(scanFromTimestamp).toISOString()} to ${new Date(scanToTimestamp).toISOString()}...`);
 
     const supportedTokens = await this.getSupportedTokens();
     const results: TronDepositResult[] = [];

@@ -99,15 +99,13 @@ export async function fetchBinanceOrderBook(symbol: string, limit: number = 10):
   // キャッシュチェック
   const cached = rateLimiter.getCachedData(endpointKey);
   if (cached) {
-    console.log(`[Rate Limiter] Using cached orderbook for ${symbol}`);
     return cached as { bids: DepthLevel[]; asks: DepthLevel[] };
   }
   
   // レート制限チェック
   if (!rateLimiter.canMakeRequest(endpointKey)) {
     const waitTime = rateLimiter.waitTime(endpointKey);
-    console.log(`[Rate Limiter] Too frequent requests for ${symbol}, waiting ${waitTime}ms`);
-    
+
     // キャッシュがある場合は古いデータを返す
     const oldCached = rateLimiter.getRawCachedData(endpointKey);
     if (oldCached) {
@@ -140,8 +138,7 @@ export async function fetchBinanceOrderBook(symbol: string, limit: number = 10):
     
     // 成功時にキャッシュ
     rateLimiter.setCachedData(endpointKey, result);
-    console.log(`[Rate Limiter] Cached fresh orderbook for ${symbol}`);
-    
+
     return result;
   } catch (error) {
     console.error(`[Rate Limiter] Error fetching orderbook for ${symbol}:`, error);
@@ -149,7 +146,6 @@ export async function fetchBinanceOrderBook(symbol: string, limit: number = 10):
     // エラー時は古いキャッシュがあれば使用
     const fallbackCached = rateLimiter.getRawCachedData(endpointKey);
     if (fallbackCached) {
-      console.log(`[Rate Limiter] Using fallback cached data for ${symbol}`);
       return fallbackCached as { bids: DepthLevel[]; asks: DepthLevel[] };
     }
     
@@ -171,14 +167,12 @@ export async function fetchBinance24hrTicker(symbol: string): Promise<Binance24h
   // キャッシュチェック
   const cached = rateLimiter.getCachedData(endpointKey);
   if (cached) {
-    console.log(`[Rate Limiter] Using cached 24hr ticker for ${symbol}`);
     return cached as Binance24hrTicker;
   }
 
   // レート制限チェック
   if (!rateLimiter.canMakeRequest(endpointKey)) {
     const waitTime = rateLimiter.waitTime(endpointKey);
-    console.log(`[Rate Limiter] Too frequent requests for ${symbol} 24hr ticker, waiting ${waitTime}ms`);
 
     // キャッシュがある場合は古いデータを返す
     const oldCached = rateLimiter.getRawCachedData(endpointKey);
@@ -215,7 +209,6 @@ export async function fetchBinance24hrTicker(symbol: string): Promise<Binance24h
 
     // 成功時にキャッシュ
     rateLimiter.setCachedData(endpointKey, result);
-    console.log(`[Rate Limiter] Cached fresh 24hr ticker for ${symbol}`);
 
     return result;
   } catch (error) {
@@ -224,7 +217,6 @@ export async function fetchBinance24hrTicker(symbol: string): Promise<Binance24h
     // エラー時は古いキャッシュがあれば使用
     const fallbackCached = rateLimiter.getRawCachedData(endpointKey);
     if (fallbackCached) {
-      console.log(`[Rate Limiter] Using fallback cached 24hr ticker for ${symbol}`);
       return fallbackCached as Binance24hrTicker;
     }
 
@@ -238,21 +230,19 @@ export async function fetchBinanceRecentTrades(symbol: string, limit: number = 2
   // キャッシュチェック
   const cached = rateLimiter.getCachedData(endpointKey);
   if (cached) {
-    console.log(`[Rate Limiter] Using cached trades for ${symbol}`);
     return cached as Array<{ time: string; price: number; volume: number }>;
   }
   
   // レート制限チェック
   if (!rateLimiter.canMakeRequest(endpointKey)) {
     const waitTime = rateLimiter.waitTime(endpointKey);
-    console.log(`[Rate Limiter] Too frequent requests for ${symbol} trades, waiting ${waitTime}ms`);
-    
+
     // キャッシュがある場合は古いデータを返す
     const oldCached = rateLimiter.getRawCachedData(endpointKey);
     if (oldCached) {
       return oldCached as Array<{ time: string; price: number; volume: number }>;
     }
-    
+
     // 待機して再実行
     await new Promise(resolve => setTimeout(resolve, waitTime));
   }
@@ -280,16 +270,14 @@ export async function fetchBinanceRecentTrades(symbol: string, limit: number = 2
     
     // 成功時にキャッシュ
     rateLimiter.setCachedData(endpointKey, result);
-    console.log(`[Rate Limiter] Cached fresh trades for ${symbol}`);
-    
+
     return result;
   } catch (error) {
     console.error(`[Rate Limiter] Error fetching trades for ${symbol}:`, error);
-    
+
     // エラー時は古いキャッシュがあれば使用
     const fallbackCached = rateLimiter.getRawCachedData(endpointKey);
     if (fallbackCached) {
-      console.log(`[Rate Limiter] Using fallback cached trades for ${symbol}`);
       return fallbackCached as Array<{ time: string; price: number; volume: number }>;
     }
     

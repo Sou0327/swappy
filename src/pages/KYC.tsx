@@ -52,17 +52,13 @@ const KYC = () => {
 
   const loadPersonalInfo = useCallback(async ({ force = false }: { force?: boolean } = {}) => {
     if (!user?.id) {
-      console.log('ユーザーIDが存在しないため個人情報読み込みをスキップ');
       return;
     }
 
     // 編集中の場合は個人情報の再読み込みをスキップ
     if (isEditing && !force) {
-      console.log('編集中のため個人情報の再読み込みをスキップします');
       return;
     }
-
-    console.log('個人情報読み込み開始 - ユーザーID:', user.id, '強制再読み込み:', force);
 
     try {
       const { data, error } = await supabase
@@ -70,8 +66,6 @@ const KYC = () => {
         .select('first_name, last_name, first_name_kana, last_name_kana, birth_date, phone_number, postal_code, prefecture, city, address, building')
         .eq('id', user.id)
         .single();
-
-      console.log('個人情報読み込み結果:', { data, error });
 
       if (error) throw error;
 
@@ -100,7 +94,6 @@ const KYC = () => {
   useEffect(() => {
     if (!user?.id) return;
 
-    console.log('初期データ読み込み開始');
     refresh();
     loadPersonalInfo();
   }, [user?.id, loadPersonalInfo]);
@@ -108,7 +101,6 @@ const KYC = () => {
   // isEditingの変化を監視して、編集終了時に個人情報を再読み込み
   useEffect(() => {
     if (!isEditing && user?.id) {
-      console.log('編集終了のため個人情報を再読み込み');
       loadPersonalInfo();
     }
   }, [isEditing, loadPersonalInfo]);
@@ -122,31 +114,6 @@ const KYC = () => {
     if (!user?.id) {
       console.error('ユーザーIDが存在しません');
       return;
-    }
-
-    console.log('個人情報保存開始:', personalInfo);
-    console.log('現在のユーザー:', user);
-
-    // 🧪 基本接続テスト - SDK全体の動作確認
-    console.log('🧪 基本接続テスト開始...');
-    try {
-      // 🔧 setTimeout でイベントループを分離してテスト
-      const testResult = await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          supabase.from('profiles').select('id').limit(1)
-            .then((result) => {
-              console.log('⏰ setTimeout内でSupabaseテスト完了:', result);
-              resolve(result);
-            })
-            .catch((error) => {
-              console.log('⏰ setTimeout内でSupabaseテスト失敗:', error);
-              reject(error);
-            });
-        }, 100);
-      });
-      console.log('✅ 基本接続テスト結果:', testResult);
-    } catch (testError) {
-      console.error('❌ 基本接続テスト失敗:', testError);
     }
 
     setSavingPersonalInfo(true);
@@ -167,16 +134,6 @@ const KYC = () => {
         building: personalInfo.building || null
       };
 
-      console.log('更新データ:', updateData);
-      console.log('ユーザーID:', user.id);
-
-      // 🔧 デバッグ用タイムアウト設定
-      console.log('データベース更新を実行中...');
-      console.log('Supabase接続状態を確認中...');
-
-      // 🔧 RPC関数を使用してUPDATE操作の問題を回避
-      console.log('🎯 RPC関数update_personal_profileを使用して更新');
-
       const queryPromise = supabase.rpc('update_personal_profile', {
         p_first_name: updateData.first_name,
         p_last_name: updateData.last_name,
@@ -191,15 +148,11 @@ const KYC = () => {
         p_building: updateData.building
       });
 
-      console.log('🎯 RPC関数呼び出し開始');
       // result の型を明示的に指定
       const result: { data: unknown; error: { message: string } | null } = await queryPromise;
-      console.log('🎯 RPC関数呼び出し完了:', result);
 
       // RPC関数の戻り値形式に対応（voidの場合errorのみチェック）
       const { error } = result;
-
-      console.log('更新結果:', { error });
 
       if (error) {
         console.error('個人情報更新エラー:', error);

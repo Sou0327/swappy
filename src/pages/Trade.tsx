@@ -317,7 +317,6 @@ const Trade = () => {
       .order('created_at', { ascending: false })
       .limit(50);
 
-    console.log('📋 Fetched orders:', data);
     if (!error) setMyOrders(data || []);
   }, [user, paperTrading, midPrice]);
 
@@ -517,18 +516,6 @@ const Trade = () => {
         setMyOrders(userOrders.map(o => ({ id: o.id, side: o.side, price: o.price, qty: o.qty, filled_qty: o.filled_qty, status: o.status, created_at: o.created_at })));
       } else {
         // 実取引: RPCを呼び出し
-        console.log('📤 Sending order:', {
-          orderType,
-          p_market: selectedMarket,
-          p_side: side,
-          p_price: price,
-          p_qty: qty,
-          types: {
-            price: typeof price,
-            qty: typeof qty
-          }
-        });
-
         let orderId: string | null = null;
         let error: { message: string; code?: string; details?: unknown } | null = null;
 
@@ -555,14 +542,10 @@ const Trade = () => {
           error = result.error;
         }
 
-        console.log('📥 RPC Response:', { data: orderId, error });
-
         if (error) {
-          console.error('❌ RPC Error:', error);
+          console.error('RPC Error:', error);
           throw new Error(`注文エラー: ${error.message} (code: ${error.code}, details: ${JSON.stringify(error.details)})`);
         }
-
-        console.log('✅ Order placed successfully, orderId:', orderId);
 
         // リフレッシュ
         await refreshMyOrders(selectedMarket);
