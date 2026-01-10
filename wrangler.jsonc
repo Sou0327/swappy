@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // プロジェクト名（Cloudflare Dashboard で表示される名前）
+  "name": "undefined-exchange",
+
+  // Workers 互換性日付（新機能と互換性のバランス）
+  "compatibility_date": "2025-01-01",
+
+  // 静的アセットの設定（Vite ビルド出力ディレクトリ）
+  "assets": {
+    "directory": "./dist",
+    // SPA 向け: 404 時に index.html を返す
+    "not_found_handling": "single-page-application"
+  }
+}
