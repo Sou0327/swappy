@@ -1,0 +1,124 @@
+{
+  "pageTitle": "Financial History",
+  "pageSubtitle": "View deposits, withdrawals, and trade history",
+  "tabs": {
+    "deposits": "Deposits",
+    "withdrawals": "Withdrawals",
+    "transfers": "Transfers",
+    "openOrders": "Open Orders",
+    "myOrders": "My Orders",
+    "myTrades": "My Trades",
+    "conversions": "Conversions"
+  },
+  "filter": {
+    "dateRange": "Period",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "search": "Search",
+    "reset": "Reset",
+    "all": "All",
+    "placeholder": "Search by address/tx hash..."
+  },
+  "table": {
+    "datetime": "Date/Time",
+    "currency": "Currency",
+    "amount": "Amount",
+    "address": "Address/Tx",
+    "txHash": "Tx",
+    "status": "Status",
+    "memo": "Memo",
+    "type": "Type",
+    "pair": "Pair",
+    "side": "Side",
+    "price": "Price",
+    "quantity": "Quantity",
+    "filled": "Filled",
+    "total": "Total",
+    "fee": "Fee",
+    "orderId": "Order ID",
+    "from": "From",
+    "to": "To",
+    "fromCurrency": "From",
+    "toCurrency": "To",
+    "rate": "Rate",
+    "action": "Action",
+    "confirmations": "Confirmations",
+    "recipient": "Counterparty",
+    "referenceNumber": "Ref No."
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "completed": "Completed",
+    "failed": "Failed",
+    "processing": "Processing",
+    "cancelled": "Cancelled",
+    "open": "Open",
+    "filled": "Filled",
+    "partiallyFilled": "Partially Filled"
+  },
+  "side": {
+    "buy": "Buy",
+    "sell": "Sell"
+  },
+  "type": {
+    "limit": "Limit",
+    "market": "Market",
+    "send": "Send",
+    "receive": "Receive"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "cancelAll": "Cancel All",
+    "view": "View",
+    "reload": "Reload"
+  },
+  "empty": {
+    "noRecords": "No records found",
+    "deposits": "No deposit history",
+    "withdrawals": "No withdrawal history",
+    "transfers": "No transfer history",
+    "openOrders": "No open orders",
+    "myOrders": "No order history",
+    "myTrades": "No trade history",
+    "conversions": "No conversion history"
+  },
+  "pagination": {
+    "page": "Page:",
+    "prev": "Prev",
+    "next": "Next",
+    "of": "/"
+  },
+  "toast": {
+    "cancelSuccess": "Cancelled",
+    "cancelSuccessDesc": "Order has been cancelled",
+    "cancelAllSuccess": "Batch Cancel",
+    "cancelAllSuccessDesc": "{{count}} orders have been cancelled",
+    "cancelError": "Error",
+    "cancelErrorDesc": "Failed to cancel: {{error}}",
+    "loadError": "Load Error",
+    "loadErrorDesc": "Failed to fetch data"
+  },
+  "mobile": {
+    "datetime": "Date",
+    "amount": "Amount",
+    "status": "Status",
+    "address": "Address",
+    "txHash": "Tx",
+    "memo": "Memo",
+    "pair": "Pair",
+    "type": "Type",
+    "side": "Side",
+    "price": "Price",
+    "quantity": "Quantity",
+    "filled": "Filled",
+    "total": "Total",
+    "fee": "Fee",
+    "from": "From",
+    "to": "To",
+    "rate": "Rate",
+    "description": "Description",
+    "referenceNumber": "Ref No."
+  }
+}

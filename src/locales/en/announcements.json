@@ -1,0 +1,52 @@
+{
+  "pageTitle": "Announcements",
+  "pageSubtitle": "View important announcements and updates from the platform",
+  "categories": {
+    "maintenance": "Maintenance",
+    "feature": "New Feature",
+    "warning": "Warning",
+    "info": "Information",
+    "event": "Event",
+    "announcement": "Announcement"
+  },
+  "importance": {
+    "high": "Important",
+    "normal": "Normal",
+    "low": "Low"
+  },
+  "fields": {
+    "publishDate": "Published",
+    "expireDate": "Expires"
+  },
+  "empty": {
+    "title": "No announcements",
+    "description": "New announcements will appear here"
+  },
+  "loading": "Loading...",
+  "error": {
+    "title": "Error",
+    "description": "Failed to load announcements. Please try again later."
+  },
+  "notifications": {
+    "pageTitle": "Notifications",
+    "unreadCount": "{{count}} unread notifications",
+    "markAllAsRead": "Mark all as read",
+    "empty": {
+      "title": "No notifications",
+      "description": "New notifications will appear here"
+    },
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{{count}} min ago",
+      "hoursAgo": "{{count}} hours ago",
+      "daysAgo": "{{count}} days ago"
+    },
+    "types": {
+      "kyc": "Identity Verification",
+      "success": "Success",
+      "warning": "Warning",
+      "error": "Error",
+      "info": "Information"
+    }
+  }
+}

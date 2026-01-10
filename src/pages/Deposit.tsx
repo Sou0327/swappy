@@ -1047,7 +1047,7 @@ const Deposit = () => {
         </div>
 
         {/* デモモード制限通知 */}
-        {isDemoMode && <DemoRestrictionNotice feature={t('deposit.featureName')} className="mb-6" />}
+        {isDemoMode && <DemoRestrictionNotice feature="deposit" className="mb-6" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Deposit Form */}

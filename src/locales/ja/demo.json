@@ -1,0 +1,23 @@
+{
+  "banner": {
+    "title": "ショーケースモードで閲覧中",
+    "subtitle": "機能をお試しいただけます",
+    "viewGithub": "GitHub で見る"
+  },
+  "restriction": {
+    "title": "ショーケースモードでは{{feature}}機能をお試しいただけません",
+    "description": "このプラットフォームはショーケースモードで閲覧中です。",
+    "disabledMessage": "実際の{{feature}}操作は無効化されています。",
+    "viewGithub": "GitHub で見る"
+  },
+  "features": {
+    "deposit": "入金",
+    "withdraw": "出金",
+    "trading": "取引",
+    "transfer": "送金",
+    "convert": "両替",
+    "kyc": "KYC",
+    "security": "セキュリティ設定",
+    "account": "アカウント設定"
+  }
+}

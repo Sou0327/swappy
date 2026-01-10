@@ -752,7 +752,7 @@ const Trade = () => {
         </div>
 
         {/* デモモード制限通知 */}
-        {isDemoMode && <DemoRestrictionNotice feature={t('featureName')} className="mb-6" />}
+        {isDemoMode && <DemoRestrictionNotice feature="trading" className="mb-6" />}
 
         {/* Current Price Display */}
         {simulationEnabled && (

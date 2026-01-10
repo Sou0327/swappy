@@ -1,0 +1,23 @@
+{
+  "banner": {
+    "title": "Viewing in Showcase Mode",
+    "subtitle": "Try out the features",
+    "viewGithub": "View on GitHub"
+  },
+  "restriction": {
+    "title": "{{feature}} is not available in Showcase Mode",
+    "description": "This platform is being viewed in showcase mode.",
+    "disabledMessage": "Actual {{feature}} operations are disabled.",
+    "viewGithub": "View on GitHub"
+  },
+  "features": {
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "trading": "Trading",
+    "transfer": "Transfer",
+    "convert": "Conversion",
+    "kyc": "KYC",
+    "security": "Security Settings",
+    "account": "Account Settings"
+  }
+}

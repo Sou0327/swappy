@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const SecuritySettings = () => {
+  const { t } = useTranslation('security');
   const { user } = useAuth();
   const { toast } = useToast();
   const [pw1, setPw1] = useState("");
@@ -98,7 +100,7 @@ const SecuritySettings = () => {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">セキュリティ設定</h1>
+          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">{t('pageTitle')}</h1>
         </div>
 
         {/* 二要素認証・メール確認は本フェーズ対象外 */}
@@ -120,32 +122,32 @@ const SecuritySettings = () => {
                       <Lock className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">ログインパスワード</h3>
+                      <h3 className="font-semibold">{t('password.title')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        これにより、アカウントを安全で安心に保つことができます。
+                        {t('password.descriptionSecure')}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Input className="w-48" type="password" placeholder="新しいパスワード" value={pw1} onChange={(e) => setPw1(e.target.value)} />
-                    <Input className="w-48" type="password" placeholder="確認" value={pw2} onChange={(e) => setPw2(e.target.value)} />
+                    <Input className="w-48" type="password" placeholder={t('password.new')} value={pw1} onChange={(e) => setPw1(e.target.value)} />
+                    <Input className="w-48" type="password" placeholder={t('password.confirmShort')} value={pw2} onChange={(e) => setPw2(e.target.value)} />
                     <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 active:scale-95" disabled={saving} onClick={async () => {
-                      if (pw1.length < 6) { toast({ title: '短すぎるパスワード', description: '6文字以上にしてください', variant: 'destructive' }); return; }
-                      if (pw1 !== pw2) { toast({ title: '不一致', description: '確認が一致しません', variant: 'destructive' }); return; }
+                      if (pw1.length < 6) { toast({ title: t('toast.tooShort'), description: t('toast.tooShortDesc'), variant: 'destructive' }); return; }
+                      if (pw1 !== pw2) { toast({ title: t('toast.mismatch'), description: t('toast.mismatchDesc'), variant: 'destructive' }); return; }
                       setSaving(true);
                       try {
                         const { error } = await supabase.auth.updateUser({ password: pw1 });
                         if (error) throw error;
-                        toast({ title: '更新しました', description: 'パスワードを変更しました' });
+                        toast({ title: t('toast.updated'), description: t('toast.updatedDesc') });
                         setPw1(''); setPw2('');
                       } catch (e: unknown) {
                         const error = e as Error;
-                        toast({ title: '更新失敗', description: error.message || '再試行してください', variant: 'destructive' });
+                        toast({ title: t('toast.updateFailed'), description: error.message || t('toast.updateFailedDesc'), variant: 'destructive' });
                       } finally {
                         setSaving(false);
                       }
                     }}>
-                      {saving ? '更新中...' : '変更'}
+                      {saving ? t('password.updating') : t('password.changeShort')}
                     </Button>
                   </div>
                 </div>
@@ -157,49 +159,49 @@ const SecuritySettings = () => {
                       <Lock className="h-5 w-5 text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-base">ログインパスワード</h3>
+                      <h3 className="font-semibold text-base">{t('password.title')}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        これにより、アカウントを安全で安心に保つことができます。
+                        {t('password.descriptionSecure')}
                       </p>
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <Input 
-                      type="password" 
-                      placeholder="新しいパスワード" 
-                      value={pw1} 
+                    <Input
+                      type="password"
+                      placeholder={t('password.new')}
+                      value={pw1}
                       onChange={(e) => setPw1(e.target.value)}
                       className="w-full"
                     />
-                    <Input 
-                      type="password" 
-                      placeholder="パスワード確認" 
-                      value={pw2} 
+                    <Input
+                      type="password"
+                      placeholder={t('password.confirmPassword')}
+                      value={pw2}
                       onChange={(e) => setPw2(e.target.value)}
                       className="w-full"
                     />
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 active:scale-95" 
-                      disabled={saving} 
+                    <Button
+                      variant="outline"
+                      className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 active:scale-95"
+                      disabled={saving}
                       onClick={async () => {
-                        if (pw1.length < 6) { toast({ title: '短すぎるパスワード', description: '6文字以上にしてください', variant: 'destructive' }); return; }
-                        if (pw1 !== pw2) { toast({ title: '不一致', description: '確認が一致しません', variant: 'destructive' }); return; }
+                        if (pw1.length < 6) { toast({ title: t('toast.tooShort'), description: t('toast.tooShortDesc'), variant: 'destructive' }); return; }
+                        if (pw1 !== pw2) { toast({ title: t('toast.mismatch'), description: t('toast.mismatchDesc'), variant: 'destructive' }); return; }
                         setSaving(true);
                         try {
                           const { error } = await supabase.auth.updateUser({ password: pw1 });
                           if (error) throw error;
-                          toast({ title: '更新しました', description: 'パスワードを変更しました' });
+                          toast({ title: t('toast.updated'), description: t('toast.updatedDesc') });
                           setPw1(''); setPw2('');
                         } catch (e: unknown) {
                           const error = e as Error;
-                          toast({ title: '更新失敗', description: error.message || '再試行してください', variant: 'destructive' });
+                          toast({ title: t('toast.updateFailed'), description: error.message || t('toast.updateFailedDesc'), variant: 'destructive' });
                         } finally {
                           setSaving(false);
                         }
                       }}
                     >
-                      {saving ? '更新中...' : 'パスワード変更'}
+                      {saving ? t('password.updating') : t('password.changePassword')}
                     </Button>
                   </div>
                 </div>
@@ -215,14 +217,14 @@ const SecuritySettings = () => {
                       <span className="text-2xl">🧊</span>
                     </div>
                     <div>
-                      <h3 className="font-semibold">アカウント凍結</h3>
+                      <h3 className="font-semibold">{t('accountFreeze.title')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        アカウントを一時的に無効にします
+                        {t('accountFreeze.descriptionShort')}
                       </p>
                     </div>
                   </div>
                   <Button variant="destructive" className="transition-all duration-200 active:scale-95">
-                    凍結
+                    {t('accountFreeze.freezeShort')}
                   </Button>
                 </div>
 
@@ -233,14 +235,14 @@ const SecuritySettings = () => {
                       <span className="text-base">🧊</span>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-base">アカウント凍結</h3>
+                      <h3 className="font-semibold text-base">{t('accountFreeze.title')}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        アカウントを一時的に無効にします
+                        {t('accountFreeze.descriptionShort')}
                       </p>
                     </div>
                   </div>
                   <Button variant="destructive" className="w-full transition-all duration-200 active:scale-95">
-                    アカウント凍結
+                    {t('accountFreeze.freezeAccount')}
                   </Button>
                 </div>
               </CardContent>

@@ -2,18 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { AlertTriangle, Github } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const GITHUB_URL = "https://github.com/Sou0327/undefined-exchange";
 
-type RestrictedFeature =
-  | "入金"
-  | "出金"
-  | "取引"
-  | "送金"
-  | "両替"
-  | "KYC"
-  | "セキュリティ設定"
-  | "アカウント設定";
+// Feature keys that map to demo.json features.*
+export type RestrictedFeature =
+  | "deposit"
+  | "withdraw"
+  | "trading"
+  | "transfer"
+  | "convert"
+  | "kyc"
+  | "security"
+  | "account";
 
 interface DemoRestrictionNoticeProps {
   feature: RestrictedFeature;
@@ -25,8 +27,12 @@ export const DemoRestrictionNotice = ({
   className = "",
 }: DemoRestrictionNoticeProps) => {
   const { isDemoMode } = useAuth();
+  const { t } = useTranslation('demo');
 
   if (!isDemoMode) return null;
+
+  // Get translated feature name
+  const featureName = t(`features.${feature}`);
 
   return (
     <Card className={`border-amber-200 bg-amber-50 ${className}`}>
@@ -40,18 +46,18 @@ export const DemoRestrictionNotice = ({
 
           <div className="flex-1">
             <h3 className="font-semibold text-amber-800 text-lg">
-              ショーケースモードでは{feature}機能をお試しいただけません
+              {t('restriction.title', { feature: featureName })}
             </h3>
             <p className="text-sm text-amber-700 mt-2">
-              このプラットフォームはショーケースモードで閲覧中です。
-              実際の{feature}操作は無効化されています。
+              {t('restriction.description')}{' '}
+              {t('restriction.disabledMessage', { feature: featureName })}
             </p>
 
             <div className="flex flex-wrap gap-3 mt-4">
               <Button variant="outline" asChild>
                 <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
                   <Github className="w-4 h-4 mr-2" />
-                  GitHub で見る
+                  {t('restriction.viewGithub')}
                 </a>
               </Button>
             </div>

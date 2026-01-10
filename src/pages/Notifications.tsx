@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/hooks/use-notifications";
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 
 const Notifications = () => {
+  const { t } = useTranslation('announcements');
   const { notifications, loading, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const [processingId, setProcessingId] = useState<string | null>(null);
 
@@ -38,24 +40,24 @@ const Notifications = () => {
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     // 1分未満
-    if (diffInSeconds < 60) return 'たった今';
+    if (diffInSeconds < 60) return t('notifications.time.justNow');
 
     // 1時間未満
     if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes}分前`;
+      return t('notifications.time.minutesAgo', { count: minutes });
     }
 
     // 24時間未満
     if (diffInSeconds < 86400) {
       const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours}時間前`;
+      return t('notifications.time.hoursAgo', { count: hours });
     }
 
     // 7日未満
     if (diffInSeconds < 604800) {
       const days = Math.floor(diffInSeconds / 86400);
-      return `${days}日前`;
+      return t('notifications.time.daysAgo', { count: days });
     }
 
     // それ以上は日付表示
@@ -90,11 +92,11 @@ const Notifications = () => {
         <div className="flex items-center justify-between mb-2">
           <div>
             <h1 className="text-base font-bold text-gray-900">
-              通知
+              {t('notifications.pageTitle')}
             </h1>
             {unreadCount > 0 && (
               <p className="text-sm text-gray-600 mt-0.5">
-                {unreadCount}件の未読通知
+                {t('notifications.unreadCount', { count: unreadCount })}
               </p>
             )}
           </div>
@@ -105,7 +107,7 @@ const Notifications = () => {
               onClick={handleMarkAllAsRead}
               className="text-primary hover:text-primary/80 font-medium h-8 text-sm"
             >
-              すべて既読
+              {t('notifications.markAllAsRead')}
             </Button>
           )}
         </div>
@@ -180,10 +182,10 @@ const Notifications = () => {
               <Bell className="h-5 w-5 text-gray-400" />
             </div>
             <h2 className="text-base font-semibold text-gray-900 mb-1">
-              通知はありません
+              {t('notifications.empty.title')}
             </h2>
             <p className="text-sm text-gray-600 text-center max-w-sm">
-              新しい通知が届くとここに表示されます
+              {t('notifications.empty.description')}
             </p>
           </div>
         )}

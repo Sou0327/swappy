@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Github } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const GITHUB_URL = "https://github.com/Sou0327/undefined-exchange";
 
 export const DemoBanner = () => {
   const { isDemoMode } = useAuth();
+  const { t } = useTranslation('demo');
 
   if (!isDemoMode) return null;
 
@@ -15,9 +17,9 @@ export const DemoBanner = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2 text-sm">
             <span className="text-lg">🎭</span>
-            <span className="font-medium">ショーケースモードで閲覧中</span>
+            <span className="font-medium">{t('banner.title')}</span>
             <span className="hidden sm:inline text-amber-100">
-              - 機能をお試しいただけます
+              - {t('banner.subtitle')}
             </span>
           </div>
 
@@ -29,7 +31,7 @@ export const DemoBanner = () => {
           >
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
               <Github className="w-4 h-4 mr-1.5" />
-              <span className="hidden sm:inline">GitHub で見る</span>
+              <span className="hidden sm:inline">{t('banner.viewGithub')}</span>
               <span className="sm:hidden">GitHub</span>
             </a>
           </Button>

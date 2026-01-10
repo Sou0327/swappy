@@ -337,7 +337,7 @@ const Transfer = () => {
         <h1 className="text-2xl md:text-2xl font-bold">{t('pageTitle')}</h1>
 
         {/* デモモード制限通知 */}
-        {isDemoMode && <DemoRestrictionNotice feature={t('feature')} className="mb-6" />}
+        {isDemoMode && <DemoRestrictionNotice feature="transfer" className="mb-6" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* メインフォーム */}

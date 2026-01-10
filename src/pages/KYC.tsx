@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ interface PersonalInfo {
 }
 
 const KYC = () => {
+  const { t } = useTranslation('kyc');
   const { user } = useAuth();
   const { toast } = useToast();
   const { kycInfo, settings, documents, loading: kycLoading, isKYCRequired, isKYCCompleted, uploadDocument, submitKYCApplication, refresh } = useKYC();
@@ -163,14 +165,14 @@ const KYC = () => {
       await loadPersonalInfo({ force: true });
 
       toast({
-        title: "保存完了",
-        description: "個人情報が正常に保存されました。"
+        title: t('toast.saveSuccess'),
+        description: t('toast.saveSuccessDesc')
       });
     } catch (error: unknown) {
       const err = error as Error;
       toast({
-        title: "保存失敗",
-        description: err.message || "個人情報の保存に失敗しました。",
+        title: t('toast.saveFailed'),
+        description: err.message || t('toast.saveFailedDesc'),
         variant: "destructive"
       });
     } finally {
@@ -181,12 +183,12 @@ const KYC = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6 relative max-w-full overflow-x-hidden lg:max-w-[calc(100vw-18rem)]" style={{ pointerEvents: 'auto' }}>
-        <h1 className="text-2xl font-bold">本人確認 (KYC)</h1>
+        <h1 className="text-2xl font-bold">{t('pageTitle')}</h1>
 
         {!settings?.kycEnabled && (
           <Card>
             <CardContent className="p-6 text-sm text-muted-foreground">
-              この環境では KYC は無効です。必要に応じて管理画面の設定をご確認ください。
+              {t('kycDisabled')}
             </CardContent>
           </Card>
         )}
@@ -195,7 +197,7 @@ const KYC = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" /> 現在のステータス
+              <Shield className="h-5 w-5" /> {t('currentStatus')}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
@@ -212,20 +214,20 @@ const KYC = () => {
                 )}
                 <div>
                   <div className="font-semibold">
-                    {kycInfo.status === 'verified' ? '認証完了' :
-                      kycInfo.status === 'pending' ? '審査中' :
-                        kycInfo.status === 'rejected' ? '審査不合格' :
-                          '未認証'}
+                    {kycInfo.status === 'verified' ? t('status.verified') :
+                      kycInfo.status === 'pending' ? t('status.pending') :
+                        kycInfo.status === 'rejected' ? t('status.rejected') :
+                          t('status.unverified')}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {kycInfo.status === 'verified' ? '本人確認が完了しています' :
-                      kycInfo.status === 'pending' ? '書類を審査中です。しばらくお待ちください' :
-                        kycInfo.status === 'rejected' ? '書類に不備がありました。再提出してください' :
-                          '本人確認を行ってください'}
+                    {kycInfo.status === 'verified' ? t('status.verifiedDesc') :
+                      kycInfo.status === 'pending' ? t('status.pendingDesc') :
+                        kycInfo.status === 'rejected' ? t('status.rejectedDesc') :
+                          t('status.unverifiedDesc')}
                   </div>
                 </div>
               </div>
-              <div className="text-sm text-muted-foreground">レベル {kycInfo.level}</div>
+              <div className="text-sm text-muted-foreground">{t('level')} {kycInfo.level}</div>
             </div>
           </CardContent>
         </Card>
@@ -236,13 +238,13 @@ const KYC = () => {
             <div className="flex items-start gap-3">
               <Shield className="h-5 w-5 text-yellow-600 mt-0.5" />
               <div>
-                <div className="font-semibold text-yellow-900">本人確認が必要です</div>
+                <div className="font-semibold text-yellow-900">{t('required.title')}</div>
                 <div className="text-sm text-yellow-800 mt-1">
                   {isKYCRequired('deposit') && isKYCRequired('withdrawal')
-                    ? '入金・出金機能をご利用いただくには本人確認が必要です'
+                    ? t('required.depositAndWithdraw')
                     : isKYCRequired('deposit')
-                      ? '入金機能をご利用いただくには本人確認が必要です'
-                      : '出金機能をご利用いただくには本人確認が必要です'}
+                      ? t('required.deposit')
+                      : t('required.withdraw')}
                 </div>
               </div>
             </div>
@@ -255,24 +257,24 @@ const KYC = () => {
             <CardHeader>
               <CardTitle className="text-xl font-semibold flex items-center gap-2 text-gray-900">
                 <AlertCircle className="h-6 w-6 text-yellow-600" />
-                KYC申請の一時停止
+                {t('suspended.title')}
               </CardTitle>
               <CardDescription className="text-gray-600">
-                現在、新規のKYC（本人確認）申請は一時的に停止しております
+                {t('suspended.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">お知らせ</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('suspended.notice')}</h4>
                   <div className="text-sm text-gray-700 space-y-2 whitespace-pre-line">
                     {SERVICE_RESTRICTIONS.getRestrictionMessage()}
                   </div>
                 </div>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">既存ユーザーの保護</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('suspended.existingUsers')}</h4>
                   <p className="text-sm text-gray-700">
-                    既にKYC認証が完了されているユーザー様は、引き続きすべての機能をご利用いただけます。
+                    {t('suspended.existingUsersDesc')}
                   </p>
                 </div>
               </div>
@@ -285,14 +287,14 @@ const KYC = () => {
               <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" /> 個人情報入力
+                <User className="h-5 w-5" /> {t('form.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* 氏名 */}
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">姓 *</Label>
+                  <Label htmlFor="lastName">{t('form.lastName')} {t('form.required')}</Label>
                   <Input
                     id="lastName"
                     value={personalInfo.lastName}
@@ -300,12 +302,12 @@ const KYC = () => {
                       setPersonalInfo(prev => ({ ...prev, lastName: e.target.value }));
                       setIsEditing(true);
                     }}
-                    placeholder="田中"
+                    placeholder={t('form.placeholders.lastName')}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">名 *</Label>
+                  <Label htmlFor="firstName">{t('form.firstName')} {t('form.required')}</Label>
                   <Input
                     id="firstName"
                     value={personalInfo.firstName}
@@ -313,14 +315,14 @@ const KYC = () => {
                       setPersonalInfo(prev => ({ ...prev, firstName: e.target.value }));
                       setIsEditing(true);
                     }}
-                    placeholder="太郎"
+                    placeholder={t('form.placeholders.firstName')}
                     required
                   />
                 </div>
 
                 {/* フリガナ */}
                 <div className="space-y-2">
-                  <Label htmlFor="lastNameKana">セイ *</Label>
+                  <Label htmlFor="lastNameKana">{t('form.lastNameKana')} {t('form.required')}</Label>
                   <Input
                     id="lastNameKana"
                     value={personalInfo.lastNameKana}
@@ -328,12 +330,12 @@ const KYC = () => {
                       setPersonalInfo(prev => ({ ...prev, lastNameKana: e.target.value }));
                       setIsEditing(true);
                     }}
-                    placeholder="タナカ"
+                    placeholder={t('form.placeholders.lastNameKana')}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="firstNameKana">メイ *</Label>
+                  <Label htmlFor="firstNameKana">{t('form.firstNameKana')} {t('form.required')}</Label>
                   <Input
                     id="firstNameKana"
                     value={personalInfo.firstNameKana}
@@ -341,7 +343,7 @@ const KYC = () => {
                       setPersonalInfo(prev => ({ ...prev, firstNameKana: e.target.value }));
                       setIsEditing(true);
                     }}
-                    placeholder="タロウ"
+                    placeholder={t('form.placeholders.firstNameKana')}
                     required
                   />
                 </div>
@@ -349,7 +351,7 @@ const KYC = () => {
                 {/* 生年月日 */}
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="birthDate" className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" /> 生年月日 *
+                    <Calendar className="h-4 w-4" /> {t('form.dateOfBirth')} {t('form.required')}
                   </Label>
                   <Input
                     id="birthDate"
@@ -365,7 +367,7 @@ const KYC = () => {
 
                 {/* 電話番号 */}
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="phoneNumber">電話番号</Label>
+                  <Label htmlFor="phoneNumber">{t('form.phone')}</Label>
                   <Input
                     id="phoneNumber"
                     type="tel"
@@ -374,21 +376,21 @@ const KYC = () => {
                       setPersonalInfo(prev => ({ ...prev, phoneNumber: e.target.value }));
                       setIsEditing(true);
                     }}
-                    placeholder="090-1234-5678"
+                    placeholder={t('form.placeholders.phone')}
                   />
-                  <p className="text-xs text-muted-foreground">ハイフンあり・なし、どちらでも入力可能です</p>
+                  <p className="text-xs text-muted-foreground">{t('form.phoneNote')}</p>
                 </div>
               </div>
 
               {/* 住所情報 */}
               <div className="space-y-4 pt-4 border-t">
                 <h4 className="font-semibold flex items-center gap-2">
-                  <MapPin className="h-4 w-4" /> 住所情報
+                  <MapPin className="h-4 w-4" /> {t('form.addressSection')}
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="postalCode">郵便番号 *</Label>
+                    <Label htmlFor="postalCode">{t('form.postalCode')} {t('form.required')}</Label>
                     <Input
                       id="postalCode"
                       value={personalInfo.postalCode}
@@ -396,35 +398,35 @@ const KYC = () => {
                         setPersonalInfo(prev => ({ ...prev, postalCode: e.target.value }));
                         setIsEditing(true);
                       }}
-                      placeholder="123-4567"
+                      placeholder={t('form.placeholders.postalCode')}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="prefecture">都道府県 *</Label>
+                    <Label htmlFor="prefecture">{t('form.prefecture')} {t('form.required')}</Label>
                     <Select value={personalInfo.prefecture} onValueChange={(value) => {
                       setPersonalInfo(prev => ({ ...prev, prefecture: value }));
                       setIsEditing(true);
                     }}>
                       <SelectTrigger>
-                        <SelectValue placeholder="選択してください" />
+                        <SelectValue placeholder={t('form.selectPrefecture')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="東京都">東京都</SelectItem>
-                        <SelectItem value="大阪府">大阪府</SelectItem>
-                        <SelectItem value="神奈川県">神奈川県</SelectItem>
-                        <SelectItem value="愛知県">愛知県</SelectItem>
-                        <SelectItem value="埼玉県">埼玉県</SelectItem>
-                        <SelectItem value="千葉県">千葉県</SelectItem>
-                        <SelectItem value="兵庫県">兵庫県</SelectItem>
-                        <SelectItem value="北海道">北海道</SelectItem>
-                        <SelectItem value="福岡県">福岡県</SelectItem>
-                        <SelectItem value="静岡県">静岡県</SelectItem>
+                        <SelectItem value="東京都">{t('prefectures.tokyo')}</SelectItem>
+                        <SelectItem value="大阪府">{t('prefectures.osaka')}</SelectItem>
+                        <SelectItem value="神奈川県">{t('prefectures.kanagawa')}</SelectItem>
+                        <SelectItem value="愛知県">{t('prefectures.aichi')}</SelectItem>
+                        <SelectItem value="埼玉県">{t('prefectures.saitama')}</SelectItem>
+                        <SelectItem value="千葉県">{t('prefectures.chiba')}</SelectItem>
+                        <SelectItem value="兵庫県">{t('prefectures.hyogo')}</SelectItem>
+                        <SelectItem value="北海道">{t('prefectures.hokkaido')}</SelectItem>
+                        <SelectItem value="福岡県">{t('prefectures.fukuoka')}</SelectItem>
+                        <SelectItem value="静岡県">{t('prefectures.shizuoka')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="city">市区町村 *</Label>
+                    <Label htmlFor="city">{t('form.city')} {t('form.required')}</Label>
                     <Input
                       id="city"
                       value={personalInfo.city}
@@ -432,12 +434,12 @@ const KYC = () => {
                         setPersonalInfo(prev => ({ ...prev, city: e.target.value }));
                         setIsEditing(true);
                       }}
-                      placeholder="渋谷区"
+                      placeholder={t('form.placeholders.city')}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="address">町域・番地 *</Label>
+                    <Label htmlFor="address">{t('form.address')} {t('form.required')}</Label>
                     <Input
                       id="address"
                       value={personalInfo.address}
@@ -445,12 +447,12 @@ const KYC = () => {
                         setPersonalInfo(prev => ({ ...prev, address: e.target.value }));
                         setIsEditing(true);
                       }}
-                      placeholder="神南1-2-3"
+                      placeholder={t('form.placeholders.address')}
                       required
                     />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="building">建物名・部屋番号</Label>
+                    <Label htmlFor="building">{t('form.building')}</Label>
                     <Input
                       id="building"
                       value={personalInfo.building}
@@ -458,7 +460,7 @@ const KYC = () => {
                         setPersonalInfo(prev => ({ ...prev, building: e.target.value }));
                         setIsEditing(true);
                       }}
-                      placeholder="〇〇マンション101号室"
+                      placeholder={t('form.placeholders.building')}
                     />
                   </div>
                 </div>
@@ -470,7 +472,7 @@ const KYC = () => {
                   disabled={savingPersonalInfo || !personalInfo.firstName || !personalInfo.lastName}
                   className="min-w-[120px]"
                 >
-                  {savingPersonalInfo ? "保存中..." : personalInfoSaved ? "更新する" : "保存する"}
+                  {savingPersonalInfo ? t('actions.saving') : personalInfoSaved ? t('actions.update') : t('actions.save')}
                 </Button>
               </div>
 
@@ -478,7 +480,7 @@ const KYC = () => {
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                   <div className="flex items-center gap-2 text-green-800">
                     <CheckCircle className="h-4 w-4" />
-                    <span className="text-sm font-medium">個人情報が保存されました</span>
+                    <span className="text-sm font-medium">{t('form.saved')}</span>
                   </div>
                 </div>
               )}
@@ -492,12 +494,12 @@ const KYC = () => {
             <div className="flex items-start gap-3">
               <XCircle className="h-5 w-5 text-red-600 mt-0.5" />
               <div>
-                <div className="font-semibold text-red-900">書類に不備がありました</div>
+                <div className="font-semibold text-red-900">{t('rejected.title')}</div>
                 <div className="text-sm text-red-800 mt-1">
                   {kycInfo.notes ? (
-                    <>理由: {kycInfo.notes}</>
+                    <>{t('rejected.reason')} {kycInfo.notes}</>
                   ) : (
-                    <>書類を確認の上、修正して再度申請してください。</>
+                    <>{t('rejected.resubmit')}</>
                   )}
                 </div>
               </div>
@@ -511,17 +513,17 @@ const KYC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                必要書類のアップロード
+                {t('documents.title')}
               </CardTitle>
               <div className="text-sm text-muted-foreground">
-                <p className="mb-2">本人確認のため、以下の書類をアップロードしてください。</p>
+                <p className="mb-2">{t('documents.description')}</p>
                 <div className="bg-blue-50 p-3 rounded-lg">
-                  <h4 className="font-medium text-blue-900 mb-2">📋 アップロード可能な書類について</h4>
+                  <h4 className="font-medium text-blue-900 mb-2">{t('documents.uploadGuideTitle')}</h4>
                   <ul className="text-sm text-blue-800 space-y-1">
-                    <li><strong>本人確認書類:</strong> 運転免許証、マイナンバーカード、パスポートなど（顔写真付き）</li>
-                    <li><strong>住所確認書類:</strong> 公共料金明細、住民票、銀行取引明細など（3ヶ月以内のもの）</li>
-                    <li><strong>ファイル形式:</strong> JPEG、PNG、PDF（5MB以下）</li>
-                    <li><strong>注意事項:</strong> 文字が鮮明に読める写真をアップロードしてください</li>
+                    <li><strong>{t('documents.identity.label')}:</strong> {t('documents.identityNote')}</li>
+                    <li><strong>{t('documents.address.label')}:</strong> {t('documents.addressNote')}</li>
+                    <li><strong>{t('documents.formatNote')}</strong></li>
+                    <li><strong>{t('documents.cautionNote')}</strong></li>
                   </ul>
                 </div>
               </div>
@@ -532,11 +534,11 @@ const KYC = () => {
                   {/* Identity Document */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Label className="text-base font-medium">1. 本人確認書類</Label>
-                      <span className="text-red-500 text-sm">*必須</span>
+                      <Label className="text-base font-medium">{t('documents.identity.label')}</Label>
+                      <span className="text-red-500 text-sm">{t('documents.identity.required')}</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      顔写真付きの身分証明書をアップロードしてください（運転免許証、マイナンバーカード、パスポートなど）
+                      {t('documents.identity.description')}
                     </p>
                     <div className="p-6 border-2 border-dashed border-muted-foreground/25 rounded-lg hover:border-primary/50 transition-colors">
                       {documents?.find(d => d.documentType === 'identity') ? (
@@ -547,10 +549,10 @@ const KYC = () => {
                           <div className="flex-1">
                             <div className="font-medium">{documents.find(d => d.documentType === 'identity')?.fileName}</div>
                             <div className="text-sm text-muted-foreground">
-                              アップロード完了 • 状態: {
-                                documents.find(d => d.documentType === 'identity')?.status === 'approved' ? '✅ 承認済み' :
-                                  documents.find(d => d.documentType === 'identity')?.status === 'pending' ? '⏳ 審査中' :
-                                    '❌ 要修正'
+                              {t('documents.uploadComplete')} • {t('documents.status')} {
+                                documents.find(d => d.documentType === 'identity')?.status === 'approved' ? t('documents.statusApproved') :
+                                  documents.find(d => d.documentType === 'identity')?.status === 'pending' ? t('documents.statusPending') :
+                                    t('documents.statusNeedsRevision')
                               }
                             </div>
                           </div>
@@ -570,19 +572,19 @@ const KYC = () => {
                                       await uploadDocument(files[i], 'identity');
                                     }
                                     toast({
-                                      title: 'アップロード完了',
-                                      description: `本人確認書類を${files.length}件再アップロードしました`
+                                      title: t('toast.uploadSuccess'),
+                                      description: t('toast.uploadSuccessIdentityReupload', { count: files.length })
                                     });
                                   } catch (error: unknown) {
                                     const err = error as Error;
-                                    toast({ title: 'アップロード失敗', description: err?.message || 'エラーが発生しました', variant: 'destructive' });
+                                    toast({ title: t('toast.uploadFailed'), description: err?.message || t('toast.uploadFailedDesc'), variant: 'destructive' });
                                   }
                                 }
                               };
                               input.click();
                             }}
                           >
-                            再アップロード
+                            {t('documents.reupload')}
                           </Button>
                         </div>
                       ) : (
@@ -591,7 +593,7 @@ const KYC = () => {
                             <FileText className="h-5 w-5 text-blue-600" />
                           </div>
                           <div className="text-sm text-muted-foreground mb-4">
-                            複数ファイルを選択するか、ここにドラッグ&ドロップしてください
+                            {t('documents.dragDrop')}
                           </div>
                           <Button
                             variant="outline"
@@ -608,12 +610,12 @@ const KYC = () => {
                                       await uploadDocument(files[i], 'identity');
                                     }
                                     toast({
-                                      title: 'アップロード完了',
-                                      description: `本人確認書類を${files.length}件アップロードしました`
+                                      title: t('toast.uploadSuccess'),
+                                      description: t('toast.uploadSuccessIdentity', { count: files.length })
                                     });
                                   } catch (error: unknown) {
                                     const err = error as Error;
-                                    toast({ title: 'アップロード失敗', description: err?.message || 'エラーが発生しました', variant: 'destructive' });
+                                    toast({ title: t('toast.uploadFailed'), description: err?.message || t('toast.uploadFailedDesc'), variant: 'destructive' });
                                   }
                                 }
                               };
@@ -621,7 +623,7 @@ const KYC = () => {
                             }}
                           >
                             <FileText className="h-4 w-4 mr-2" />
-                            ファイルを選択
+                            {t('documents.selectFile')}
                           </Button>
                         </div>
                       )}
@@ -631,11 +633,11 @@ const KYC = () => {
                   {/* Address Document */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Label className="text-base font-medium">2. 住所確認書類</Label>
-                      <span className="text-red-500 text-sm">*必須</span>
+                      <Label className="text-base font-medium">{t('documents.address.label')}</Label>
+                      <span className="text-red-500 text-sm">{t('documents.address.required')}</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      現住所が確認できる書類をアップロードしてください（公共料金明細、住民票、銀行取引明細など、発行から3ヶ月以内のもの）
+                      {t('documents.address.description')}
                     </p>
                     <div className="p-6 border-2 border-dashed border-muted-foreground/25 rounded-lg hover:border-primary/50 transition-colors">
                       {documents?.find(d => d.documentType === 'address') ? (
@@ -646,10 +648,10 @@ const KYC = () => {
                           <div className="flex-1">
                             <div className="font-medium">{documents.find(d => d.documentType === 'address')?.fileName}</div>
                             <div className="text-sm text-muted-foreground">
-                              アップロード完了 • 状態: {
-                                documents.find(d => d.documentType === 'address')?.status === 'approved' ? '✅ 承認済み' :
-                                  documents.find(d => d.documentType === 'address')?.status === 'pending' ? '⏳ 審査中' :
-                                    '❌ 要修正'
+                              {t('documents.uploadComplete')} • {t('documents.status')} {
+                                documents.find(d => d.documentType === 'address')?.status === 'approved' ? t('documents.statusApproved') :
+                                  documents.find(d => d.documentType === 'address')?.status === 'pending' ? t('documents.statusPending') :
+                                    t('documents.statusNeedsRevision')
                               }
                             </div>
                           </div>
@@ -669,19 +671,19 @@ const KYC = () => {
                                       await uploadDocument(files[i], 'address');
                                     }
                                     toast({
-                                      title: 'アップロード完了',
-                                      description: `住所確認書類を${files.length}件再アップロードしました`
+                                      title: t('toast.uploadSuccess'),
+                                      description: t('toast.uploadSuccessAddressReupload', { count: files.length })
                                     });
                                   } catch (error: unknown) {
                                     const err = error as Error;
-                                    toast({ title: 'アップロード失敗', description: err?.message || 'エラーが発生しました', variant: 'destructive' });
+                                    toast({ title: t('toast.uploadFailed'), description: err?.message || t('toast.uploadFailedDesc'), variant: 'destructive' });
                                   }
                                 }
                               };
                               input.click();
                             }}
                           >
-                            再アップロード
+                            {t('documents.reupload')}
                           </Button>
                         </div>
                       ) : (
@@ -690,7 +692,7 @@ const KYC = () => {
                             <MapPin className="h-5 w-5 text-blue-600" />
                           </div>
                           <div className="text-sm text-muted-foreground mb-4">
-                            複数ファイルを選択するか、ここにドラッグ&ドロップしてください
+                            {t('documents.dragDrop')}
                           </div>
                           <Button
                             variant="outline"
@@ -707,12 +709,12 @@ const KYC = () => {
                                       await uploadDocument(files[i], 'address');
                                     }
                                     toast({
-                                      title: 'アップロード完了',
-                                      description: `住所確認書類を${files.length}件アップロードしました`
+                                      title: t('toast.uploadSuccess'),
+                                      description: t('toast.uploadSuccessAddress', { count: files.length })
                                     });
                                   } catch (error: unknown) {
                                     const err = error as Error;
-                                    toast({ title: 'アップロード失敗', description: err?.message || 'エラーが発生しました', variant: 'destructive' });
+                                    toast({ title: t('toast.uploadFailed'), description: err?.message || t('toast.uploadFailedDesc'), variant: 'destructive' });
                                   }
                                 }
                               };
@@ -720,7 +722,7 @@ const KYC = () => {
                             }}
                           >
                             <MapPin className="h-4 w-4 mr-2" />
-                            ファイルを選択
+                            {t('documents.selectFile')}
                           </Button>
                         </div>
                       )}
@@ -735,32 +737,32 @@ const KYC = () => {
                   <div className="flex items-center gap-2 mb-2">
                     <CheckCircle className="h-5 w-5 text-green-600" />
                     <span className="font-medium text-green-900">
-                      {kycInfo.status === 'rejected' ? '再提出準備完了' : '提出準備完了'}
+                      {kycInfo.status === 'rejected' ? t('submission.readyResubmit') : t('submission.ready')}
                     </span>
                   </div>
                   <p className="text-sm text-green-800 mb-4">
                     {kycInfo.status === 'rejected'
-                      ? '個人情報と必要書類の修正が完了しました。下記ボタンをクリックしてKYC申請を再提出してください。'
-                      : '個人情報と必要書類のアップロードが完了しました。下記ボタンをクリックしてKYC申請を提出してください。'}
+                      ? t('submission.readyResubmitDesc')
+                      : t('submission.readyDesc')}
                   </p>
                   <Button
                     onClick={async () => {
                       try {
                         await submitKYCApplication();
                         toast({
-                          title: kycInfo.status === 'rejected' ? '再申請完了' : '申請完了',
-                          description: 'KYC申請を提出しました。審査結果をお待ちください。'
+                          title: kycInfo.status === 'rejected' ? t('toast.resubmitSuccess') : t('toast.submitSuccess'),
+                          description: t('toast.submitSuccessDesc')
                         });
                       } catch (error: unknown) {
                         const err = error as Error;
-                        toast({ title: '申請失敗', description: err?.message || 'エラーが発生しました', variant: 'destructive' });
+                        toast({ title: t('toast.submitFailed'), description: err?.message || t('toast.uploadFailedDesc'), variant: 'destructive' });
                       }
                     }}
                     className="w-full"
                     size="lg"
                   >
                     <Shield className="h-4 w-4 mr-2" />
-                    {kycInfo.status === 'rejected' ? '本人確認申請を再提出する' : '本人確認申請を提出する'}
+                    {kycInfo.status === 'rejected' ? t('actions.resubmit') : t('actions.submit')}
                   </Button>
                 </div>
               )}
@@ -768,24 +770,24 @@ const KYC = () => {
               {/* Progress indicator */}
               {settings?.kycEnabled && kycInfo.status === 'none' && (
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium mb-3">📋 提出チェックリスト</h4>
+                  <h4 className="font-medium mb-3">{t('checklist.title')}</h4>
                   <div className="space-y-2 text-sm">
                     <div className={`flex items-center gap-2 ${personalInfoSaved ? 'text-green-700' : 'text-gray-600'}`}>
                       {personalInfoSaved ? <CheckCircle className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
-                      個人情報の入力
+                      {t('checklist.personalInfo')}
                     </div>
                     <div className={`flex items-center gap-2 ${documents?.find(d => d.documentType === 'identity') ? 'text-green-700' : 'text-gray-600'}`}>
                       {documents?.find(d => d.documentType === 'identity') ? <CheckCircle className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
-                      本人確認書類のアップロード
+                      {t('checklist.identityDoc')}
                     </div>
                     <div className={`flex items-center gap-2 ${documents?.find(d => d.documentType === 'address') ? 'text-green-700' : 'text-gray-600'}`}>
                       {documents?.find(d => d.documentType === 'address') ? <CheckCircle className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
-                      住所確認書類のアップロード
+                      {t('checklist.addressDoc')}
                     </div>
                   </div>
                   {(!personalInfoSaved || !documents?.find(d => d.documentType === 'identity') || !documents?.find(d => d.documentType === 'address')) && (
                     <p className="text-xs text-gray-600 mt-3">
-                      すべての項目を完了すると申請を提出できます
+                      {t('checklist.note')}
                     </p>
                   )}
                 </div>

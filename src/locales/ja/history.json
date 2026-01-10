@@ -1,0 +1,124 @@
+{
+  "pageTitle": "金融履歴",
+  "pageSubtitle": "入出金・取引履歴の確認",
+  "tabs": {
+    "deposits": "入金",
+    "withdrawals": "出金",
+    "transfers": "送金",
+    "openOrders": "オープンオーダー",
+    "myOrders": "マイオーダー",
+    "myTrades": "マイトレード",
+    "conversions": "両替"
+  },
+  "filter": {
+    "dateRange": "期間",
+    "startDate": "開始日",
+    "endDate": "終了日",
+    "search": "検索",
+    "reset": "リセット",
+    "all": "すべて",
+    "placeholder": "アドレス/Txハッシュで検索..."
+  },
+  "table": {
+    "datetime": "日時",
+    "currency": "通貨",
+    "amount": "金額",
+    "address": "アドレス/Tx",
+    "txHash": "Tx",
+    "status": "ステータス",
+    "memo": "メモ",
+    "type": "種類",
+    "pair": "ペア",
+    "side": "売買",
+    "price": "価格",
+    "quantity": "数量",
+    "filled": "約定",
+    "total": "合計",
+    "fee": "手数料",
+    "orderId": "注文ID",
+    "from": "送金元",
+    "to": "送金先",
+    "fromCurrency": "変換元",
+    "toCurrency": "変換先",
+    "rate": "レート",
+    "action": "操作",
+    "confirmations": "確認数",
+    "recipient": "相手",
+    "referenceNumber": "参照番号"
+  },
+  "status": {
+    "pending": "承認待ち",
+    "approved": "承認済み",
+    "rejected": "拒否",
+    "completed": "完了",
+    "failed": "失敗",
+    "processing": "処理中",
+    "cancelled": "取消済",
+    "open": "オープン",
+    "filled": "約定",
+    "partiallyFilled": "一部約定"
+  },
+  "side": {
+    "buy": "買い",
+    "sell": "売り"
+  },
+  "type": {
+    "limit": "指値",
+    "market": "成行",
+    "send": "送金",
+    "receive": "受取"
+  },
+  "actions": {
+    "cancel": "取消",
+    "cancelAll": "全て取消",
+    "view": "詳細",
+    "reload": "再読込"
+  },
+  "empty": {
+    "noRecords": "記録が見つかりません",
+    "deposits": "入金履歴がありません",
+    "withdrawals": "出金履歴がありません",
+    "transfers": "送金履歴がありません",
+    "openOrders": "未約定の注文はありません",
+    "myOrders": "注文履歴がありません",
+    "myTrades": "取引履歴がありません",
+    "conversions": "両替履歴がありません"
+  },
+  "pagination": {
+    "page": "ページ:",
+    "prev": "前へ",
+    "next": "次へ",
+    "of": "/"
+  },
+  "toast": {
+    "cancelSuccess": "取消成功",
+    "cancelSuccessDesc": "注文を取消しました",
+    "cancelAllSuccess": "一括取消",
+    "cancelAllSuccessDesc": "{{count}}件の注文を取消しました",
+    "cancelError": "エラー",
+    "cancelErrorDesc": "取消に失敗しました: {{error}}",
+    "loadError": "読み込みエラー",
+    "loadErrorDesc": "データの取得に失敗しました"
+  },
+  "mobile": {
+    "datetime": "日時",
+    "amount": "金額",
+    "status": "状態",
+    "address": "アドレス",
+    "txHash": "Tx",
+    "memo": "メモ",
+    "pair": "ペア",
+    "type": "種類",
+    "side": "売買",
+    "price": "価格",
+    "quantity": "数量",
+    "filled": "約定",
+    "total": "合計",
+    "fee": "手数料",
+    "from": "送金元",
+    "to": "送金先",
+    "rate": "レート",
+    "description": "説明",
+    "referenceNumber": "参照番号"
+  }
+}

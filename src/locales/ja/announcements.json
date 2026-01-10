@@ -1,0 +1,52 @@
+{
+  "pageTitle": "お知らせ",
+  "pageSubtitle": "プラットフォームからの重要なお知らせや情報をご確認いただけます",
+  "categories": {
+    "maintenance": "メンテナンス",
+    "feature": "新機能",
+    "warning": "警告",
+    "info": "情報",
+    "event": "イベント",
+    "announcement": "お知らせ"
+  },
+  "importance": {
+    "high": "重要",
+    "normal": "通常",
+    "low": "低"
+  },
+  "fields": {
+    "publishDate": "公開日",
+    "expireDate": "有効期限"
+  },
+  "empty": {
+    "title": "現在、お知らせはありません",
+    "description": "新しいお知らせが投稿されるとここに表示されます"
+  },
+  "loading": "読み込み中...",
+  "error": {
+    "title": "エラー",
+    "description": "お知らせの読み込みに失敗しました。しばらくしてから再度お試しください。"
+  },
+  "notifications": {
+    "pageTitle": "通知",
+    "unreadCount": "{{count}}件の未読通知",
+    "markAllAsRead": "すべて既読",
+    "empty": {
+      "title": "通知はありません",
+      "description": "新しい通知が届くとここに表示されます"
+    },
+    "time": {
+      "justNow": "たった今",
+      "minutesAgo": "{{count}}分前",
+      "hoursAgo": "{{count}}時間前",
+      "daysAgo": "{{count}}日前"
+    },
+    "types": {
+      "kyc": "本人確認",
+      "success": "成功",
+      "warning": "警告",
+      "error": "エラー",
+      "info": "情報"
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,6 +90,7 @@ interface ConversionRecord {
 }
 
 const FinancialHistory = () => {
+  const { t } = useTranslation('history');
   const { user } = useAuth();
   const { toast } = useToast();
   const [fromDate, setFromDate] = useState("");
@@ -232,12 +234,12 @@ const FinancialHistory = () => {
     try {
       const { error } = await supabase.rpc('cancel_order', { p_order_id: id });
       if (error) throw error;
-      toast({ title: '取消成功', description: `注文 #${id.slice(0, 8)}… を取消しました。` });
+      toast({ title: t('toast.cancelSuccess'), description: t('toast.cancelSuccessDesc') });
       loadOpenOrders();
       loadMyOrders();
     } catch (e: unknown) {
       const error = e as Error;
-      toast({ title: 'エラー', description: error.message || '取消に失敗しました', variant: 'destructive' });
+      toast({ title: t('toast.cancelError'), description: t('toast.cancelErrorDesc', { error: error.message }), variant: 'destructive' });
     }
   };
 
@@ -245,12 +247,12 @@ const FinancialHistory = () => {
     try {
       const { data, error } = await supabase.rpc('cancel_all_orders', { p_market: null });
       if (error) throw error;
-      toast({ title: '一括取消', description: `${data || 0}件の注文を取消しました` });
+      toast({ title: t('toast.cancelAllSuccess'), description: t('toast.cancelAllSuccessDesc', { count: data || 0 }) });
       loadOpenOrders();
       loadMyOrders();
     } catch (e: unknown) {
       const error = e as Error;
-      toast({ title: 'エラー', description: error.message || '一括取消に失敗しました', variant: 'destructive' });
+      toast({ title: t('toast.cancelError'), description: t('toast.cancelErrorDesc', { error: error.message }), variant: 'destructive' });
     }
   };
 
@@ -259,32 +261,32 @@ const FinancialHistory = () => {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">金融履歴</h1>
+          <h1 className="text-2xl md:text-2xl font-bold text-gray-900">{t('pageTitle')}</h1>
         </div>
 
         {/* History Tabs */}
         <Tabs defaultValue="deposit" className="w-full" onValueChange={(v) => setActive(v)}>
           {/* Desktop Tabs */}
           <TabsList className="hidden md:grid w-full grid-cols-7">
-            <TabsTrigger value="deposit" className="text-primary">入金</TabsTrigger>
-            <TabsTrigger value="withdraw">出金</TabsTrigger>
-            <TabsTrigger value="transfer">送金</TabsTrigger>
-            <TabsTrigger value="open-order">オープンオーダー</TabsTrigger>
-            <TabsTrigger value="my-order">マイオーダー</TabsTrigger>
-            <TabsTrigger value="my-trades">マイトレード</TabsTrigger>
-            <TabsTrigger value="conversion">両替</TabsTrigger>
+            <TabsTrigger value="deposit" className="text-primary">{t('tabs.deposits')}</TabsTrigger>
+            <TabsTrigger value="withdraw">{t('tabs.withdrawals')}</TabsTrigger>
+            <TabsTrigger value="transfer">{t('tabs.transfers')}</TabsTrigger>
+            <TabsTrigger value="open-order">{t('tabs.openOrders')}</TabsTrigger>
+            <TabsTrigger value="my-order">{t('tabs.myOrders')}</TabsTrigger>
+            <TabsTrigger value="my-trades">{t('tabs.myTrades')}</TabsTrigger>
+            <TabsTrigger value="conversion">{t('tabs.conversions')}</TabsTrigger>
           </TabsList>
 
           {/* Mobile Tabs - Scrollable */}
           <div className="md:hidden">
             <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
-              <TabsTrigger value="deposit" className="text-primary flex-shrink-0 text-sm px-3">入金</TabsTrigger>
-              <TabsTrigger value="withdraw" className="flex-shrink-0 text-sm px-3">出金</TabsTrigger>
-              <TabsTrigger value="transfer" className="flex-shrink-0 text-sm px-2">送金</TabsTrigger>
-              <TabsTrigger value="open-order" className="flex-shrink-0 text-sm px-2">オープン</TabsTrigger>
-              <TabsTrigger value="my-order" className="flex-shrink-0 text-sm px-2">マイ注文</TabsTrigger>
-              <TabsTrigger value="my-trades" className="flex-shrink-0 text-sm px-2">取引</TabsTrigger>
-              <TabsTrigger value="conversion" className="flex-shrink-0 text-sm px-2">両替</TabsTrigger>
+              <TabsTrigger value="deposit" className="text-primary flex-shrink-0 text-sm px-3">{t('tabs.deposits')}</TabsTrigger>
+              <TabsTrigger value="withdraw" className="flex-shrink-0 text-sm px-3">{t('tabs.withdrawals')}</TabsTrigger>
+              <TabsTrigger value="transfer" className="flex-shrink-0 text-sm px-2">{t('tabs.transfers')}</TabsTrigger>
+              <TabsTrigger value="open-order" className="flex-shrink-0 text-sm px-2">{t('tabs.openOrders')}</TabsTrigger>
+              <TabsTrigger value="my-order" className="flex-shrink-0 text-sm px-2">{t('tabs.myOrders')}</TabsTrigger>
+              <TabsTrigger value="my-trades" className="flex-shrink-0 text-sm px-2">{t('tabs.myTrades')}</TabsTrigger>
+              <TabsTrigger value="conversion" className="flex-shrink-0 text-sm px-2">{t('tabs.conversions')}</TabsTrigger>
             </TabsList>
           </div>
 
@@ -295,7 +297,7 @@ const FinancialHistory = () => {
                 <div className="relative">
                   <Input
                     type="text"
-                    placeholder="開始日"
+                    placeholder={t('filter.startDate')}
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
                     className="pr-10"
@@ -305,7 +307,7 @@ const FinancialHistory = () => {
                 <div className="relative">
                   <Input
                     type="text"
-                    placeholder="終了日"
+                    placeholder={t('filter.endDate')}
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
                     className="pr-10"
@@ -314,14 +316,14 @@ const FinancialHistory = () => {
                 </div>
               </div>
               <div className="flex gap-2 sm:gap-4">
-                <Button className="flex-1 sm:flex-none transition-all duration-200 active:scale-95">検索</Button>
-                <Button variant="destructive" className="flex-1 sm:flex-none transition-all duration-200 active:scale-95">リセット</Button>
+                <Button className="flex-1 sm:flex-none transition-all duration-200 active:scale-95">{t('filter.search')}</Button>
+                <Button variant="destructive" className="flex-1 sm:flex-none transition-all duration-200 active:scale-95">{t('filter.reset')}</Button>
                 <Select defaultValue="all">
                   <SelectTrigger className="w-full sm:w-32">
-                    <SelectValue placeholder="すべて" />
+                    <SelectValue placeholder={t('filter.all')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">すべて</SelectItem>
+                    <SelectItem value="all">{t('filter.all')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -335,16 +337,16 @@ const FinancialHistory = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">日時</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">通貨</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">金額</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">アドレス/Tx</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ステータス</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.datetime')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.currency')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.amount')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.address')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.status')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {deposits.length === 0 ? (
-                        <tr><td colSpan={5} className="text-center py-8 text-gray-600">記録が見つかりません</td></tr>
+                        <tr><td colSpan={5} className="text-center py-8 text-gray-600">{t('empty.noRecords')}</td></tr>
                       ) : deposits.map((d) => (
                         <tr key={d.id} className="border-b hover:bg-gray-100/40">
                           <td className="p-4 text-sm">{new Date(d.created_at).toLocaleString()}</td>
@@ -361,7 +363,7 @@ const FinancialHistory = () => {
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-3 p-3">
                   {deposits.length === 0 ? (
-                    <div className="text-center py-8 text-gray-600">記録が見つかりません</div>
+                    <div className="text-center py-8 text-gray-600">{t('empty.noRecords')}</div>
                   ) : deposits.map((d) => (
                     <Card key={d.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
                       <CardContent className="p-4">
@@ -373,7 +375,7 @@ const FinancialHistory = () => {
                         </div>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">日時:</span>
+                            <span className="text-muted-foreground">{t('mobile.datetime')}:</span>
                             <span className="font-mono text-xs">
                               {new Date(d.created_at).toLocaleString('ja-JP', {
                                 month: '2-digit',
@@ -384,14 +386,14 @@ const FinancialHistory = () => {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">金額:</span>
+                            <span className="text-muted-foreground">{t('mobile.amount')}:</span>
                             <span className="font-mono text-sm font-semibold">
                               {Number(d.amount).toFixed(8)} {d.currency}
                             </span>
                           </div>
                           {(d.wallet_address || d.transaction_hash) && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Tx:</span>
+                              <span className="text-muted-foreground">{t('mobile.txHash')}:</span>
                               <span className="font-mono text-xs">
                                 {d.wallet_address?.slice(0, 10) || ''}…
                                 {d.transaction_hash ? `/${d.transaction_hash.slice(0, 8)}…` : ''}
@@ -411,14 +413,14 @@ const FinancialHistory = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>マイトレード</CardTitle>
+                  <CardTitle>{t('tabs.myTrades')}</CardTitle>
                   <div className="text-sm text-gray-600">
                     {(() => {
                       const totalTrades = myTrades.length;
                       const totalQty = myTrades.reduce((s, t) => s + Number(t.qty || 0), 0);
                       const totalNotional = myTrades.reduce((s, t) => s + Number(t.qty || 0) * Number(t.price || 0), 0);
                       const totalFees = myTrades.reduce((s, t) => s + (t.role === 'taker' ? Number(t.taker_fee || 0) : Number(t.maker_fee || 0)), 0);
-                      return `件数 ${totalTrades} / 量 ${totalQty.toFixed(6)} / 金額 ${totalNotional.toFixed(2)} / 手数料 ${totalFees.toFixed(6)}`;
+                      return `${totalTrades} / ${t('table.quantity')} ${totalQty.toFixed(6)} / ${t('table.total')} ${totalNotional.toFixed(2)} / ${t('table.fee')} ${totalFees.toFixed(6)}`;
                     })()}
                   </div>
                 </div>
@@ -428,17 +430,17 @@ const FinancialHistory = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">日時</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ペア</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">サイド</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ロール</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">価格</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">数量</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.datetime')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.pair')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.side')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">Role</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.price')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.quantity')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {myTrades.length === 0 ? (
-                        <tr><td colSpan={6} className="text-center py-8 text-gray-600">記録が見つかりません</td></tr>
+                        <tr><td colSpan={6} className="text-center py-8 text-gray-600">{t('empty.noRecords')}</td></tr>
                       ) : myTrades.map(t => (
                         <tr key={t.id} className="border-b hover:bg-gray-100/40">
                           <td className="p-4">{new Date(t.created_at).toLocaleString()}</td>
@@ -453,11 +455,11 @@ const FinancialHistory = () => {
                   </table>
                 </div>
                 <div className="flex items-center justify-between p-4">
-                  <div className="text-sm text-gray-600">ページ: {tradesPage + 1}</div>
+                  <div className="text-sm text-gray-600">{t('pagination.page')} {tradesPage + 1}</div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => setTradesPage(p => Math.max(0, p - 1))} disabled={tradesPage === 0}>前へ</Button>
-                    <Button size="sm" variant="outline" onClick={() => setTradesPage(p => p + 1)} disabled={myTrades.length < 50}>次へ</Button>
-                    <Button size="sm" onClick={() => { setTradesPage(0); loadMyTrades(); }}>再読込</Button>
+                    <Button size="sm" variant="outline" onClick={() => setTradesPage(p => Math.max(0, p - 1))} disabled={tradesPage === 0}>{t('pagination.prev')}</Button>
+                    <Button size="sm" variant="outline" onClick={() => setTradesPage(p => p + 1)} disabled={myTrades.length < 50}>{t('pagination.next')}</Button>
+                    <Button size="sm" onClick={() => { setTradesPage(0); loadMyTrades(); }}>{t('actions.reload')}</Button>
                     <Button size="sm" variant="outline" onClick={() => {
                       const header = ['id', 'market', 'side', 'role', 'price', 'qty', 'taker_fee', 'maker_fee', 'created_at'];
                       const rows = myTrades.map((t: TradeRecord) => [t.id, t.market, t.side, t.role, t.price, t.qty, t.taker_fee, t.maker_fee, t.created_at]);
@@ -482,7 +484,7 @@ const FinancialHistory = () => {
               <div className="relative">
                 <Input
                   type="text"
-                  placeholder="開始日"
+                  placeholder={t('filter.startDate')}
                   value={fromDate}
                   onChange={(e) => setFromDate(e.target.value)}
                   className="pr-10"
@@ -492,21 +494,21 @@ const FinancialHistory = () => {
               <div className="relative">
                 <Input
                   type="text"
-                  placeholder="終了日"
+                  placeholder={t('filter.endDate')}
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
                   className="pr-10"
                 />
                 <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
               </div>
-              <Button>検索</Button>
-              <Button variant="destructive">リセット</Button>
+              <Button>{t('filter.search')}</Button>
+              <Button variant="destructive">{t('filter.reset')}</Button>
               <Select defaultValue="all">
                 <SelectTrigger className="w-32">
-                  <SelectValue placeholder="すべて" />
+                  <SelectValue placeholder={t('filter.all')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">すべて</SelectItem>
+                  <SelectItem value="all">{t('filter.all')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -518,18 +520,18 @@ const FinancialHistory = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">申請日時</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">通貨</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">金額</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">出金先</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ステータス</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">承認日時</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">Tx</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.datetime')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.currency')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.amount')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.to')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.status')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.datetime')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.txHash')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {withdrawals.length === 0 ? (
-                        <tr><td colSpan={7} className="text-center py-8 text-gray-600">記録が見つかりません</td></tr>
+                        <tr><td colSpan={7} className="text-center py-8 text-gray-600">{t('empty.noRecords')}</td></tr>
                       ) : withdrawals.map((w) => (
                         <tr key={w.id} className="border-b hover:bg-gray-100/40">
                           <td className="p-4">{new Date(w.created_at).toLocaleString()}</td>
@@ -540,7 +542,7 @@ const FinancialHistory = () => {
                               <div className="font-mono text-xs">{w.wallet_address}</div>
                               {(w.notes || '').match(/network=([^;]+)/)?.[1] && (
                                 <div className="text-xs text-gray-600">
-                                  ネットワーク: {(w.notes || '').match(/network=([^;]+)/)?.[1]}
+                                  Network: {(w.notes || '').match(/network=([^;]+)/)?.[1]}
                                 </div>
                               )}
                             </div>
@@ -550,9 +552,9 @@ const FinancialHistory = () => {
                               w.status === 'rejected' ? 'bg-red-100 text-red-800' :
                                 'bg-yellow-100 text-yellow-800'
                               }`}>
-                              {w.status === 'pending' ? '承認待ち' :
-                                w.status === 'confirmed' ? '承認済み' :
-                                  w.status === 'rejected' ? '拒否' : w.status}
+                              {w.status === 'pending' ? t('status.pending') :
+                                w.status === 'confirmed' ? t('status.approved') :
+                                  w.status === 'rejected' ? t('status.rejected') : w.status}
                             </div>
                           </td>
                           <td className="p-4">
@@ -582,7 +584,7 @@ const FinancialHistory = () => {
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-3 p-3">
                   {withdrawals.length === 0 ? (
-                    <div className="text-center py-8 text-gray-600">記録が見つかりません</div>
+                    <div className="text-center py-8 text-gray-600">{t('empty.noRecords')}</div>
                   ) : withdrawals.map((w) => (
                     <Card key={w.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
                       <CardContent className="p-4">
@@ -593,14 +595,14 @@ const FinancialHistory = () => {
                             w.status === 'rejected' ? 'bg-red-100 text-red-800' :
                             'bg-yellow-100 text-yellow-800'
                           }`}>
-                            {w.status === 'pending' ? '承認待ち' :
-                              w.status === 'confirmed' ? '承認済み' :
-                                w.status === 'rejected' ? '拒否' : w.status}
+                            {w.status === 'pending' ? t('status.pending') :
+                              w.status === 'confirmed' ? t('status.approved') :
+                                w.status === 'rejected' ? t('status.rejected') : w.status}
                           </div>
                         </div>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">日時:</span>
+                            <span className="text-muted-foreground">{t('mobile.datetime')}:</span>
                             <span className="font-mono text-xs">
                               {new Date(w.created_at).toLocaleString('ja-JP', {
                                 month: '2-digit',
@@ -611,14 +613,14 @@ const FinancialHistory = () => {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">金額:</span>
+                            <span className="text-muted-foreground">{t('mobile.amount')}:</span>
                             <span className="font-mono text-sm font-semibold">
                               {Number(w.amount).toFixed(8)} {w.currency}
                             </span>
                           </div>
                           {w.wallet_address && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">出金先:</span>
+                              <span className="text-muted-foreground">{t('mobile.to')}:</span>
                               <span className="font-mono text-xs">
                                 {w.wallet_address.slice(0, 10)}…
                               </span>
@@ -626,7 +628,7 @@ const FinancialHistory = () => {
                           )}
                           {w.confirmed_at && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">承認日:</span>
+                              <span className="text-muted-foreground">{t('table.datetime')}:</span>
                               <span className="font-mono text-xs">
                                 {new Date(w.confirmed_at).toLocaleString('ja-JP', {
                                   month: '2-digit',
@@ -639,7 +641,7 @@ const FinancialHistory = () => {
                           )}
                           {w.transaction_hash && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Tx:</span>
+                              <span className="text-muted-foreground">{t('mobile.txHash')}:</span>
                               <span className="font-mono text-xs">
                                 {w.transaction_hash.slice(0, 8)}…
                               </span>
@@ -658,8 +660,8 @@ const FinancialHistory = () => {
           <TabsContent value="open-order" className="space-y-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>オープンオーダー</CardTitle>
-                <Button size="sm" variant="outline" onClick={cancelAllOpen}>すべて取消</Button>
+                <CardTitle>{t('tabs.openOrders')}</CardTitle>
+                <Button size="sm" variant="outline" onClick={cancelAllOpen}>{t('actions.cancelAll')}</Button>
               </CardHeader>
               <CardContent className="p-0">
                 {/* Desktop Table */}
@@ -667,29 +669,29 @@ const FinancialHistory = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ID</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ペア</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">サイド</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">価格</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">数量</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">約定</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">作成</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">操作</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.orderId')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.pair')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.side')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.price')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.quantity')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.filled')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.datetime')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.action')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {openOrders.length === 0 ? (
-                        <tr><td colSpan={8} className="text-center py-8 text-gray-600">記録が見つかりません</td></tr>
+                        <tr><td colSpan={8} className="text-center py-8 text-gray-600">{t('empty.noRecords')}</td></tr>
                       ) : openOrders.map(o => (
                         <tr key={o.id} className="border-b hover:bg-gray-100/40">
                           <td className="p-4 font-mono text-xs">{o.id.slice(0, 8)}…</td>
                           <td className="p-4">{o.market.replace('-', '/')}</td>
-                          <td className="p-4">{o.side}</td>
+                          <td className="p-4">{o.side === 'buy' ? t('side.buy') : t('side.sell')}</td>
                           <td className="p-4">{o.price}</td>
                           <td className="p-4">{o.qty}</td>
                           <td className="p-4">{o.filled_qty}</td>
                           <td className="p-4">{new Date(o.created_at).toLocaleString()}</td>
-                          <td className="p-4"><Button size="sm" variant="outline" onClick={() => cancelOrder(o.id)}>取消</Button></td>
+                          <td className="p-4"><Button size="sm" variant="outline" onClick={() => cancelOrder(o.id)}>{t('actions.cancel')}</Button></td>
                         </tr>
                       ))}
                     </tbody>
@@ -699,7 +701,7 @@ const FinancialHistory = () => {
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-3 p-3">
                   {openOrders.length === 0 ? (
-                    <div className="text-center py-8 text-gray-600">記録が見つかりません</div>
+                    <div className="text-center py-8 text-gray-600">{t('empty.noRecords')}</div>
                   ) : openOrders.map(o => (
                     <Card key={o.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
                       <CardContent className="p-4">
@@ -708,12 +710,12 @@ const FinancialHistory = () => {
                           <div className={`px-2 py-1 rounded text-xs font-medium ${
                             o.side === 'buy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                           }`}>
-                            {o.side === 'buy' ? '買い' : '売り'}
+                            {o.side === 'buy' ? t('side.buy') : t('side.sell')}
                           </div>
                         </div>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">日時:</span>
+                            <span className="text-muted-foreground">{t('mobile.datetime')}:</span>
                             <span className="font-mono text-xs">
                               {new Date(o.created_at).toLocaleString('ja-JP', {
                                 month: '2-digit',
@@ -724,19 +726,19 @@ const FinancialHistory = () => {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">価格:</span>
+                            <span className="text-muted-foreground">{t('mobile.price')}:</span>
                             <span className="font-mono text-sm font-semibold">
                               {o.price}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">数量:</span>
+                            <span className="text-muted-foreground">{t('mobile.quantity')}:</span>
                             <span className="font-mono text-sm">
                               {o.qty}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">約定:</span>
+                            <span className="text-muted-foreground">{t('mobile.filled')}:</span>
                             <span className="font-mono text-sm">
                               {o.filled_qty}
                             </span>
@@ -749,13 +751,13 @@ const FinancialHistory = () => {
                           </div>
                         </div>
                         <div className="mt-3 pt-3 border-t">
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
+                          <Button
+                            size="sm"
+                            variant="outline"
                             onClick={() => cancelOrder(o.id)}
                             className="w-full transition-all duration-200 active:scale-95"
                           >
-                            注文を取消
+                            {t('actions.cancel')}
                           </Button>
                         </div>
                       </CardContent>
@@ -770,7 +772,7 @@ const FinancialHistory = () => {
           <TabsContent value="my-order" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>マイオーダー</CardTitle>
+                <CardTitle>{t('tabs.myOrders')}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 {/* Desktop Table */}
@@ -778,28 +780,28 @@ const FinancialHistory = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ID</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ペア</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">サイド</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">価格</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">数量</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">約定</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">状態</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">作成</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.orderId')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.pair')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.side')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.price')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.quantity')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.filled')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.status')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.datetime')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {myOrders.length === 0 ? (
-                        <tr><td colSpan={8} className="text-center py-8 text-gray-600">記録が見つかりません</td></tr>
+                        <tr><td colSpan={8} className="text-center py-8 text-gray-600">{t('empty.noRecords')}</td></tr>
                       ) : myOrders.map(o => (
                         <tr key={o.id} className="border-b hover:bg-gray-100/40">
                           <td className="p-4 font-mono text-xs">{o.id.slice(0, 8)}…</td>
                           <td className="p-4">{o.market.replace('-', '/')}</td>
-                          <td className="p-4">{o.side}</td>
+                          <td className="p-4">{o.side === 'buy' ? t('side.buy') : t('side.sell')}</td>
                           <td className="p-4">{o.price}</td>
                           <td className="p-4">{o.qty}</td>
                           <td className="p-4">{o.filled_qty}</td>
-                          <td className="p-4">{o.status}</td>
+                          <td className="p-4">{o.status === 'filled' ? t('status.filled') : o.status === 'open' ? t('status.open') : o.status === 'cancelled' ? t('status.cancelled') : o.status === 'partially_filled' ? t('status.partiallyFilled') : o.status}</td>
                           <td className="p-4">{new Date(o.created_at).toLocaleString()}</td>
                         </tr>
                       ))}
@@ -810,7 +812,7 @@ const FinancialHistory = () => {
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-3 p-3">
                   {myOrders.length === 0 ? (
-                    <div className="text-center py-8 text-gray-600">記録が見つかりません</div>
+                    <div className="text-center py-8 text-gray-600">{t('empty.noRecords')}</div>
                   ) : myOrders.map(o => (
                     <Card key={o.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
                       <CardContent className="p-4">
@@ -819,12 +821,12 @@ const FinancialHistory = () => {
                           <div className={`px-2 py-1 rounded text-xs font-medium ${
                             o.side === 'buy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                           }`}>
-                            {o.side === 'buy' ? '買い' : '売り'}
+                            {o.side === 'buy' ? t('side.buy') : t('side.sell')}
                           </div>
                         </div>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">日時:</span>
+                            <span className="text-muted-foreground">{t('mobile.datetime')}:</span>
                             <span className="font-mono text-xs">
                               {new Date(o.created_at).toLocaleString('ja-JP', {
                                 month: '2-digit',
@@ -835,34 +837,34 @@ const FinancialHistory = () => {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">価格:</span>
+                            <span className="text-muted-foreground">{t('mobile.price')}:</span>
                             <span className="font-mono text-sm font-semibold">
                               {o.price}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">数量:</span>
+                            <span className="text-muted-foreground">{t('mobile.quantity')}:</span>
                             <span className="font-mono text-sm">
                               {o.qty}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">約定:</span>
+                            <span className="text-muted-foreground">{t('mobile.filled')}:</span>
                             <span className="font-mono text-sm">
                               {o.filled_qty}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">状態:</span>
+                            <span className="text-muted-foreground">{t('mobile.status')}:</span>
                             <span className={`text-xs font-medium ${
                               o.status === 'filled' ? 'text-green-600' :
                               o.status === 'partially_filled' ? 'text-yellow-600' :
                               o.status === 'cancelled' ? 'text-red-600' : 'text-blue-600'
                             }`}>
-                              {o.status === 'filled' ? '約定済' :
-                                o.status === 'partially_filled' ? '部分約定' :
-                                  o.status === 'cancelled' ? 'キャンセル' :
-                                    o.status === 'open' ? '注文中' : o.status}
+                              {o.status === 'filled' ? t('status.filled') :
+                                o.status === 'partially_filled' ? t('status.partiallyFilled') :
+                                  o.status === 'cancelled' ? t('status.cancelled') :
+                                    o.status === 'open' ? t('status.open') : o.status}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -883,7 +885,7 @@ const FinancialHistory = () => {
           <TabsContent value="transfer" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>送金履歴</CardTitle>
+                <CardTitle>{t('tabs.transfers')}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 {/* Desktop Table */}
@@ -891,43 +893,43 @@ const FinancialHistory = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">日時</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">種別</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">相手</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">金額</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">参照番号</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ステータス</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.datetime')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.type')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.recipient')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.amount')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.referenceNumber')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.status')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {transfers.length === 0 ? (
-                        <tr><td colSpan={6} className="text-center py-8 text-gray-600">記録が見つかりません</td></tr>
-                      ) : transfers.map((t) => {
-                        const isSent = t.from_user_id === user?.id;
+                        <tr><td colSpan={6} className="text-center py-8 text-gray-600">{t('empty.noRecords')}</td></tr>
+                      ) : transfers.map((tr) => {
+                        const isSent = tr.from_user_id === user?.id;
                         return (
-                          <tr key={t.id} className="border-b hover:bg-gray-100/40">
-                            <td className="p-4">{new Date(t.created_at).toLocaleString()}</td>
+                          <tr key={tr.id} className="border-b hover:bg-gray-100/40">
+                            <td className="p-4">{new Date(tr.created_at).toLocaleString()}</td>
                             <td className="p-4">
                               <span className={`px-2 py-1 rounded text-xs font-medium ${
                                 isSent ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
                               }`}>
-                                {isSent ? '送金' : '受取'}
+                                {isSent ? t('type.send') : t('type.receive')}
                               </span>
                             </td>
                             <td className="p-4">
-                              {isSent ? t.to_user_handle : t.from_user_handle}
+                              {isSent ? tr.to_user_handle : tr.from_user_handle}
                             </td>
-                            <td className="p-4 font-mono">{Number(t.amount).toFixed(8)} {t.currency}</td>
-                            <td className="p-4 font-mono text-xs">{t.reference_number}</td>
+                            <td className="p-4 font-mono">{Number(tr.amount).toFixed(8)} {tr.currency}</td>
+                            <td className="p-4 font-mono text-xs">{tr.reference_number}</td>
                             <td className="p-4">
                               <span className={`px-2 py-1 rounded text-xs font-medium ${
-                                t.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                t.status === 'failed' ? 'bg-red-100 text-red-800' :
+                                tr.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                tr.status === 'failed' ? 'bg-red-100 text-red-800' :
                                 'bg-yellow-100 text-yellow-800'
                               }`}>
-                                {t.status === 'completed' ? '完了' :
-                                 t.status === 'failed' ? '失敗' :
-                                 t.status === 'pending' ? '処理中' : t.status}
+                                {tr.status === 'completed' ? t('status.completed') :
+                                 tr.status === 'failed' ? t('status.failed') :
+                                 tr.status === 'pending' ? t('status.processing') : tr.status}
                               </span>
                             </td>
                           </tr>
@@ -940,27 +942,27 @@ const FinancialHistory = () => {
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-3 p-3">
                   {transfers.length === 0 ? (
-                    <div className="text-center py-8 text-gray-600">記録が見つかりません</div>
-                  ) : transfers.map((t) => {
-                    const isSent = t.from_user_id === user?.id;
+                    <div className="text-center py-8 text-gray-600">{t('empty.noRecords')}</div>
+                  ) : transfers.map((tr) => {
+                    const isSent = tr.from_user_id === user?.id;
                     return (
-                      <Card key={t.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
+                      <Card key={tr.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between mb-3">
                             <div className="font-semibold text-base">
-                              {isSent ? t.to_user_handle : t.from_user_handle}
+                              {isSent ? tr.to_user_handle : tr.from_user_handle}
                             </div>
                             <div className={`px-2 py-1 rounded text-xs font-medium ${
                               isSent ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
                             }`}>
-                              {isSent ? '送金' : '受取'}
+                              {isSent ? t('type.send') : t('type.receive')}
                             </div>
                           </div>
                           <div className="space-y-2 text-sm">
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">日時:</span>
+                              <span className="text-muted-foreground">{t('mobile.datetime')}:</span>
                               <span className="font-mono text-xs">
-                                {new Date(t.created_at).toLocaleString('ja-JP', {
+                                {new Date(tr.created_at).toLocaleString('ja-JP', {
                                   month: '2-digit',
                                   day: '2-digit',
                                   hour: '2-digit',
@@ -969,35 +971,35 @@ const FinancialHistory = () => {
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">金額:</span>
+                              <span className="text-muted-foreground">{t('mobile.amount')}:</span>
                               <span className="font-mono text-sm font-semibold">
-                                {Number(t.amount).toFixed(8)} {t.currency}
+                                {Number(tr.amount).toFixed(8)} {tr.currency}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">参照番号:</span>
+                              <span className="text-muted-foreground">{t('mobile.referenceNumber')}:</span>
                               <span className="font-mono text-xs">
-                                {t.reference_number}
+                                {tr.reference_number}
                               </span>
                             </div>
-                            {t.description && (
+                            {tr.description && (
                               <div className="flex justify-between">
-                                <span className="text-muted-foreground">説明:</span>
+                                <span className="text-muted-foreground">{t('mobile.description')}:</span>
                                 <span className="text-xs">
-                                  {t.description}
+                                  {tr.description}
                                 </span>
                               </div>
                             )}
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">ステータス:</span>
+                              <span className="text-muted-foreground">{t('mobile.status')}:</span>
                               <span className={`text-xs font-medium ${
-                                t.status === 'completed' ? 'text-green-600' :
-                                t.status === 'failed' ? 'text-red-600' :
+                                tr.status === 'completed' ? 'text-green-600' :
+                                tr.status === 'failed' ? 'text-red-600' :
                                 'text-yellow-600'
                               }`}>
-                                {t.status === 'completed' ? '完了' :
-                                 t.status === 'failed' ? '失敗' :
-                                 t.status === 'pending' ? '処理中' : t.status}
+                                {tr.status === 'completed' ? t('status.completed') :
+                                 tr.status === 'failed' ? t('status.failed') :
+                                 tr.status === 'pending' ? t('status.processing') : tr.status}
                               </span>
                             </div>
                           </div>
@@ -1014,7 +1016,7 @@ const FinancialHistory = () => {
           <TabsContent value="conversion" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>両替履歴</CardTitle>
+                <CardTitle>{t('tabs.conversions')}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 {/* Desktop Table */}
@@ -1022,16 +1024,16 @@ const FinancialHistory = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">日時</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">変換元</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">変換先</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">レート</th>
-                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">ステータス</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.datetime')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.fromCurrency')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.toCurrency')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.rate')}</th>
+                        <th className="text-left p-4 font-medium text-gray-900 text-sm whitespace-nowrap">{t('table.status')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {conversions.length === 0 ? (
-                        <tr><td colSpan={5} className="text-center py-8 text-gray-600">記録が見つかりません</td></tr>
+                        <tr><td colSpan={5} className="text-center py-8 text-gray-600">{t('empty.noRecords')}</td></tr>
                       ) : conversions.map((c) => (
                         <tr key={c.id} className="border-b hover:bg-gray-100/40">
                           <td className="p-4">{new Date(c.created_at).toLocaleString()}</td>
@@ -1050,9 +1052,9 @@ const FinancialHistory = () => {
                               c.status === 'failed' ? 'bg-red-100 text-red-800' :
                               'bg-yellow-100 text-yellow-800'
                             }`}>
-                              {c.status === 'completed' ? '完了' :
-                               c.status === 'failed' ? '失敗' :
-                               c.status === 'pending' ? '処理中' : c.status}
+                              {c.status === 'completed' ? t('status.completed') :
+                               c.status === 'failed' ? t('status.failed') :
+                               c.status === 'pending' ? t('status.processing') : c.status}
                             </span>
                           </td>
                         </tr>
@@ -1064,7 +1066,7 @@ const FinancialHistory = () => {
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-3 p-3">
                   {conversions.length === 0 ? (
-                    <div className="text-center py-8 text-gray-600">記録が見つかりません</div>
+                    <div className="text-center py-8 text-gray-600">{t('empty.noRecords')}</div>
                   ) : conversions.map((c) => (
                     <Card key={c.id} className="hover:bg-accent/30 active:bg-accent/50 transition-all duration-200 active:scale-[0.98]">
                       <CardContent className="p-4">
@@ -1077,14 +1079,14 @@ const FinancialHistory = () => {
                             c.status === 'failed' ? 'bg-red-100 text-red-800' :
                             'bg-yellow-100 text-yellow-800'
                           }`}>
-                            {c.status === 'completed' ? '完了' :
-                             c.status === 'failed' ? '失敗' :
-                             c.status === 'pending' ? '処理中' : c.status}
+                            {c.status === 'completed' ? t('status.completed') :
+                             c.status === 'failed' ? t('status.failed') :
+                             c.status === 'pending' ? t('status.processing') : c.status}
                           </div>
                         </div>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">日時:</span>
+                            <span className="text-muted-foreground">{t('mobile.datetime')}:</span>
                             <span className="font-mono text-xs">
                               {new Date(c.created_at).toLocaleString('ja-JP', {
                                 month: '2-digit',
@@ -1095,19 +1097,19 @@ const FinancialHistory = () => {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">変換元:</span>
+                            <span className="text-muted-foreground">{t('mobile.from')}:</span>
                             <span className="font-mono text-sm font-semibold">
                               {Number(c.from_amount).toFixed(8)} {c.from_currency}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">変換先:</span>
+                            <span className="text-muted-foreground">{t('mobile.to')}:</span>
                             <span className="font-mono text-sm font-semibold">
                               {Number(c.to_amount).toFixed(8)} {c.to_currency}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">レート:</span>
+                            <span className="text-muted-foreground">{t('mobile.rate')}:</span>
                             <span className="font-mono text-xs">
                               1 {c.from_currency} = {Number(c.exchange_rate).toFixed(8)} {c.to_currency}
                             </span>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 
 const Announcements = () => {
+  const { t } = useTranslation('announcements');
   const { announcements, loading, error } = useAnnouncements();
 
   // カテゴリ別のアイコン
@@ -38,17 +40,17 @@ const Announcements = () => {
   const getCategoryLabel = (category: AnnouncementCategory): string => {
     switch (category) {
       case 'maintenance':
-        return 'メンテナンス';
+        return t('categories.maintenance');
       case 'feature':
-        return '新機能';
+        return t('categories.feature');
       case 'warning':
-        return '警告';
+        return t('categories.warning');
       case 'info':
-        return '情報';
+        return t('categories.info');
       case 'event':
-        return 'イベント';
+        return t('categories.event');
       default:
-        return 'お知らせ';
+        return t('categories.announcement');
     }
   };
 
@@ -58,7 +60,7 @@ const Announcements = () => {
     if (importance === 'high') {
       return (
         <Badge variant="destructive" className="ml-auto">
-          重要
+          {t('importance.high')}
         </Badge>
       );
     }
@@ -84,10 +86,10 @@ const Announcements = () => {
         <div>
           <h1 className="text-2xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Megaphone className="h-7 w-7" />
-            お知らせ
+            {t('pageTitle')}
           </h1>
           <p className="text-sm md:text-sm text-gray-600 mt-2">
-            プラットフォームからの重要なお知らせや情報をご確認いただけます
+            {t('pageSubtitle')}
           </p>
         </div>
 
@@ -113,7 +115,7 @@ const Announcements = () => {
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              お知らせの読み込みに失敗しました。しばらくしてから再度お試しください。
+              {t('error.description')}
             </AlertDescription>
           </Alert>
         )}
@@ -152,11 +154,11 @@ const Announcements = () => {
                     {announcement.content}
                   </p>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-gray-500 pt-2 border-t">
-                    <span>公開日: {formatDate(announcement.createdAt)}</span>
+                    <span>{t('fields.publishDate')}: {formatDate(announcement.createdAt)}</span>
                     {announcement.expireAt && (
                       <>
                         <span className="hidden sm:inline">•</span>
-                        <span>有効期限: {formatDate(announcement.expireAt)}</span>
+                        <span>{t('fields.expireDate')}: {formatDate(announcement.expireAt)}</span>
                       </>
                     )}
                   </div>
@@ -171,7 +173,7 @@ const Announcements = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <Megaphone className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-600">現在、お知らせはありません</p>
+              <p className="text-gray-600">{t('empty.title')}</p>
             </CardContent>
           </Card>
         )}
