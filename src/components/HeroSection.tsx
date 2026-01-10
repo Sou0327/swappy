@@ -1,59 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { PLATFORM_NAME } from "@/config/branding";
 
 export const HeroSection = () => {
   const navigate = useNavigate();
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const loadAnime = async () => {
-      const animeModule = await import('animejs') as { default?: typeof import('animejs') };
-      const anime = animeModule.default || animeModule;
-
-      // アニメーション要素を隠す（初期状態）
-      anime.set(['.hero-title', '.hero-subtitle', '.hero-buttons', '.hero-card'], {
-        opacity: 0,
-        translateY: 50,
-      });
-
-      // 順次アニメーション実行
-      const timeline = anime.timeline({
-        easing: 'easeOutExpo',
-      });
-
-      timeline
-        .add({
-          targets: '.hero-title',
-          opacity: 1,
-          translateY: 0,
-          duration: 1000,
-        })
-        .add({
-          targets: '.hero-subtitle',
-          opacity: 1,
-          translateY: 0,
-          duration: 800,
-        }, '-=600')
-        .add({
-          targets: '.hero-buttons',
-          opacity: 1,
-          translateY: 0,
-          duration: 800,
-        }, '-=400')
-        .add({
-          targets: '.hero-card',
-          opacity: 1,
-          translateY: 0,
-          duration: 600,
-          delay: (anime as typeof import('animejs')).stagger(200),
-        }, '-=400');
-    };
-
-    loadAnime();
-  }, []);
 
   return (
     <section className="relative pt-20 pb-16 md:pt-16 md:pb-24 min-h-screen flex items-center overflow-hidden bg-white">
@@ -67,14 +18,14 @@ export const HeroSection = () => {
           {/* Main Heading */}
           <div className="space-y-6 md:space-y-8">
 
-            <h1 className="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light text-gray-900 leading-tight tracking-tight px-2">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light text-gray-900 leading-tight tracking-tight px-2 animate-fade-in-up">
               <span className="block">美しい取引体験を</span>
               <span className="block mt-1 md:mt-2 bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
                 {PLATFORM_NAME}で
               </span>
             </h1>
 
-            <p className="hero-subtitle text-base sm:text-lg md:text-xl text-gray-600 font-light max-w-xl mx-auto leading-relaxed tracking-wide px-4">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 font-light max-w-xl mx-auto leading-relaxed tracking-wide px-4 animate-fade-in-up animation-delay-200">
               シンプルで直感的。安全で高速。
               <br />
               暗号通貨取引の新しいスタンダード
@@ -82,7 +33,7 @@ export const HeroSection = () => {
           </div>
 
           {/* CTA Buttons */}
-          <div className="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 pt-4 md:pt-6 px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 pt-4 md:pt-6 px-4 animate-fade-in-up animation-delay-400">
             <Button
               size="xl"
               className="w-full sm:w-auto group bg-gray-900 text-white hover:bg-gray-800 rounded-full px-8 md:px-10 py-3 md:py-4 text-base font-medium transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-gray-900/20 border-0 active:scale-95"
@@ -104,7 +55,7 @@ export const HeroSection = () => {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-16 md:mt-20 max-w-5xl mx-auto px-4">
-          <div className="hero-card group p-4 md:p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:-translate-y-1">
+          <div className="group p-4 md:p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 animate-fade-in-up animation-delay-600">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 md:mb-4 group-hover:bg-primary/20 transition-colors">
               <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>
@@ -114,7 +65,7 @@ export const HeroSection = () => {
             </p>
           </div>
 
-          <div className="hero-card group p-4 md:p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:-translate-y-1">
+          <div className="group p-4 md:p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 animate-fade-in-up animation-delay-800">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 md:mb-4 group-hover:bg-primary/20 transition-colors">
               <Shield className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>
@@ -124,7 +75,7 @@ export const HeroSection = () => {
             </p>
           </div>
 
-          <div className="hero-card group p-4 md:p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:-translate-y-1">
+          <div className="group p-4 md:p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 animate-fade-in-up animation-delay-1000">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 md:mb-4 group-hover:bg-primary/20 transition-colors">
               <Zap className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>

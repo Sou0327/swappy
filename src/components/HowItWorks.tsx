@@ -1,44 +1,16 @@
 import { UserPlus, Wallet, TrendingUp } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const HowItWorks = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Intersection Observer でスクロールイン時にアニメーション
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(async (entry) => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const animeModule = await import('animejs') as { default?: typeof import('animejs') };
-            const anime = animeModule.default || animeModule;
-
-            // 初期状態を設定
-            anime.set(['.step-header', '.step-card'], {
-              opacity: 0,
-              translateY: 60,
-            });
-
-            // タイムライン作成
-            const timeline = anime.timeline({
-              easing: 'easeOutExpo',
-            });
-
-            timeline
-              .add({
-                targets: '.step-header',
-                opacity: 1,
-                translateY: 0,
-                duration: 1000,
-              })
-              .add({
-                targets: '.step-card',
-                opacity: 1,
-                translateY: 0,
-                duration: 800,
-                delay: (anime as typeof import('animejs')).stagger(300),
-              }, '-=600');
-
+            setIsVisible(true);
             observer.unobserve(entry.target);
           }
         });
@@ -52,6 +24,7 @@ export const HowItWorks = () => {
 
     return () => observer.disconnect();
   }, []);
+
   const steps = [
     {
       icon: UserPlus,
@@ -73,7 +46,7 @@ export const HowItWorks = () => {
   return (
     <section ref={sectionRef} className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 md:px-8">
-        <div className="step-header text-center mb-12 md:mb-20">
+        <div className={`text-center mb-12 md:mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-4 md:mb-6 tracking-tight px-2">
             シンプルな
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-medium">
@@ -89,7 +62,11 @@ export const HowItWorks = () => {
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
-              <div key={index} className="step-card relative text-center group">
+              <div
+                key={index}
+                className={`relative text-center group transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+                style={{ transitionDelay: isVisible ? `${300 + index * 200}ms` : '0ms' }}
+              >
                 <div className="relative">
                   {/* Step Number */}
                   <div className="absolute -top-3 -right-3 w-8 h-8 bg-primary text-white text-sm font-medium rounded-full flex items-center justify-center z-10">

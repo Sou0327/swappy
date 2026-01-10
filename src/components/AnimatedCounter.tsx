@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 interface AnimatedCounterProps {
   value: number;
@@ -9,74 +9,67 @@ interface AnimatedCounterProps {
   className?: string;
 }
 
-export const AnimatedCounter = ({ 
-  value, 
-  duration = 2000, 
-  decimals = 0, 
-  prefix = "", 
+// easeOutExpo: 最初は速く、終わりに向かって減速
+const easeOutExpo = (t: number): number => {
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+};
+
+export const AnimatedCounter = ({
+  value,
+  duration = 2000,
+  decimals = 0,
+  prefix = "",
   suffix = "",
-  className = "" 
+  className = ""
 }: AnimatedCounterProps) => {
   const counterRef = useRef<HTMLSpanElement>(null);
-  const animationRef = useRef<{ pause: () => void } | null>(null);
+  const animationRef = useRef<number | null>(null);
+
+  const formatValue = useCallback((num: number) => {
+    return num.toLocaleString(undefined, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }, [decimals]);
 
   useEffect(() => {
-    const loadAnime = async () => {
-      if (!counterRef.current) return;
+    if (!counterRef.current) return;
 
-      try {
-        const mod = await import('animejs');
-        const anime = mod.default || mod;
+    // 前のアニメーションをキャンセル
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
 
-        // animeが関数かチェック
-        if (typeof anime !== 'function') {
-          throw new Error('anime is not a function');
-        }
+    const startTime = performance.now();
+    const startValue = 0;
 
-        // 前のアニメーションを停止
-        if (animationRef.current) {
-          animationRef.current.pause();
-        }
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
-        const obj = { count: 0 };
+      // イージング関数を適用
+      const easedProgress = easeOutExpo(progress);
+      const currentValue = startValue + (value - startValue) * easedProgress;
 
-        animationRef.current = anime({
-          targets: obj,
-          count: value,
-          duration,
-          easing: 'easeOutExpo',
-          round: 1,
-          update: () => {
-            if (counterRef.current) {
-              const displayValue = decimals > 0
-                ? obj.count.toFixed(decimals)
-                : Math.floor(obj.count).toLocaleString();
-              counterRef.current.textContent = `${prefix}${displayValue}${suffix}`;
-            }
-          }
-        });
-      } catch (error) {
-        console.warn('Animation library failed, using direct display:', error);
-        // アニメーションが失敗した場合は直接値を表示
-        if (counterRef.current) {
-          const displayValue = decimals > 0
-            ? value.toFixed(decimals)
-            : Math.floor(value).toLocaleString();
-          counterRef.current.textContent = `${prefix}${displayValue}${suffix}`;
-        }
+      if (counterRef.current) {
+        counterRef.current.textContent = `${prefix}${formatValue(currentValue)}${suffix}`;
+      }
+
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(animate);
       }
     };
 
-    loadAnime();
+    animationRef.current = requestAnimationFrame(animate);
 
     return () => {
       if (animationRef.current) {
-        animationRef.current.pause();
+        cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [value, duration, decimals, prefix, suffix]);
+  }, [value, duration, prefix, suffix, formatValue]);
 
-  return <span ref={counterRef} className={className}>0</span>;
+  return <span ref={counterRef} className={className}>{`${prefix}${formatValue(0)}${suffix}`}</span>;
 };
 
 export default AnimatedCounter;
