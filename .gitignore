@@ -25,6 +25,12 @@ external/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Supabase local state (contains sensitive info)
+supabase/.temp/
+
+# Test coverage files (may contain local paths)
+**/cov_profile/
 # AI Development Tools
 .serena
 .claude

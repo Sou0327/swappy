@@ -1,7 +1,9 @@
 {
-  "name": "vite_react_shadcn_ts",
-  "private": true,
-  "version": "0.0.0",
+  "name": "undefined-exchange",
+  "private": false,
+  "version": "0.1.0-beta",
+  "license": "MIT",
+  "description": "Open-source multi-chain cryptocurrency exchange platform",
   "type": "module",
   "packageManager": "npm@10.9.2",
   "scripts": {

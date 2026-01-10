@@ -179,14 +179,19 @@ export class XRPWalletManager {
       );
 
       // 秘密情報を暗号化
+      const masterPassword = process.env.WALLET_MASTER_PASSWORD;
+      if (!masterPassword) {
+        throw new Error('WALLET_MASTER_PASSWORD environment variable is required');
+      }
+
       const encryptedPrivateKey = await FinancialEncryption.encrypt(
         wallet.privateKey,
-        process.env.WALLET_MASTER_PASSWORD || '***REMOVED***'
+        masterPassword
       );
 
       const encryptedSeed = await FinancialEncryption.encrypt(
         wallet.seed!,
-        process.env.WALLET_MASTER_PASSWORD || '***REMOVED***'
+        masterPassword
       );
 
       return {
@@ -210,10 +215,15 @@ export class XRPWalletManager {
   ): Promise<XRPLWallet> {
     try {
       // シードを復号化
+      const masterPassword = process.env.WALLET_MASTER_PASSWORD;
+      if (!masterPassword) {
+        throw new Error('WALLET_MASTER_PASSWORD environment variable is required');
+      }
+
       const encryptedData = JSON.parse(encryptedSeed);
       const seed = await FinancialEncryption.decrypt(
         encryptedData,
-        process.env.WALLET_MASTER_PASSWORD || '***REMOVED***'
+        masterPassword
       );
 
       // ウォレットを復元

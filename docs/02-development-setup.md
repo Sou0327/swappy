@@ -55,9 +55,9 @@ npm run lint
 ### 設定ファイル (`.env`)
 ```
 # Supabase（必須）
-VITE_SUPABASE_PROJECT_ID="***REMOVED***"
+VITE_SUPABASE_PROJECT_ID="your-project-id"
 VITE_SUPABASE_PUBLISHABLE_KEY="[公開キー]"
-VITE_SUPABASE_URL="https://***REMOVED***.supabase.co"
+VITE_SUPABASE_URL="https://your-project-id.supabase.co"
 
 # フェーズ1: 全チェーン入金検知（検知のみ）
 # EVM（どちらか片方でOK）

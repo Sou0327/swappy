@@ -1,0 +1,66 @@
+# Notices for Undefined Exchange
+
+Copyright (c) 2024-2026 Undefined Development Team
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+## Third-Party Dependencies
+
+This project includes the following third-party software:
+
+### Core Framework
+
+- **React** (MIT License) - Copyright (c) Meta Platforms, Inc.
+- **TypeScript** (Apache-2.0) - Copyright Microsoft Corporation
+- **Vite** (MIT License) - Copyright (c) 2019-present Evan You & Vite Contributors
+
+### Backend & Database
+
+- **Supabase JS Client** (MIT License) - Copyright (c) 2020 Supabase
+- **PostgreSQL** - The PostgreSQL License
+
+### UI Components
+
+- **Tailwind CSS** (MIT License) - Copyright (c) Tailwind Labs, Inc.
+- **Radix UI** (MIT License) - Copyright (c) 2022 WorkOS
+- **shadcn/ui** (MIT License) - Copyright (c) 2023 shadcn
+- **Lucide Icons** (ISC License) - Copyright (c) 2022 Lucide Contributors
+
+### Data & State Management
+
+- **TanStack Query** (MIT License) - Copyright (c) 2021 Tanner Linsley
+- **React Hook Form** (MIT License) - Copyright (c) 2019-present React Hook Form
+- **Zod** (MIT License) - Copyright (c) 2020 Colin McDonnell
+
+### Charts & Visualization
+
+- **Recharts** (MIT License) - Copyright (c) 2015-2022 Recharts Contributors
+- **Lightweight Charts** (Apache-2.0) - Copyright (c) 2019 TradingView
+
+### Cryptocurrency
+
+- **Tatum SDK** (MIT License) - Copyright (c) 2023 Tatum
+- **xrpl.js** (ISC License) - Copyright (c) Ripple Labs
+- **bitcoinjs-lib** (MIT License) - Copyright (c) 2011-2023 bitcoinjs-lib contributors
+
+---
+
+## LGPL-Licensed Components
+
+This software uses **sharp** (Apache-2.0), which depends on:
+
+- **libvips** (LGPL-3.0-or-later) - Copyright (c) The libvips contributors
+
+Under LGPL terms, you are free to use this software as a library without your
+code being subject to LGPL. If you modify libvips itself, you must make those
+modifications available under LGPL-3.0-or-later.
+
+---
+
+## Full License Texts
+
+The full license texts for all dependencies can be found in:
+- `node_modules/[package-name]/LICENSE`
+- Or by running: `npx license-checker --summary`

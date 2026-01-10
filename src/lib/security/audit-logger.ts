@@ -109,7 +109,14 @@ export enum AuditAction {
  */
 export class AuditLogger {
   private static logs: AuditLogEntry[] = [];
-  private static readonly HMAC_SECRET = process.env.AUDIT_LOG_HMAC_SECRET || '***REMOVED***';
+  private static readonly HMAC_SECRET = (() => {
+    const secret = process.env.AUDIT_LOG_HMAC_SECRET;
+    if (!secret) {
+      console.warn('[AuditLogger] AUDIT_LOG_HMAC_SECRET is not set. Using fallback for development only.');
+      return 'dev-only-fallback-not-for-production';
+    }
+    return secret;
+  })();
   private static readonly MAX_LOG_ENTRIES = 100000; // ログの最大保持数
   
   /**

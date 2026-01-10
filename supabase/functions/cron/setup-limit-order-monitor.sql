@@ -32,8 +32,11 @@ SELECT cron.unschedule('cron-history-cleanup') WHERE EXISTS (
 
 DO $$
 DECLARE
-  v_project_url TEXT := 'https://***REMOVED***.supabase.co';
-  v_anon_key TEXT := '***REMOVED***';  -- ⚠️ ここを実際のキーに置き換える
+  -- ⚠️ 重要: 以下の値を実際の本番環境の値に置き換えてから実行してください
+  -- v_project_url: Supabase Dashboard → Settings → API → Project URL
+  -- v_anon_key: Supabase Dashboard → Settings → API → Project API keys → anon public
+  v_project_url TEXT := 'https://YOUR_PROJECT_ID.supabase.co';  -- ← 置き換え必須
+  v_anon_key TEXT := 'YOUR_SUPABASE_ANON_KEY';  -- ← 置き換え必須
   v_function_url TEXT;
   v_headers JSONB;
 BEGIN

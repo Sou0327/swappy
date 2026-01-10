@@ -233,7 +233,7 @@ SSL: 無効
 psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 
 # Dockerコンテナ経由でのアクセス
-docker exec -it supabase_db_***REMOVED*** psql -U postgres -d postgres
+docker exec -it supabase_db_YOUR_PROJECT_ID psql -U postgres -d postgres
 ```
 
 #### 🗂️ 作成されるテーブル一覧
@@ -309,13 +309,13 @@ npx supabase start
 npx supabase status  # DB URLを確認
 
 # 2. テーブルは作成されているがデータが空の可能性
-docker exec supabase_db_***REMOVED*** psql -U postgres -d postgres -c "\dt"
+docker exec supabase_db_YOUR_PROJECT_ID psql -U postgres -d postgres -c "\dt"
 
 # 3. シードデータを実行
 npx supabase db reset --local  # シードファイル含む再作成
 
 # 4. 管理者権限が付与されていない場合
-docker exec supabase_db_***REMOVED*** psql -U postgres -d postgres -c "
+docker exec supabase_db_YOUR_PROJECT_ID psql -U postgres -d postgres -c "
   INSERT INTO user_roles (user_id, role) 
   VALUES ((SELECT id FROM auth.users LIMIT 1), 'admin'::app_role)
   ON CONFLICT (user_id, role) DO NOTHING;
@@ -553,7 +553,7 @@ npx supabase migration new post_change_cleanup
 npx supabase db reset --local
 
 # シードファイルのみ実行
-docker exec supabase_db_***REMOVED*** psql -U postgres -d postgres -f /docker-entrypoint-initdb.d/seed.sql
+docker exec supabase_db_YOUR_PROJECT_ID psql -U postgres -d postgres -f /docker-entrypoint-initdb.d/seed.sql
 ```
 
 **シードデータに含まれる内容:**

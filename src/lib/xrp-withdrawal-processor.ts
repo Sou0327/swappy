@@ -326,10 +326,15 @@ export class XRPWithdrawalProcessor {
    */
   private async restoreWallet(hotWallet: XRPHotWalletConfig): Promise<XRPLWallet> {
     try {
+      const masterPassword = process.env.WALLET_MASTER_PASSWORD;
+      if (!masterPassword) {
+        throw new Error('WALLET_MASTER_PASSWORD environment variable is required');
+      }
+
       const encryptedSeed = JSON.parse(hotWallet.encryptedSeed);
       const seed = await FinancialEncryption.decrypt(
         encryptedSeed,
-        process.env.WALLET_MASTER_PASSWORD || '***REMOVED***'
+        masterPassword
       );
 
       return XRPLWallet.fromSeed(seed);

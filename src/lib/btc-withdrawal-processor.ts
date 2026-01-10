@@ -350,10 +350,15 @@ export class BTCWithdrawalProcessor {
   ): Promise<BTCWithdrawalResult> {
     try {
       // 秘密鍵を復号化
+      const masterPassword = process.env.WALLET_MASTER_PASSWORD;
+      if (!masterPassword) {
+        throw new Error('WALLET_MASTER_PASSWORD environment variable is required');
+      }
+
       const encryptedPrivateKey = JSON.parse(hotWallet.encryptedPrivateKey);
       const privateKey = await FinancialEncryption.decrypt(
         encryptedPrivateKey,
-        process.env.WALLET_MASTER_PASSWORD || '***REMOVED***'
+        masterPassword
       );
 
       // トランザクション署名（簡易版）
