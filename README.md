@@ -4,7 +4,7 @@
 
 ### Modern Multi-Chain Cryptocurrency Exchange Platform
 
-[![Beta](https://img.shields.io/badge/status-beta-yellow.svg)](https://github.com/your-username/undefined-exchange)
+[![Beta](https://img.shields.io/badge/status-beta-yellow.svg)](https://github.com/Sou0327/undefined-exchange)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-18-61dafb.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6.svg)](https://www.typescriptlang.org/)
@@ -12,7 +12,7 @@
 
 **A white-label ready crypto exchange platform built with React, TypeScript, and Supabase**
 
-[Demo](https://your-demo-site.pages.dev) · [Documentation](docs/) · [Report Bug](https://github.com/your-username/undefined-exchange/issues)
+[Documentation](docs/) · [Report Bug](https://github.com/Sou0327/undefined-exchange/issues)
 
 </div>
 
@@ -130,7 +130,7 @@
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-username/undefined-exchange.git
+git clone https://github.com/Sou0327/undefined-exchange.git
 cd undefined-exchange
 npm install
 ```
@@ -267,16 +267,15 @@ If you find this project useful, please consider:
 - 💡 Suggesting new features
 - 🤝 Contributing code
 
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa.svg)](https://github.com/sponsors/your-username)
 
 ---
 
 ## 📚 Documentation
 
 - [Setup Guide](docs/01-overview.md)
-- [API Documentation](claudedocs/03-API_DOCUMENTATION.md)
-- [Security Guide](claudedocs/04-SECURITY_SYSTEM.md)
-- [Development Guide](claudedocs/05-DEVELOPMENT_GUIDE.md)
+- [Development Setup](docs/02-development-setup.md)
+- [Database Schema](docs/04-database-schema.md)
+- [Authentication & Authorization](docs/05-authentication-authorization.md)
 
 ---
 

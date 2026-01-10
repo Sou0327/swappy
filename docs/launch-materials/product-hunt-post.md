@@ -112,9 +112,8 @@ Use project logo or hero image
 
 ## Links
 
-- **Website:** https://your-demo-site.pages.dev
-- **GitHub:** https://github.com/YOUR_USERNAME/undefined-exchange
-- **Documentation:** https://github.com/YOUR_USERNAME/undefined-exchange/tree/main/docs
+- **GitHub:** https://github.com/Sou0327/undefined-exchange
+- **Documentation:** https://github.com/Sou0327/undefined-exchange/tree/main/docs
 
 ---
 

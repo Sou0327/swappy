@@ -1,6 +1,5 @@
 -- user_assets更新処理のrace condition修正
 -- 発見された4つのCRITICAL/HIGH脆弱性を修正
--- 詳細：claudedocs/user_assets_integrity_analysis.md
 
 -- ============================================
 -- 1. transfer_funds関数の修正（CRITICAL）

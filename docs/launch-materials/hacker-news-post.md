@@ -21,8 +21,7 @@ Show HN: Undefined – Open-source multi-chain crypto exchange platform
 
 I've been working on Undefined, an open-source cryptocurrency exchange platform. It's designed to be a foundation for building your own crypto trading platform.
 
-GitHub: https://github.com/YOUR_USERNAME/undefined-exchange
-Demo: https://your-demo-site.pages.dev
+GitHub: https://github.com/Sou0327/undefined-exchange
 
 Key features:
 - Multi-chain: ETH, BTC, XRP, TRON, Polygon, BNB
@@ -64,8 +63,7 @@ Happy to answer any questions about the implementation.
 Show HN: Open-source crypto exchange platform with multi-chain HD wallets
 
 Built an open-source cryptocurrency exchange platform:
-- GitHub: https://github.com/YOUR_USERNAME/undefined-exchange
-- Demo: https://your-demo-site.pages.dev
+- GitHub: https://github.com/Sou0327/undefined-exchange
 
 Multi-chain (ETH, BTC, XRP, TRON), HD wallet architecture (BIP-32/39/44), white-label ready.
 
@@ -133,7 +131,6 @@ The derivation happens in Edge Functions with the master key never exposed to th
 Pure open source (MIT). No commercial plans currently.
 
 If you want to support development:
-- GitHub Sponsors: https://github.com/sponsors/YOUR_USERNAME
 - Contributions welcome
 ```
 

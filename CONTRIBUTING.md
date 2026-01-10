@@ -58,7 +58,7 @@ Thank you for your interest in contributing to **Undefined**, a cryptocurrency e
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-org/undefined-exchange.git
+   git clone https://github.com/Sou0327/undefined-exchange.git
    cd undefined-exchange
    ```
 

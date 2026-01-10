@@ -445,5 +445,4 @@ CONSTRAINT valid_status CHECK (status IN ('pending', 'confirmed', 'failed'))
 ## 関連ドキュメント
 
 - [データベーススキーマ詳細](../04-database-schema.md)
-- [マルチチェーン入金アーキテクチャ](../../claudedocs/02-MULTICHAIN_DEPOSIT_ARCHITECTURE.md)
-- [Edge Functions仕様書](../../claudedocs/07-EDGE_FUNCTIONS_REFERENCE.md)
+- [マルチチェーン入金仕様](../12-multichain-deposit-spec.md)
