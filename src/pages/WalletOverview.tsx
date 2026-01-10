@@ -40,9 +40,12 @@ const DEMO_BALANCES: AssetBalance[] = [
   { user_id: 'demo', currency: 'ETH', total: 2.5, locked: 0.5, available: 2.0 },
   { user_id: 'demo', currency: 'USDT', total: 5000, locked: 0, available: 5000 },
   { user_id: 'demo', currency: 'XRP', total: 1500, locked: 0, available: 1500 },
+  { user_id: 'demo', currency: 'TRX', total: 25000, locked: 0, available: 25000 },
+  { user_id: 'demo', currency: 'ADA', total: 3000, locked: 500, available: 2500 },
 ];
 const DEMO_USD_PRICES: Record<string, number> = { BTC: 97000, ETH: 3500, USDT: 1, USDC: 1, XRP: 2.5, TRX: 0.12, ADA: 0.45 };
-const DEMO_TOTAL_BALANCE = 0.12345678 * 97000 + 2.5 * 3500 + 5000 + 1500 * 2.5; // ~$24,500
+// BTC: 0.12345678 * 97000 = $11,975, ETH: 2.5 * 3500 = $8,750, USDT: $5,000, XRP: 1500 * 2.5 = $3,750, TRX: 25000 * 0.12 = $3,000, ADA: 3000 * 0.45 = $1,350
+const DEMO_TOTAL_BALANCE = 0.12345678 * 97000 + 2.5 * 3500 + 5000 + 1500 * 2.5 + 25000 * 0.12 + 3000 * 0.45; // ~$33,825
 
 const WalletOverview = () => {
   const navigate = useNavigate();
@@ -97,12 +100,32 @@ const WalletOverview = () => {
 
   useEffect(() => {
     if (isDemoMode) {
-      // デモモード時はサンプルデータを使用
+      // デモモード時は残高のみサンプルデータを使用、価格はリアルタイム取得
       setBalances(DEMO_BALANCES);
-      setUsdPrices(DEMO_USD_PRICES);
-      setTotalBalance(DEMO_TOTAL_BALANCE);
-      setLoading(false);
-      return;
+      setLoading(false); // 残高データは即座に利用可能
+      let mounted = true;
+      (async () => {
+        try {
+          const symbols = DEMO_BALANCES.map(b => b.currency);
+          const price = await getPriceSnapshot(symbols);
+          if (!mounted) return;
+          setUsdPrices(price.usd);
+          const totalUsd = DEMO_BALANCES.reduce(
+            (sum, b) => sum + b.total * (price.usd[b.currency] || 1), 0
+          );
+          setTotalBalance(totalUsd);
+        } catch (e) {
+          console.error('Error fetching prices in demo mode:', e);
+          // フォールバック: デフォルト価格を使用
+          if (mounted) {
+            setUsdPrices(DEMO_USD_PRICES);
+            setTotalBalance(DEMO_TOTAL_BALANCE);
+          }
+        }
+      })();
+      return () => {
+        mounted = false;
+      };
     }
     if (user?.id) { fetchBalances(); }
   }, [user?.id, isDemoMode, fetchBalances]);

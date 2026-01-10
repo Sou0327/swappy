@@ -42,9 +42,14 @@ interface FeeInfo {
   net_amount: number;
 }
 
+// デモモード用価格データ
+const DEMO_PRICE_SNAPSHOT = {
+  usd: { BTC: 97000, ETH: 3500, USDT: 1, USDC: 1, XRP: 2.5, TRX: 0.12, ADA: 0.45 }
+};
+
 const Convert = () => {
   const { t } = useTranslation('convert');
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const { toast } = useToast();
 
   const [fromAmount, setFromAmount] = useState("");
@@ -98,6 +103,7 @@ const Convert = () => {
   }, [user, toast, t]);
 
   // 価格の定期更新（表示はレートのみ。"何秒前"は非表示）
+  // デモモード時もリアルタイム価格を取得（APIエラー時はフォールバック）
   useEffect(() => {
     let alive = true;
     const load = async () => {
@@ -106,13 +112,17 @@ const Convert = () => {
         const snap = await getPriceSnapshot(syms);
         if (alive) setPriceSnapshot(snap);
       } catch (_) {
-        // noop（失敗時は前回値のまま）
+        // APIエラー時はデモモードの場合のみフォールバック価格を使用
+        if (isDemoMode && alive) {
+          setPriceSnapshot(DEMO_PRICE_SNAPSHOT);
+        }
+        // 通常モード失敗時は前回値のまま
       }
     };
     load();
     const id = setInterval(load, 30_000);
     return () => { alive = false; clearInterval(id); };
-  }, [fromCurrency, toCurrency]);
+  }, [fromCurrency, toCurrency, isDemoMode]);
 
   // 手数料計算
   const calculateFee = useCallback(async (amount: string) => {

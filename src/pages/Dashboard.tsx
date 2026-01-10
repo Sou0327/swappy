@@ -22,8 +22,15 @@ import {
 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 
-// デモモード用サンプルデータ
-const DEMO_TOTAL_BALANCE = 12543.87; // USD
+// デモモード用サンプルデータ（WalletOverviewと同じ残高データ）
+const DEMO_BALANCES = [
+  { currency: 'BTC', amount: 0.12345678 },
+  { currency: 'ETH', amount: 2.5 },
+  { currency: 'USDT', amount: 5000 },
+  { currency: 'XRP', amount: 1500 },
+  { currency: 'TRX', amount: 25000 },
+  { currency: 'ADA', amount: 3000 },
+];
 const DEMO_BTC_PRICE = 97000;
 
 const Dashboard = () => {
@@ -89,11 +96,43 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (isDemoMode) {
-      // デモモード時はサンプルデータを使用
-      setTotalBalance(DEMO_TOTAL_BALANCE);
-      setBtcPrice(DEMO_BTC_PRICE);
-      setLoading(false);
-      return;
+      // デモモード時は残高データを使用、価格はリアルタイム取得して合計計算
+      let mounted = true;
+      (async () => {
+        try {
+          const symbols = DEMO_BALANCES.map(b => b.currency);
+          const snap = await getPriceSnapshot([...symbols, 'BTC']);
+          if (!mounted) return;
+
+          // リアルタイム価格で合計を計算
+          const totalUsd = DEMO_BALANCES.reduce(
+            (sum, b) => sum + b.amount * (snap.usd[b.currency] || 1), 0
+          );
+          setTotalBalance(totalUsd);
+
+          if (snap.usd['BTC']) {
+            setBtcPrice(snap.usd['BTC']);
+          }
+        } catch (e) {
+          console.error('Error fetching prices in demo mode:', e);
+          // フォールバック: デフォルト価格で計算
+          if (mounted) {
+            const fallbackPrices: Record<string, number> = { BTC: 97000, ETH: 3500, USDT: 1, XRP: 2.5, TRX: 0.12, ADA: 0.45 };
+            const totalUsd = DEMO_BALANCES.reduce(
+              (sum, b) => sum + b.amount * (fallbackPrices[b.currency] || 1), 0
+            );
+            setTotalBalance(totalUsd);
+            setBtcPrice(DEMO_BTC_PRICE);
+          }
+        } finally {
+          if (mounted) {
+            setLoading(false);
+          }
+        }
+      })();
+      return () => {
+        mounted = false;
+      };
     }
     if (user?.id) {
       fetchUserAssets();
