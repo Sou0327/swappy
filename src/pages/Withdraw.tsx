@@ -10,12 +10,13 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { DemoRestrictionNotice } from "@/components/DemoRestrictionNotice";
 import { PLATFORM_NAME } from "@/config/branding";
 
 const Withdraw = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
 
   const cryptoOptions = useMemo(() => [
     { value: "USDT", label: "USDT", networks: ["ERC20", "TRC20", "BEP20", "Polygon"] },
@@ -128,6 +129,8 @@ const Withdraw = () => {
   };
 
   const handleSubmit = async () => {
+    // デモモードでの出金を防止（防御的コーディング）
+    if (isDemoMode) return;
     if (!canSubmit()) return;
     setSubmitting(true);
     try {
@@ -195,6 +198,9 @@ const Withdraw = () => {
           </Button>
           <h1 className="text-2xl font-bold">出金</h1>
         </div>
+
+        {/* デモモード制限通知 */}
+        {isDemoMode && <DemoRestrictionNotice feature="出金" className="mb-6" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
@@ -319,7 +325,7 @@ const Withdraw = () => {
                 </div>
 
                 <div>
-                  <Button className="w-full" onClick={handleSubmit} disabled={!canSubmit() || submitting}>
+                  <Button className="w-full" onClick={handleSubmit} disabled={isDemoMode || !canSubmit() || submitting}>
                     {submitting ? "送信中..." : "出金申請"}
                   </Button>
                   <div className="mt-4 text-sm space-y-2">

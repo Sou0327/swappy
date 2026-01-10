@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, Zap, Play } from "lucide-react";
 import { PLATFORM_NAME } from "@/config/branding";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const HeroSection = () => {
   const navigate = useNavigate();
+  const { isDemoMode } = useAuth();
 
   return (
     <section className="relative pt-20 pb-16 md:pt-16 md:pb-24 min-h-screen flex items-center overflow-hidden bg-white">
@@ -34,22 +36,37 @@ export const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 pt-4 md:pt-6 px-4 animate-fade-in-up animation-delay-400">
-            <Button
-              size="xl"
-              className="w-full sm:w-auto group bg-gray-900 text-white hover:bg-gray-800 rounded-full px-8 md:px-10 py-3 md:py-4 text-base font-medium transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-gray-900/20 border-0 active:scale-95"
-              onClick={() => navigate("/auth")}
-            >
-              今すぐ始める
-              <ArrowRight className="ml-2 md:ml-3 h-4 w-4 group-hover:translate-x-0.5 transition-transform duration-300" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="xl"
-              className="w-full sm:w-auto text-base font-light text-gray-600 hover:text-gray-900 transition-all duration-300 hover:bg-transparent rounded-full px-8 md:px-10 py-3 md:py-4 active:scale-95"
-              onClick={() => navigate("/markets")}
-            >
-              マーケットを探索
-            </Button>
+            {/* ショーケースモード時は登録ボタンを非表示 */}
+            {!isDemoMode && (
+              <Button
+                size="xl"
+                className="w-full sm:w-auto group bg-gray-900 text-white hover:bg-gray-800 rounded-full px-8 md:px-10 py-3 md:py-4 text-base font-medium transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-gray-900/20 border-0 active:scale-95"
+                onClick={() => navigate("/auth")}
+              >
+                今すぐ始める
+                <ArrowRight className="ml-2 md:ml-3 h-4 w-4 group-hover:translate-x-0.5 transition-transform duration-300" />
+              </Button>
+            )}
+            {isDemoMode ? (
+              <Button
+                size="xl"
+                className="w-full sm:w-auto group relative overflow-hidden bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-[gradient-shift_3s_ease-in-out_infinite] text-white rounded-full px-10 md:px-12 py-4 md:py-5 text-lg font-semibold transition-all duration-500 hover:scale-[1.05] shadow-xl shadow-primary/25 hover:shadow-2xl hover:shadow-primary/40 border-0 active:scale-95"
+                onClick={() => navigate("/dashboard")}
+              >
+                <Play className="mr-2 md:mr-3 h-5 w-5 fill-current" />
+                デモを試す
+                <ArrowRight className="ml-2 md:ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="xl"
+                className="w-full sm:w-auto text-base font-light text-gray-600 hover:text-gray-900 transition-all duration-300 hover:bg-transparent rounded-full px-8 md:px-10 py-3 md:py-4 active:scale-95"
+                onClick={() => navigate("/markets")}
+              >
+                マーケットを探索
+              </Button>
+            )}
           </div>
         </div>
 

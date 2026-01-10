@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, Github } from "lucide-react";
 import { PLATFORM_NAME } from "@/config/branding";
 
 export const Header = () => {
-  const { user, userRole } = useAuth();
+  const { user, userRole, isDemoMode } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -80,17 +80,17 @@ export const Header = () => {
                   {user.email}
                 </div>
               </div>
-            ) : (
+            ) : !isDemoMode ? (
               <div className="flex items-center gap-3">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   onClick={() => navigate("/auth")}
                   className="text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full px-4 py-2 transition-all duration-300"
                 >
                   ログイン
                 </Button>
-                <Button 
+                <Button
                   size="sm"
                   onClick={() => navigate("/auth")}
                   className="text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 rounded-full px-6 py-2 transition-all duration-300 hover:scale-105"
@@ -98,6 +98,16 @@ export const Header = () => {
                   新規登録
                 </Button>
               </div>
+            ) : (
+              <a
+                href="https://github.com/Sou0327/undefined-exchange"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 transition-all duration-300"
+              >
+                <Github className="h-4 w-4" />
+                GitHub
+              </a>
             )}
           </div>
 
@@ -144,10 +154,10 @@ export const Header = () => {
                         {userRole === 'admin' ? '管理画面' : 'マイページ'}
                       </Button>
                     </div>
-                  ) : (
+                  ) : !isDemoMode ? (
                     <div className="space-y-3">
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         className="w-full rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                         onClick={() => {
                           navigate("/auth");
@@ -156,7 +166,7 @@ export const Header = () => {
                       >
                         ログイン
                       </Button>
-                      <Button 
+                      <Button
                         className="w-full bg-gray-900 text-white hover:bg-gray-800 rounded-xl"
                         onClick={() => {
                           navigate("/auth");
@@ -166,6 +176,17 @@ export const Header = () => {
                         新規登録
                       </Button>
                     </div>
+                  ) : (
+                    <a
+                      href="https://github.com/Sou0327/undefined-exchange"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full text-base font-medium text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-xl px-4 py-3 transition-all duration-300"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Github className="h-5 w-5" />
+                      GitHub を見る
+                    </a>
                   )}
                 </div>
               </div>

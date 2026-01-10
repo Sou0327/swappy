@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 // import { SumsubKYC } from "@/components/SumsubKYC";
 
 const MyAccount = () => {
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [kycSettings] = useState({ kycEnabled: false }); // 一時的に無効化
@@ -193,7 +193,8 @@ const MyAccount = () => {
           </Card>
         )}
 
-        {/* Logout Section */}
+        {/* Logout Section - デモモード時は非表示 */}
+        {!isDemoMode && (
         <Card className="border-red-200">
           <CardContent className="p-2 md:p-2">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
@@ -277,6 +278,7 @@ const MyAccount = () => {
             </div>
           </CardContent>
         </Card>
+        )}
       </div>
     </DashboardLayout>
   );

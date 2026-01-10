@@ -13,6 +13,7 @@ import { useNotifications } from "@/hooks/use-notifications";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import MobileBottomNavigation from "./MobileBottomNavigation";
+import DemoBanner from "./DemoBanner";
 import { PLATFORM_NAME } from "@/config/branding";
 import {
   LayoutDashboard,
@@ -27,6 +28,7 @@ import {
   Clock,
   HelpCircle,
   LogOut,
+  Home,
   ChevronDown,
   ChevronRight,
   Menu,
@@ -43,7 +45,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [settingsExpanded, setSettingsExpanded] = useState(false);
   const [adminMenuExpanded, setAdminMenuExpanded] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, userRole } = useAuth();
+  const { user, userRole, isDemoMode } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -52,10 +54,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const { notifications, unreadCount, markAsRead, markAllAsRead, loading: notificationsLoading } = useNotifications();
 
   useEffect(() => {
-    if (!user) {
+    // デモモードの場合はリダイレクトしない
+    if (!user && !isDemoMode) {
       navigate("/auth");
     }
-  }, [user, navigate]);
+  }, [user, isDemoMode, navigate]);
 
   const handleSignOut = async () => {
     try {
@@ -189,22 +192,45 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="mt-4">
         <button
           onClick={() => {
-            handleSignOut();
+            if (isDemoMode) {
+              navigate("/");
+            } else {
+              handleSignOut();
+            }
             onItemClick?.();
           }}
-          className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+          className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+            isDemoMode
+              ? "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              : "text-gray-600 hover:bg-red-50 hover:text-red-600"
+          }`}
         >
-          <LogOut className="mr-3 h-4 w-4" />
-          サインアウト
+          {isDemoMode ? (
+            <Home className="mr-3 h-4 w-4" />
+          ) : (
+            <LogOut className="mr-3 h-4 w-4" />
+          )}
+          {isDemoMode ? "ホームに戻る" : "サインアウト"}
         </button>
       </div>
     </nav>
   ));
 
+  // デモバナーの高さを考慮
+  const bannerHeight = isDemoMode ? "pt-[88px] md:pt-[92px]" : "pt-14 md:pt-16";
+  const sidebarTop = isDemoMode ? "top-[88px] md:top-[92px]" : "top-14 md:top-16";
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Demo Banner - デモモード時のみ表示 */}
+      {isDemoMode && (
+        <div className="fixed top-0 left-0 right-0 z-[60]">
+          <DemoBanner />
+        </div>
+      )}
+
       {/* Top Header */}
-      <div className="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50 h-14 md:h-16">
+      <div className={`bg-white border-b border-gray-200 fixed left-0 right-0 z-50 h-14 md:h-16 ${isDemoMode ? "top-[40px]" : "top-0"}`}>
         <div className="flex items-center justify-between h-full px-4 md:px-6">
           <div className="flex items-center gap-4 sm:gap-8">
             {/* Mobile Menu Button - Shown on mobile/tablet, hidden on desktop */}
@@ -429,10 +455,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </div>
 
-      <div className="flex pt-14 md:pt-16 pb-16 lg:pb-0">
+      <div className={`flex ${bannerHeight} pb-16 lg:pb-0`}>
         {/* Desktop Sidebar */}
         <div
-          className="hidden lg:block w-64 bg-white border-r border-gray-200 min-h-screen fixed left-0 top-14 md:top-16 z-[100] pointer-events-auto"
+          className={`hidden lg:block w-64 bg-white border-r border-gray-200 min-h-screen fixed left-0 ${sidebarTop} z-[100] pointer-events-auto`}
           style={{
             touchAction: 'auto'
           }}

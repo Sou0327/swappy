@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
+import { DemoRestrictionNotice } from "@/components/DemoRestrictionNotice";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -39,7 +40,7 @@ interface RecipientInfo {
 
 
 const Transfer = () => {
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const { toast } = useToast();
 
   // フォーム状態
@@ -168,6 +169,8 @@ const Transfer = () => {
 
   // 送金処理
   const handleTransfer = async () => {
+    // デモモードでの送金を防止（防御的コーディング）
+    if (isDemoMode) return;
     if (!selectedRecipient || !selectedCurrency || !amount) {
       return;
     }
@@ -331,6 +334,8 @@ const Transfer = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         <h1 className="text-2xl md:text-2xl font-bold">送金</h1>
 
+        {/* デモモード制限通知 */}
+        {isDemoMode && <DemoRestrictionNotice feature="送金" className="mb-6" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* メインフォーム */}
@@ -612,7 +617,7 @@ const Transfer = () => {
                   className="w-full"
                   size="lg"
                   onClick={() => setShowConfirmation(true)}
-                  disabled={!canSubmit}
+                  disabled={isDemoMode || !canSubmit}
                 >
                   <Send className="h-4 w-4 mr-2" />
                   送金内容を確認

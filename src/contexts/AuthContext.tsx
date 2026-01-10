@@ -4,12 +4,19 @@ import type { User, Session } from '@supabase/supabase-js';
 
 export type UserRole = 'admin' | 'moderator' | 'user';
 
+// 環境変数でデモモードを制御（VITE_DEMO_MODE=true でショーケースモード）
+const DEMO_MODE_ENABLED = import.meta.env.VITE_DEMO_MODE === 'true';
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
   userRole: UserRole | null;
   roleLoading: boolean;
+  // デモモード関連（環境変数で制御）
+  isDemoMode: boolean;
+  enterDemoMode: () => void;
+  exitDemoMode: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,6 +25,9 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   userRole: null,
   roleLoading: true,
+  isDemoMode: DEMO_MODE_ENABLED,
+  enterDemoMode: () => {},
+  exitDemoMode: () => {},
 });
 
 export const useAuth = () => {
@@ -34,6 +44,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [roleLoading, setRoleLoading] = useState(true);
+
+  // デモモード状態（環境変数で固定、切り替え不可）
+  const isDemoMode = DEMO_MODE_ENABLED;
+
+  // 互換性のため関数を残す（環境変数モードでは何もしない）
+  const enterDemoMode = () => {};
+  const exitDemoMode = () => {};
 
   const fetchUserRole = async (userId: string) => {
     try {
@@ -82,7 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
-      
+
       if (session?.user) {
         setTimeout(() => {
           fetchUserRole(session.user.id);
@@ -102,6 +119,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading,
     userRole,
     roleLoading,
+    isDemoMode,
+    enterDemoMode,
+    exitDemoMode,
   };
 
   return (

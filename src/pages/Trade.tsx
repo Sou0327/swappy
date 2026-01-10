@@ -17,12 +17,13 @@ import { Volume2, Activity, TrendingUp, TrendingDown, Play, Pause, RotateCcw } f
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { DemoRestrictionNotice } from "@/components/DemoRestrictionNotice";
 import { TradingSimulator, OrderBookLevel, TradeRecord, SimulatedOrder } from "@/lib/trading-simulation";
 import { formatPrice as formatPriceUtil } from "@/lib/format";
 
 const Trade = () => {
   const { toast } = useToast();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isDemoMode } = useAuth();
   const [searchParams] = useSearchParams();
   const [markets, setMarkets] = useState<Array<{ id: string; base: string; quote: string; maker_fee_rate?: number; taker_fee_rate?: number; price_tick?: number; qty_step?: number }>>([]);
   const [selectedMarket, setSelectedMarket] = useState<string>("BTC-USDT");
@@ -474,6 +475,8 @@ const Trade = () => {
   }, [selectedMarket, user?.id, simulationEnabled, refreshBalances, refreshMyOrders, refreshOrderbook, refreshTrades, user, useBinanceFeed, useBinanceWs]);
 
   const placeOrder = async (side: 'buy' | 'sell') => {
+    // デモモードでの取引を防止（防御的コーディング）
+    if (isDemoMode) return;
     try {
       if (!user) { toast({ title: '要ログイン', description: 'ログインすると発注できます', variant: 'destructive' }); return; }
       const orderType = side === 'buy' ? buyOrderType : sellOrderType;
@@ -745,6 +748,9 @@ const Trade = () => {
             </div>
           </div>
         </div>
+
+        {/* デモモード制限通知 */}
+        {isDemoMode && <DemoRestrictionNotice feature="取引" className="mb-6" />}
 
         {/* Current Price Display */}
         {simulationEnabled && (
@@ -1045,7 +1051,7 @@ const Trade = () => {
                     <Button
                       className="w-full bg-green-600 hover:bg-green-700 active:bg-green-800 transition-all duration-200 active:scale-95"
                       onClick={() => placeOrder('buy')}
-                      disabled={(!buyQty) || (buyOrderType === 'limit' && !buyPrice)}
+                      disabled={isDemoMode || (!buyQty) || (buyOrderType === 'limit' && !buyPrice)}
                     >
                       買い注文
                     </Button>
@@ -1117,7 +1123,7 @@ const Trade = () => {
                     <Button
                       className="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 transition-all duration-200 active:scale-95"
                       onClick={() => placeOrder('sell')}
-                      disabled={(!sellQty) || (sellOrderType === 'limit' && !sellPrice)}
+                      disabled={isDemoMode || (!sellQty) || (sellOrderType === 'limit' && !sellPrice)}
                     >
                       売り注文
                     </Button>

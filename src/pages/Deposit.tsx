@@ -15,6 +15,7 @@ import NotificationSettings from "@/components/NotificationSettings";
 import { ArrowLeft, Copy, Download, ChevronDown, AlertTriangle, AlertCircle, CheckCircle, Clock, Wifi, WifiOff, Zap, Activity, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { DemoRestrictionNotice } from "@/components/DemoRestrictionNotice";
 import { useAsyncState } from "@/hooks/use-async-state";
 import { generateMultichainAddress, validateMultichainAddress, getChainConfig, getSupportedAssets, getMinimumDepositAmount, getExplorerUrl, SUPPORTED_ASSETS, type SupportedChain, type SupportedNetwork, type SupportedAsset } from "@/lib/multichain-wallet-utils";
 import { formatXRPDepositInfo, generateXRPDepositInfo } from "@/lib/xrp-wallet-utils";
@@ -66,7 +67,7 @@ const Deposit = () => {
   const toast = useEnhancedToast();
   const networkStatus = useNetworkStatus();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const enableTestnets = import.meta.env.VITE_ENABLE_TEST_NETWORKS === 'true';
 
   // Phase 2: リアルタイム入金監視（プッシュ通知対応）
@@ -1049,6 +1050,9 @@ const Deposit = () => {
             )}
           </div>
         </div>
+
+        {/* デモモード制限通知 */}
+        {isDemoMode && <DemoRestrictionNotice feature="入金" className="mb-6" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Deposit Form */}
