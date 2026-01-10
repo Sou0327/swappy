@@ -151,6 +151,62 @@
       "xrpNetworkOnly": "XRP は mainnet/testnet のみサポートしています",
       "subscriptionFailed": "サブスクリプション作成に失敗しました",
       "invalidAddressFormat": "アドレス形式が無効です"
+    },
+    "progress": {
+      "cardTitle": "入金進行状況",
+      "details": "詳細情報",
+      "transaction": "トランザクション",
+      "expectedAmount": "予定金額",
+      "lastUpdated": "最終更新",
+      "processingSteps": "処理ステップ",
+      "status": {
+        "completed": "完了",
+        "inProgress": "進行中",
+        "waiting": "待機中"
+      },
+      "networkStatus": {
+        "fast": "高速",
+        "normal": "通常",
+        "slow": "低速",
+        "congested": "混雑"
+      },
+      "estimatedTime": {
+        "seconds": "約{{count}}秒",
+        "minutes": "約{{count}}分",
+        "hours": "約{{count}}時間"
+      },
+      "steps": {
+        "awaitingPayment": {
+          "title": "送金待ち",
+          "description": "生成されたアドレスに暗号通貨を送金してください",
+          "detailedDescription": "指定のアドレスに暗号通貨を送金してください",
+          "estimatedTime": "ユーザー操作待ち"
+        },
+        "paymentDetected": {
+          "title": "送金検知",
+          "description": "ブロックチェーン上で送金が検知されました",
+          "detailedDescription": "Tatumの監視システムが送金を検知しました。ネットワークでの確認を待機中です",
+          "estimatedTime": "1-5分"
+        },
+        "confirming": {
+          "title": "確認中",
+          "description": "ネットワーク確認を待機中です",
+          "detailedDescription": "ブロックチェーンネットワークで必要な確認数を満たすまで待機中です。確認が進むにつれて安全性が向上します",
+          "estimatedTime": "5-30分"
+        },
+        "completed": {
+          "title": "入金完了",
+          "description": "残高に反映されました",
+          "detailedDescription": "必要な確認数に達し、入金が正常に完了しました。残高が更新され、取引が利用可能になります",
+          "estimatedTime": "完了"
+        },
+        "failed": {
+          "title": "入金エラー",
+          "description": "入金処理中にエラーが発生しました",
+          "detailedDescription": "技術的な問題により入金処理が失敗しました。サポートにお問い合わせください",
+          "estimatedTime": "-"
+        }
+      }
     }
   },
   "withdraw": {

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -49,58 +50,45 @@ interface StepInfo {
   bgColor: string;
 }
 
-const STEPS: StepInfo[] = [
-  {
-    id: 'awaiting_payment',
-    title: '送金待ち',
-    description: '生成されたアドレスに暗号通貨を送金してください',
-    detailedDescription: '指定のアドレスに暗号通貨を送金してください',
-    icon: <Clock className="h-4 w-4" />,
-    estimatedTime: 'ユーザー操作待ち',
+// ステップIDから翻訳キー名へのマッピング
+const STEP_TRANSLATION_KEYS: Record<DepositStep, string> = {
+  'awaiting_payment': 'awaitingPayment',
+  'payment_detected': 'paymentDetected',
+  'confirming': 'confirming',
+  'completed': 'completed',
+  'failed': 'failed'
+};
+
+// ステップごとのスタイル設定（翻訳不要）
+const STEP_STYLES: Record<DepositStep, { color: string; bgColor: string; icon: React.ReactNode }> = {
+  'awaiting_payment': {
     color: 'text-amber-600',
-    bgColor: 'bg-amber-50'
+    bgColor: 'bg-amber-50',
+    icon: <Clock className="h-4 w-4" />
   },
-  {
-    id: 'payment_detected',
-    title: '送金検知',
-    description: 'ブロックチェーン上で送金が検知されました',
-    detailedDescription: 'Tatumの監視システムが送金を検知しました。ネットワークでの確認を待機中です',
-    icon: <Radar className="h-4 w-4" />,
-    estimatedTime: '1-5分',
+  'payment_detected': {
     color: 'text-orange-600',
-    bgColor: 'bg-orange-50'
+    bgColor: 'bg-orange-50',
+    icon: <Radar className="h-4 w-4" />
   },
-  {
-    id: 'confirming',
-    title: '確認中',
-    description: 'ネットワーク確認を待機中です',
-    detailedDescription: 'ブロックチェーンネットワークで必要な確認数を満たすまで待機中です。確認が進むにつれて安全性が向上します',
-    icon: <Timer className="h-4 w-4" />,
-    estimatedTime: '5-30分',
+  'confirming': {
     color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
+    bgColor: 'bg-purple-50',
+    icon: <Timer className="h-4 w-4" />
   },
-  {
-    id: 'completed',
-    title: '入金完了',
-    description: '残高に反映されました',
-    detailedDescription: '必要な確認数に達し、入金が正常に完了しました。残高が更新され、取引が利用可能になります',
-    icon: <CheckCircle className="h-4 w-4" />,
-    estimatedTime: '完了',
+  'completed': {
     color: 'text-green-600',
-    bgColor: 'bg-green-50'
+    bgColor: 'bg-green-50',
+    icon: <CheckCircle className="h-4 w-4" />
   },
-  {
-    id: 'failed',
-    title: '入金エラー',
-    description: '入金処理中にエラーが発生しました',
-    detailedDescription: '技術的な問題により入金処理が失敗しました。サポートにお問い合わせください',
-    icon: <AlertCircle className="h-4 w-4" />,
-    estimatedTime: '-',
+  'failed': {
     color: 'text-red-600',
-    bgColor: 'bg-red-50'
+    bgColor: 'bg-red-50',
+    icon: <AlertCircle className="h-4 w-4" />
   }
-];
+};
+
+const STEP_ORDER: DepositStep[] = ['awaiting_payment', 'payment_detected', 'confirming', 'completed', 'failed'];
 
 const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
   currentStep,
@@ -119,10 +107,28 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
   showDetails = false,
   className = ''
 }) => {
+  const { t } = useTranslation('wallet');
   const [progress, setProgress] = useState(0);
   const [isExpanded, setIsExpanded] = useState(showDetails);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [stepTransition, setStepTransition] = useState(false);
+
+  // 翻訳対応のSTEPS配列を動的生成
+  const STEPS: StepInfo[] = useMemo(() =>
+    STEP_ORDER.map(stepId => {
+      const translationKey = STEP_TRANSLATION_KEYS[stepId];
+      const style = STEP_STYLES[stepId];
+      return {
+        id: stepId,
+        title: t(`deposit.progress.steps.${translationKey}.title`),
+        description: t(`deposit.progress.steps.${translationKey}.description`),
+        detailedDescription: t(`deposit.progress.steps.${translationKey}.detailedDescription`),
+        estimatedTime: t(`deposit.progress.steps.${translationKey}.estimatedTime`),
+        icon: style.icon,
+        color: style.color,
+        bgColor: style.bgColor
+      };
+    }), [t]);
 
   // 現在のステップのインデックスを取得
   const currentStepIndex = STEPS.findIndex(step => step.id === currentStep);
@@ -219,16 +225,16 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
 
   const getNetworkStatusBadge = () => {
     const statusConfig = {
-      fast: { label: '高速', variant: 'default' as const, color: 'text-green-600' },
-      normal: { label: '通常', variant: 'secondary' as const, color: 'text-blue-600' },
-      slow: { label: '低速', variant: 'outline' as const, color: 'text-amber-600' },
-      congested: { label: '混雑', variant: 'destructive' as const, color: 'text-red-600' }
+      fast: { variant: 'default' as const, color: 'text-green-600' },
+      normal: { variant: 'secondary' as const, color: 'text-blue-600' },
+      slow: { variant: 'outline' as const, color: 'text-amber-600' },
+      congested: { variant: 'destructive' as const, color: 'text-red-600' }
     };
 
     const config = statusConfig[networkStatus];
     return (
       <Badge variant={config.variant} className={config.color}>
-        {config.label}
+        {t(`deposit.progress.networkStatus.${networkStatus}`)}
       </Badge>
     );
   };
@@ -248,11 +254,11 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
       const estimatedSeconds = remainingConfirmations * baseTimePerConfirmation * multiplier;
 
       if (estimatedSeconds < 60) {
-        return `約${Math.round(estimatedSeconds)}秒`;
+        return t('deposit.progress.estimatedTime.seconds', { count: Math.round(estimatedSeconds) });
       } else if (estimatedSeconds < 3600) {
-        return `約${Math.round(estimatedSeconds / 60)}分`;
+        return t('deposit.progress.estimatedTime.minutes', { count: Math.round(estimatedSeconds / 60) });
       } else {
-        return `約${Math.round(estimatedSeconds / 3600)}時間`;
+        return t('deposit.progress.estimatedTime.hours', { count: Math.round(estimatedSeconds / 3600) });
       }
     }
 
@@ -271,7 +277,7 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
             <div className={`p-2 rounded-full ${getCurrentStepInfo()?.bgColor} transition-colors duration-500`}>
               {getCurrentStepInfo()?.icon}
             </div>
-            入金進行状況
+            {t('deposit.progress.cardTitle')}
           </CardTitle>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="font-mono">
@@ -328,7 +334,7 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
             onClick={() => setIsExpanded(!isExpanded)}
             className="w-full justify-between h-auto p-3 hover:bg-muted/50"
           >
-            <span className="text-sm font-medium">詳細情報</span>
+            <span className="text-sm font-medium">{t('deposit.progress.details')}</span>
             {isExpanded ? (
               <ChevronUp className="h-4 w-4" />
             ) : (
@@ -341,7 +347,7 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
               {/* トランザクション情報 */}
               {txHash && (
                 <div className="space-y-2">
-                  <h5 className="text-sm font-medium">トランザクション</h5>
+                  <h5 className="text-sm font-medium">{t('deposit.progress.transaction')}</h5>
                   <div className="flex items-center gap-2">
                     <div className="p-3 bg-muted rounded-lg flex-1">
                       <code className="text-xs break-all">{txHash}</code>
@@ -364,13 +370,13 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
               <div className="grid grid-cols-2 gap-4 text-sm">
                 {expectedAmount && (
                   <div>
-                    <span className="text-muted-foreground">予定金額</span>
+                    <span className="text-muted-foreground">{t('deposit.progress.expectedAmount')}</span>
                     <div className="font-mono">{expectedAmount} {asset}</div>
                   </div>
                 )}
                 {lastUpdated && (
                   <div>
-                    <span className="text-muted-foreground">最終更新</span>
+                    <span className="text-muted-foreground">{t('deposit.progress.lastUpdated')}</span>
                     <div className="font-mono text-xs">
                       {lastUpdated.toLocaleTimeString()}
                     </div>
@@ -380,7 +386,7 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
 
               {/* ステップ詳細 */}
               <div className="space-y-3">
-                <h5 className="text-sm font-medium">処理ステップ</h5>
+                <h5 className="text-sm font-medium">{t('deposit.progress.processingSteps')}</h5>
                 <div className="space-y-2">
                   {STEPS.map((step, index) => {
                     const status = getStepStatus(step.id);
@@ -416,8 +422,8 @@ const DepositProgressTracker: React.FC<DepositProgressTrackerProps> = ({
                               {step.title}
                             </span>
                             <Badge variant={getStepVariant(status)} className="text-xs">
-                              {status === 'completed' ? '完了' :
-                                status === 'current' ? '進行中' : '待機中'}
+                              {status === 'completed' ? t('deposit.progress.status.completed') :
+                                status === 'current' ? t('deposit.progress.status.inProgress') : t('deposit.progress.status.waiting')}
                             </Badge>
                           </div>
                           <p className="text-xs text-muted-foreground mt-1">

@@ -151,6 +151,62 @@
       "xrpNetworkOnly": "XRP only supports mainnet/testnet",
       "subscriptionFailed": "Failed to create subscription",
       "invalidAddressFormat": "Invalid address format"
+    },
+    "progress": {
+      "cardTitle": "Deposit Progress",
+      "details": "Details",
+      "transaction": "Transaction",
+      "expectedAmount": "Expected Amount",
+      "lastUpdated": "Last Updated",
+      "processingSteps": "Processing Steps",
+      "status": {
+        "completed": "Completed",
+        "inProgress": "In Progress",
+        "waiting": "Waiting"
+      },
+      "networkStatus": {
+        "fast": "Fast",
+        "normal": "Normal",
+        "slow": "Slow",
+        "congested": "Congested"
+      },
+      "estimatedTime": {
+        "seconds": "~{{count}}s",
+        "minutes": "~{{count}}min",
+        "hours": "~{{count}}h"
+      },
+      "steps": {
+        "awaitingPayment": {
+          "title": "Awaiting Payment",
+          "description": "Send cryptocurrency to the generated address",
+          "detailedDescription": "Send cryptocurrency to the specified address",
+          "estimatedTime": "Waiting for user"
+        },
+        "paymentDetected": {
+          "title": "Payment Detected",
+          "description": "Transaction detected on blockchain",
+          "detailedDescription": "Tatum monitoring system detected the transaction. Waiting for network confirmation",
+          "estimatedTime": "1-5 min"
+        },
+        "confirming": {
+          "title": "Confirming",
+          "description": "Waiting for network confirmations",
+          "detailedDescription": "Waiting for the required number of confirmations on the blockchain network. Security increases as confirmations progress",
+          "estimatedTime": "5-30 min"
+        },
+        "completed": {
+          "title": "Deposit Complete",
+          "description": "Reflected in balance",
+          "detailedDescription": "Required confirmations reached and deposit completed successfully. Balance updated and trading enabled",
+          "estimatedTime": "Done"
+        },
+        "failed": {
+          "title": "Deposit Error",
+          "description": "Error occurred during deposit",
+          "detailedDescription": "Deposit processing failed due to technical issues. Please contact support",
+          "estimatedTime": "-"
+        }
+      }
     }
   },
   "withdraw": {
