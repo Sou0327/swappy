@@ -396,6 +396,4 @@ If you find this project useful, please consider:
 
 **Built with ❤️ by the Undefined Team**
 
-[Website](https://undefined.jp) · [Twitter](https://twitter.com/undefined_jp)
-
 </div>
