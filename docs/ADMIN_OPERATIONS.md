@@ -1,31 +1,31 @@
-# 管理運用ガイド（Admin Operations Runbook）
+# Admin Operations Runbook
 
-本書は運用チーム向けに、入金検知・確認反映・ウォレット設定・スイープ（集約）・緊急対応の手順をまとめたものです。対象は本番/ステージング/ローカルすべてですが、本番は必ず権限管理と監査ログを前提にしてください。
+This document summarizes procedures for deposit detection, confirmation reflection, wallet settings, sweep (aggregation), and emergency response for the operations team. It covers production/staging/local environments, but production requires permission management and audit logs.
 
-## 概要
-- 入金検知: Edge Function `deposit-detector` が各チェーンの入金を検知。`deposits`/`deposit_transactions` を更新。
-- 確定反映: Edge Function `confirmations-updater` が `pending` を確定判定し、`deposits`/`user_assets` を更新。
-- アドレス割当: Edge Function `address-allocator` が xpub からユーザーの受取アドレスを割当（EVM/ETH/USDT, BTC）。
-- 集約（スイープ）: Edge Function `sweep-planner` が未署名Txを生成（EVM/ETH）。署名/放送は運用ウォレットが実施。
-- 管理UI: `/admin/wallets` で「管理ウォレット」「ウォレットルート（xpub）」「スイープ計画一覧」を管理。
+## Overview
+- Deposit Detection: Edge Function `deposit-detector` detects deposits on each chain. Updates `deposits`/`deposit_transactions`.
+- Confirmation Reflection: Edge Function `confirmations-updater` judges `pending` as confirmed and updates `deposits`/`user_assets`.
+- Address Allocation: Edge Function `address-allocator` allocates receiving addresses from xpub for users (EVM/ETH/USDT, BTC).
+- Aggregation (Sweep): Edge Function `sweep-planner` generates unsigned Tx (EVM/ETH). Signing/broadcasting is done by operational wallet.
+- Admin UI: `/admin/wallets` manages "Admin Wallets", "Wallet Roots (xpub)", "Sweep Plan List".
 
-## 前提・権限
-- 管理者ロール（`user_roles.role=admin`）を付与されたアカウントのみ、本書の作業を実施可能。
-- Supabaseの `Service role key` は機密情報。Edge Functions の Secrets にのみ登録し、VCSやフロントの `.env` に保存しないこと。
+## Prerequisites & Permissions
+- Only accounts with admin role (`user_roles.role=admin`) can perform the operations in this document.
+- Supabase `Service role key` is confidential. Register only in Edge Functions Secrets, not in VCS or frontend `.env`.
 
-## Secrets 設定手順
-### 取得
-- 本番/ステージング: Supabase ダッシュボード → Project → Settings → API → Keys
-  - `Anon key`（公開可）/ `Service role`（機密）の2種
-- ローカル: `npx supabase status` で表示
+## Secrets Setup Procedure
+### Retrieval
+- Production/Staging: Supabase Dashboard → Project → Settings → API → Keys
+  - `Anon key` (public) / `Service role` (confidential) - 2 types
+- Local: Displayed via `npx supabase status`
 
-### 登録（CLI）
-- 事前にログイン/リンク
+### Registration (CLI)
+- Login/link beforehand
   ```bash
   supabase login
   supabase link --project-ref <project_ref>
   ```
-- 代表的なKeys
+- Representative Keys
   ```bash
   # Supabase
   supabase secrets set SUPABASE_URL="https://<project>.supabase.co"
@@ -49,125 +49,124 @@
   supabase secrets set BLOCKFROST_PROJECT_ID="<blockfrost_project_id>"
   ```
 
-## ウォレット設定
-### ウォレットルート（xpub）
-- 画面: `/admin/wallets` → 「ウォレットルート（xpub）」
-- 登録項目:
-  - `chain/network/asset`: 例）`evm/ethereum/ETH`, `evm/sepolia/USDT`, `btc/mainnet/BTC`
-  - `xpub`: 拡張公開鍵（非機密）。xprv/seedは絶対に登録しない
-  - `derivation_template`: xpub基準の相対パス。既定 `0/{index}`
-  - `address_type`: `default`（EVM）/ `p2wpkh` など（BTCは現状 bech32 P2WPKH）
-- 注意:
-  - 派生は「非ハードン」前提 (`0/{index}` など)。ハードン（`{index}'`）はxpubから導出不可
-  - BTCは bech32(P2WPKH) で `bc1...`/`tb1...` のアドレスを払い出し
+## Wallet Settings
+### Wallet Root (xpub)
+- Screen: `/admin/wallets` → "Wallet Root (xpub)"
+- Registration items:
+  - `chain/network/asset`: e.g., `evm/ethereum/ETH`, `evm/sepolia/USDT`, `btc/mainnet/BTC`
+  - `xpub`: Extended public key (non-confidential). Never register xprv/seed
+  - `derivation_template`: Relative path from xpub. Default `0/{index}`
+  - `address_type`: `default` (EVM) / `p2wpkh` etc. (BTC currently bech32 P2WPKH)
+- Notes:
+  - Derivation assumes "non-hardened" (`0/{index}` etc.). Hardened (`{index}'`) cannot be derived from xpub
+  - BTC allocates bech32(P2WPKH) addresses as `bc1...`/`tb1...`
 
-### 管理ウォレット（集約先）
-- 画面: `/admin/wallets` → 「管理側ウォレット（集約先）」
-- 登録項目: `chain/network/asset/address/active`
-- 用途: スイープ時の送金先
+### Admin Wallet (Aggregation Destination)
+- Screen: `/admin/wallets` → "Admin Wallet (Aggregation Destination)"
+- Registration items: `chain/network/asset/address/active`
+- Usage: Destination for sweep transfers
 
-## 入金アドレス割当（ユーザー側）
-- EVM/ETH/USDT, BTC は UIから自動割当
-  - フロントが Edge Function `address-allocator` を呼び出し、`deposit_addresses` にUPSERT
-- XRP は固定アドレス＋ユーザー固有の Destination Tag（UIに表示）。
+## Deposit Address Allocation (User Side)
+- EVM/ETH/USDT, BTC are auto-allocated from UI
+  - Frontend calls Edge Function `address-allocator` and UPSERTs to `deposit_addresses`
+- XRP uses fixed address + user-specific Destination Tag (displayed in UI).
 
-## 入金検知・確認反映の運用
-### 関数のデプロイ
+## Deposit Detection & Confirmation Reflection Operations
+### Function Deployment
 ```bash
 supabase functions deploy deposit-detector address-allocator confirmations-updater sweep-planner
 ```
 
-### 手動実行
+### Manual Execution
 ```bash
-# 入金検知（全チェーン）
+# Deposit detection (all chains)
 curl -X POST "https://<project>.supabase.co/functions/v1/deposit-detector" \
   -H "Authorization: Bearer <anon_key>"
 
-# 確認数更新（EVM/USDT, BTC, TRON, ADA）
+# Confirmation count update (EVM/USDT, BTC, TRON, ADA)
 curl -X POST "https://<project>.supabase.co/functions/v1/confirmations-updater" \
   -H "Authorization: Bearer <anon_key>"
 ```
 
-### スケジューラ（本番推奨）
-- Supabase ダッシュボード → Edge Functions → Scheduler
-  - `deposit-detector`: 30〜60秒間隔
-  - `confirmations-updater`: 60〜120秒間隔
-  - メソッド: POST / Auth: `Authorization: Bearer <anon_key>`
+### Scheduler (Recommended for Production)
+- Supabase Dashboard → Edge Functions → Scheduler
+  - `deposit-detector`: 30-60 second interval
+  - `confirmations-updater`: 60-120 second interval
+  - Method: POST / Auth: `Authorization: Bearer <anon_key>`
 
-### スキャン進捗（chain_progress）
-- ETH/USDTは最後に処理したブロックから再開
-- 取りこぼし発生時は `chain_progress` の `last_block` を調整して再走査可
+### Scan Progress (chain_progress)
+- ETH/USDT resumes from last processed block
+- If missing transactions occur, adjust `last_block` in `chain_progress` for rescan
 
-## XRP 運用
-- 方式: 固定アドレス＋ユーザー固有の Destination Tag
-- 一意制約: `deposit_addresses` に `network+destination_tag` の部分ユニークインデックス（`uniq_xrp_destination_tag`）
-- 誤Tag/未入力の救済:
-  1) トランザクションをエクスプローラーで確認（txhash, tag, 金額）
-  2) 管理者が対象ユーザーに手動アサイン（運用手順/承認フローを社内定義）
-  3) `deposits`/`user_assets` を補正し、`audit_logs` に記録
+## XRP Operations
+- Method: Fixed address + user-specific Destination Tag
+- Unique constraint: Partial unique index on `network+destination_tag` in `deposit_addresses` (`uniq_xrp_destination_tag`)
+- Wrong Tag/missing Tag recovery:
+  1) Confirm transaction in explorer (txhash, tag, amount)
+  2) Admin manually assigns to target user (define internal operation procedure/approval flow)
+  3) Correct `deposits`/`user_assets` and record in `audit_logs`
 
-## スイープ（集約）運用
-- 集約対象: EVM/ETH（現時点）。USDT/BTC/他チェーンは将来拡張
-- 前提: 管理ウォレット（集約先）を `/admin/wallets` に登録
-- 手順:
-  1) 実行: `sweep-planner` を呼び出し、`sweep_jobs` を作成
+## Sweep (Aggregation) Operations
+- Aggregation target: EVM/ETH (currently). USDT/BTC/other chains for future expansion
+- Prerequisite: Register admin wallet (aggregation destination) in `/admin/wallets`
+- Procedure:
+  1) Execute: Call `sweep-planner` to create `sweep_jobs`
      ```bash
      curl -X POST "https://<project>.supabase.co/functions/v1/sweep-planner" \
        -H "Authorization: Bearer <anon_key>" \
        -H "Content-Type: application/json" \
        -d '{"chain":"evm","network":"ethereum","asset":"ETH"}'
      ```
-  2) 生成: `unsigned_tx`（from/to/value/gas/gasPrice/nonce/chainId）を取得
-  3) 署名: 運用ウォレット（入金アドレスの鍵保持側）で署名
-  4) 放送: ネットワークへブロードキャスト（Gnosis Safe 等の運用も可）
-  5) 記録: `sweep_jobs` に `signed_tx`/`tx_hash` を記録（将来、専用関数を追加予定）
-- 注意: サーバに秘密鍵を保存しない。ガス不足時はdepositアドレスにETH補充が必要な場合あり
+  2) Generate: Retrieve `unsigned_tx` (from/to/value/gas/gasPrice/nonce/chainId)
+  3) Sign: Sign with operational wallet (key holder for deposit addresses)
+  4) Broadcast: Broadcast to network (can use Gnosis Safe etc.)
+  5) Record: Record `signed_tx`/`tx_hash` in `sweep_jobs` (dedicated function planned for future)
+- Note: Don't store private keys on server. Gas shortage may require ETH replenishment to deposit addresses
 
-## 緊急停止・有効化
-- 画面: `/admin/deposits/settings`
-  - チェーン別に `deposit_enabled` / `min_confirmations` / `min_deposit` を制御
-  - 全体停止（Emergency Stop）ボタンで一括切替 → 監査ログ記録
+## Emergency Stop/Enable
+- Screen: `/admin/deposits/settings`
+  - Control `deposit_enabled` / `min_confirmations` / `min_deposit` per chain
+  - Emergency Stop button for bulk toggle → audit log recorded
 
-## 監査・モニタリング
-- 監査ログ: `audit_logs` に重要操作（設定変更・停止/再開）を記録（UI/SQL）
-- 監視観点:
-  - Edge Functions 実行結果（ダッシュボードのLogs）
-  - `deposit_transactions(status=pending)` の滞留
-  - `chain_progress` の停滞
-  - RPC/APIレート制限（TronGrid/Blockfrost/Alchemy）
+## Audit & Monitoring
+- Audit logs: Important operations (setting changes, stop/restart) recorded in `audit_logs` (UI/SQL)
+- Monitoring points:
+  - Edge Functions execution results (Dashboard Logs)
+  - `deposit_transactions(status=pending)` backlog
+  - `chain_progress` stagnation
+  - RPC/API rate limits (TronGrid/Blockfrost/Alchemy)
 
-## トラブルシューティング
-- USDTが反映されない: `USDT_ERC20_CONTRACT/USDT_SEPOLIA_CONTRACT` が未設定 / `eth_getLogs` の期間不足 → `chain_progress` を調整
-- BTCの確認数が進まない: Blockstream API到達性 / tx詳細の `block_height` 未確定
-- TRON/ADAがpendingのまま: APIキー未設定 / confirmations-updaterが未実行
-- XRPのユーザー紐付け: `destination_tag` の一致確認 / 管理者による手動補正
+## Troubleshooting
+- USDT not reflected: `USDT_ERC20_CONTRACT/USDT_SEPOLIA_CONTRACT` not set / `eth_getLogs` period insufficient → adjust `chain_progress`
+- BTC confirmation count not progressing: Blockstream API reachability / `block_height` not confirmed in tx details
+- TRON/ADA stuck in pending: API key not set / confirmations-updater not executed
+- XRP user mapping: Verify `destination_tag` match / manual correction by admin
 
-## バックアップ/リカバリ
-- DBバックアップ（ローカル）
+## Backup/Recovery
+- DB backup (local)
   ```bash
   npx supabase db dump --local > backup_$(date +%Y%m%d).sql
   ```
-- マイグレーション適用/リセット（ローカル）
+- Migration apply/reset (local)
   ```bash
   npx supabase db push --local
-  npx supabase db reset --local # 破壊的。実データ注意
+  npx supabase db reset --local # Destructive. Careful with real data
   ```
 
-## 運用コマンド チートシート
+## Operations Command Cheat Sheet
 ```bash
-# 状態確認
+# Status check
 npx supabase status
 
-# 関数のローカル起動（個別検証用）
+# Function local execution (individual verification)
 supabase functions serve deposit-detector --env-file ./supabase/functions/.env --no-verify-jwt
 
-# 関数デプロイ
+# Function deployment
 supabase functions deploy deposit-detector address-allocator confirmations-updater sweep-planner
 
-# Secrets一覧
+# Secrets list
 supabase secrets list
 ```
 
-## 変更履歴
-- 2025-09: xpub割当（EVM/BTC）、USDT検知、TRON/ADA確定反映、スイープ計画、緊急停止、運用UI追加
-
+## Change History
+- 2025-09: xpub allocation (EVM/BTC), USDT detection, TRON/ADA confirmation reflection, sweep planning, emergency stop, operations UI added

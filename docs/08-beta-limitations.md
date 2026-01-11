@@ -1,109 +1,109 @@
-# Beta版の制限事項と開発ロードマップ
+# Beta Limitations and Development Roadmap
 
-このドキュメントでは、現在のBeta版における制限事項と今後の開発予定を説明します。
+This document explains the current Beta version limitations and future development plans.
 
-## 📋 Beta版の制限事項
+## 📋 Beta Limitations
 
-### 1. セキュリティ設定
+### 1. Security Configuration
 
-#### 環境変数の設定 ✅ 対応済み
-Supabaseクライアントは `.env` の `VITE_SUPABASE_URL` と `VITE_SUPABASE_PUBLISHABLE_KEY` を使用します。
-未設定時は起動時に検知して適切にエラーを表示します。
+#### Environment Variables ✅ Addressed
+The Supabase client uses `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from `.env`.
+When not configured, appropriate errors are displayed at startup.
 
 ```ts
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 ```
 
-## 🔄 開発中の機能
+## 🔄 Features Under Development
 
-### 1. ルーティング構成
+### 1. Routing Structure
 
-#### Earnページの構成
-現在の実装:
-- `/earn` → ステーキングランディングページ
-- `/earn-overview` → プロダクト概要
-- `/earn-history` → 履歴
+#### Earn Page Structure
+Current implementation:
+- `/earn` → Staking landing page
+- `/earn-overview` → Product overview
+- `/earn-history` → History
 
-### 2. データソース
+### 2. Data Sources
 
-#### 段階的な実データ移行
-- 一部機能は実データベースから取得
-- 取引画面の価格データは段階的に実データに移行中
-- APYデータは市場連動に移行予定
+#### Gradual Migration to Real Data
+- Some features fetch from the actual database
+- Trading screen price data is being gradually migrated to real data
+- APY data will be transitioned to market-linked data
 
-## 🎨 UX改善予定
+## 🎨 Planned UX Improvements
 
-### 1. ローディング状態の統一
-- 認証状態確認中の表示
-- データ取得中のスケルトン表示
-- フォーム送信中の状態表示
+### 1. Unified Loading States
+- Display during authentication state verification
+- Skeleton display during data fetching
+- State display during form submission
 
-### 2. エラーハンドリングの強化
-- ネットワークエラー時の統一表示
-- フォームバリデーションエラーの改善
-- 権限エラー時の案内強化
+### 2. Enhanced Error Handling
+- Unified display for network errors
+- Improved form validation errors
+- Enhanced guidance for permission errors
 
-## ⚡ パフォーマンス最適化
+## ⚡ Performance Optimization
 
-### 1. バンドルサイズ
-- Tree-shakingの最適化を予定
-- 必要なコンポーネントのみの読み込み
+### 1. Bundle Size
+- Tree-shaking optimization planned
+- Load only necessary components
 
-### 2. レンダリング最適化
-- Context の再レンダリング最適化
-- 大きなリストの仮想化対応
+### 2. Rendering Optimization
+- Context re-rendering optimization
+- Virtualization support for large lists
 
-## 📱 レスポンシブ対応
+## 📱 Responsive Design
 
-### 1. テーブル表示
-- 小画面でのテーブル表示改善予定
-- モバイルフレンドリーなレイアウト
+### 1. Table Display
+- Planned improvement for table display on small screens
+- Mobile-friendly layouts
 
-### 2. モーダル・ダイアログ
-- 小画面でのモーダルサイズ最適化
-- キーボード表示時のレイアウト改善
+### 2. Modals and Dialogs
+- Modal size optimization for small screens
+- Layout improvements when keyboard is displayed
 
-## 🚫 現フェーズの仕様
+## 🚫 Current Phase Specifications
 
-### 1. 取引機能
-- デモモードでの取引体験を提供
-- 注文・取引データはデモデータを使用
-- 残高は入出金・調整で変動
+### 1. Trading Features
+- Provides trading experience in demo mode
+- Order and trade data uses demo data
+- Balance changes via deposits, withdrawals, and adjustments
 
-### 2. 入出金機能
-- チェーン別に段階導入（EVM → BTC → XRP）
-- 一部チェーンは「準備中」を明示
+### 2. Deposit/Withdrawal Features
+- Phased introduction by chain (EVM → BTC → XRP)
+- Some chains clearly marked as "Coming Soon"
 
-### 3. セキュリティ機能
-- 2FA: 将来バージョンで対応予定
-- セッションタイムアウト: 実装予定
+### 3. Security Features
+- 2FA: Planned for future version
+- Session timeout: Implementation planned
 
-## 📅 開発ロードマップ
+## 📅 Development Roadmap
 
-### 高優先度（次回リリース）
-1. エラーハンドリングの統一
-2. ローディング状態の統一
-3. レスポンシブテーブルの改善
+### High Priority (Next Release)
+1. Unified error handling
+2. Unified loading states
+3. Responsive table improvements
 
-### 中優先度（今後のリリース）
-1. テストフレームワーク導入
-2. パフォーマンス最適化
-3. ルーティング整理
+### Medium Priority (Future Releases)
+1. Test framework introduction
+2. Performance optimization
+3. Routing restructure
 
-### 将来の機能
-1. 完全な取引機能
-2. 高度な最適化
-3. スケール対応
+### Future Features
+1. Complete trading functionality
+2. Advanced optimization
+3. Scale support
 
-## 📊 品質メトリクス
+## 📊 Quality Metrics
 
-### パフォーマンス
-- バンドルサイズ監視
-- ページロード時間計測
-- レスポンシブ性能テスト
+### Performance
+- Bundle size monitoring
+- Page load time measurement
+- Responsive performance testing
 
-### ユーザー体験
-- 操作完了率の向上
-- モバイル利用率の改善
-- エラー率の低減
+### User Experience
+- Improved operation completion rate
+- Improved mobile usage rate
+- Reduced error rate

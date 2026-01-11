@@ -24,6 +24,37 @@ Try the demo at: **[https://undefined-exchange.pages.dev/](https://undefined-exc
 
 > 💡 Use the "Try Demo" button to explore all features without registration!
 
+### What You Can Try in Demo Mode
+
+| Feature | Description |
+|---------|-------------|
+| 💰 **Dashboard** | Real-time portfolio overview with live market prices |
+| 📥 **Deposit Flow** | Generate deposit addresses for multiple chains |
+| 📤 **Withdrawal** | Experience the withdrawal request workflow |
+| 💱 **Trading** | Place market orders with real-time order book (simulated) |
+| 📊 **History** | View transaction and trading history |
+| ⚙️ **Settings** | Explore user preferences and profile management |
+
+---
+
+## 🎯 Who It's For
+
+### Target Users
+
+| User Type | Use Case |
+|-----------|----------|
+| **Exchange Operators** | Launch a multi-chain crypto exchange quickly |
+| **FinTech Teams** | Integrate deposit/withdrawal infrastructure |
+| **Startups** | Build crypto services without blockchain expertise |
+| **Developers** | Study modern exchange architecture patterns |
+
+### Problems We Solve
+
+- ⏰ **Time-to-Market**: Building exchange infrastructure from scratch takes months → Deploy in days
+- 🔗 **Multi-Chain Complexity**: Managing multiple blockchains is complex → Unified API for all chains
+- 🎨 **Branding Flexibility**: Most solutions are not customizable → Full white-label support
+- 🛡️ **Security Baseline**: Security is expensive to get right → Built-in RLS, audit logging, role management
+
 ---
 
 ## ⚠️ Beta Software Notice
@@ -36,6 +67,8 @@ Try the demo at: **[https://undefined-exchange.pages.dev/](https://undefined-exc
 >
 > **This is a beta version.** We recommend using demo mode or testing with small amounts first.
 > For production use, please conduct your own security audit.
+>
+> 📋 See [Beta Limitations & Roadmap](docs/08-beta-limitations.md) for full details.
 >
 > This software is provided "AS IS" without warranty. See [LICENSE](LICENSE) for details.
 
@@ -85,33 +118,72 @@ Try the demo at: **[https://undefined-exchange.pages.dev/](https://undefined-exc
 
 ## ✨ Features
 
-### 🔗 Multi-Chain Support
+### Feature Availability
+
+| Status | Feature | Description |
+|:------:|---------|-------------|
+| ✅ | **Multi-Chain Support** | Ethereum, Bitcoin, XRP, TRON, Polygon, BNB Chain |
+| ✅ | **HD Wallet Architecture** | BIP-32/39/44 compliant key derivation |
+| ✅ | **White-Label Ready** | Full branding customization via config |
+| ✅ | **Admin Dashboard** | User/transaction/role management |
+| ✅ | **i18n Support** | English & Japanese (extensible) |
+| ✅ | **Demo Mode** | Try all features without registration |
+| 🔶 | **Deposit Detection** | Webhook integration in progress |
+| 🔶 | **Withdrawal Processing** | Semi-automated (manual approval) |
+| 🔲 | **Advanced Trading** | Limit orders, charts (planned) |
+| 🔲 | **2FA Authentication** | Coming in future release |
+
+> **Legend**: ✅ Available | 🔶 In Progress | 🔲 Planned
+
+### Core Capabilities
+
+<details>
+<summary>🔗 Multi-Chain Support</summary>
+
 - **Ethereum** (ETH + ERC-20 tokens like USDT)
 - **Bitcoin** (BTC)
 - **XRP** (Ripple)
 - **TRON** (TRX + TRC-20 tokens)
 - **Polygon**, **BNB Chain** (via EVM compatibility)
 
-### 🔐 HD Wallet Architecture
+</details>
+
+<details>
+<summary>🔐 HD Wallet Architecture</summary>
+
 - Hierarchical Deterministic wallets (BIP-32/39/44)
 - Single master key → unlimited addresses
 - Secure key management with wallet roots
 
-### 📊 Real-Time Deposit Detection
+</details>
+
+<details>
+<summary>📊 Deposit Detection</summary>
+
 - Tatum API integration for blockchain monitoring
 - Webhook-based instant notifications
 - Multi-asset support per address
 
-### 🎨 White-Label Ready
+</details>
+
+<details>
+<summary>🎨 White-Label Ready</summary>
+
 - Fully customizable branding via `branding.ts`
 - Environment variable based configuration
 - No hardcoded values
 
-### 🛡️ Security Features
+</details>
+
+<details>
+<summary>🛡️ Security Features</summary>
+
 - Role-based access control (Admin/Moderator/User)
 - Supabase Row Level Security (RLS)
 - Comprehensive audit logging
 - API key management
+
+</details>
 
 ---
 
@@ -161,7 +233,7 @@ Edit `.env` with your API keys:
 
 ```env
 VITE_SUPABASE_URL=http://127.0.0.1:54321
-VITE_SUPABASE_ANON_KEY=your_anon_key
+VITE_SUPABASE_PUBLISHABLE_KEY=your_anon_key
 
 # Blockchain APIs (get from providers)
 VITE_ALCHEMY_API_KEY=your_alchemy_key
@@ -183,16 +255,7 @@ Open http://localhost:8080 🎉
 
 ## 📸 Screenshots
 
-<details>
-<summary>Click to expand</summary>
-
-| Dashboard | Deposit | Trading |
-|-----------|---------|---------|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Deposit](docs/screenshots/deposit.png) | ![Trading](docs/screenshots/trading.png) |
-
-> 📷 *Screenshots coming soon! In the meantime, try the [Live Demo](https://undefined-exchange.pages.dev/).*
-
-</details>
+> 📷 **See it in action!** Try the [Live Demo](https://undefined-exchange.pages.dev/) to explore the full UI.
 
 ---
 
@@ -251,6 +314,29 @@ Configure chains in the admin dashboard at `/admin/chain-configs`.
 
 ---
 
+## 🔒 Security
+
+### Reporting Vulnerabilities
+
+If you discover a security vulnerability, please **do not** open a public issue.
+
+**Report via GitHub Security Advisories:**
+- 🔒 [Report a Vulnerability](https://github.com/Sou0327/undefined-exchange/security/advisories/new)
+
+We will acknowledge receipt within 48 hours and provide a detailed response within 7 days.
+
+### Security Best Practices
+
+When deploying this software:
+
+- ✅ Use environment variables for all secrets
+- ✅ Enable Supabase Row Level Security (RLS)
+- ✅ Rotate API keys regularly
+- ✅ Conduct security audits before production use
+- ✅ Keep dependencies updated
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before getting started.
@@ -269,6 +355,23 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+## 👥 Maintainers
+
+| Role | Contact |
+|------|---------|
+| **Lead Maintainer** | [@Sou0327](https://github.com/Sou0327) |
+| **Issues** | [GitHub Issues](https://github.com/Sou0327/undefined-exchange/issues) |
+| **Discussions** | [GitHub Discussions](https://github.com/Sou0327/undefined-exchange/discussions) |
+
+### Getting Help
+
+- 📖 **Documentation**: Check the [docs/](docs/) directory
+- 💬 **Questions**: Open a [Discussion](https://github.com/Sou0327/undefined-exchange/discussions)
+- 🐛 **Bug Reports**: File an [Issue](https://github.com/Sou0327/undefined-exchange/issues)
+- 🔒 **Security**: See [Security](#-security) section above
+
+---
+
 ## 💖 Support
 
 If you find this project useful, please consider:
@@ -277,7 +380,6 @@ If you find this project useful, please consider:
 - 🐛 Reporting bugs and issues
 - 💡 Suggesting new features
 - 🤝 Contributing code
-
 
 ---
 

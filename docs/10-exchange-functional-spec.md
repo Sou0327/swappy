@@ -1,36 +1,36 @@
-# 取引所風ウォレット 機能仕様（公開デモ/ペーパートレード）
+# Exchange-Style Wallet Functional Specification (Public Demo/Paper Trade)
 
-本書は、現行UIを「取引所の見え方をしたウォレット（少人数・手動運用）」として公開可能にするための機能仕様です。実取引（マッチング）は行わず、注文・約定はシミュレーション（ペーパートレード）とし、入金はチェーン別の最小方式で段階導入します。
+This document defines the functional specification for making the current UI publicly available as an "exchange-looking wallet (small team, manual operation)". Real trading (matching) is not performed; orders and fills are simulation (paper trade), and deposits are introduced in phases with minimal methods per chain.
 
-## 0. フェーズ前提（今回決定事項）
+## 0. Phase Prerequisites (Current Decisions)
 
-- 実取引なし: マッチングエンジンは実装しない。注文/約定はUI表示用のシミュレーション。
-- 入金のみ段階導入: まず EVM 系のみ実入金、その後 BTC → XRP を追加。その他チェーンは後段。
-- 運用は手動前提: 集約送金（スイープ）や出金は運用時間帯に手動対応。サーバは秘密鍵を保持しない。
-- KYC は任意: 管理画面から ON/OFF 可能（当面 OFF を想定）。
-- モバイル対応: レスポンシブ/PWA。ネイティブアプリは対象外。
-- セキュリティ: 最小限（環境変数管理/監査ログ/緊急停止）を優先。外部ペンテは後段。
+- No real trading: Matching engine is not implemented. Orders/fills are simulation for UI display.
+- Deposits introduced in phases: Start with EVM-based real deposits only, then add BTC → XRP. Other chains later.
+- Manual operation assumed: Aggregation transfers (sweep) and withdrawals are manually handled during operation hours. Server does not hold private keys.
+- KYC is optional: Can be toggled ON/OFF from admin panel (assumed OFF for now).
+- Mobile support: Responsive/PWA. Native apps are out of scope.
+- Security: Prioritize minimum (environment variable management/audit logs/emergency stop). External pentest later.
 
-チェーン別の入金仕様は「12-multichain-deposit-spec.md」を参照。
+See "12-multichain-deposit-spec.md" for chain-specific deposit specifications.
 
-## 1. ドメイン定義（ペーパートレード前提）
+## 1. Domain Definitions (Paper Trade Basis)
 
-- Market(取引ペア): 例 `BTC/USDT`。属性: `base`, `quote`, `price_tick`, `qty_step`, `min_notional`, `status`(active/paused/disabled)
-- Order(注文): `id`, `user_id`, `market`, `side`(buy/sell), `type`(limit/market), `price`, `qty`, `filled_qty`, `status`, `time_in_force`(GTC/IOC/FOK), `post_only`, `created_at`, `updated_at`
-- Trade(約定): `id`, `taker_order_id`, `maker_order_id`, `market`, `price`, `qty`, `taker_fee`, `maker_fee`, `created_at`
-- LedgerEntry(仕訳): `id`, `user_id`, `currency`, `amount`, `locked_delta`, `kind`(order_lock, order_unlock, trade_fill, fee, deposit, withdrawal, adj), `ref_type`(order/trade/deposit/withdrawal), `ref_id`, `created_at`
-- Balance: `total = SUM(amount)`, `locked = SUM(locked_delta)`, `available = total - locked`。
+- Market (Trading Pair): e.g., `BTC/USDT`. Attributes: `base`, `quote`, `price_tick`, `qty_step`, `min_notional`, `status`(active/paused/disabled)
+- Order: `id`, `user_id`, `market`, `side`(buy/sell), `type`(limit/market), `price`, `qty`, `filled_qty`, `status`, `time_in_force`(GTC/IOC/FOK), `post_only`, `created_at`, `updated_at`
+- Trade (Fill): `id`, `taker_order_id`, `maker_order_id`, `market`, `price`, `qty`, `taker_fee`, `maker_fee`, `created_at`
+- LedgerEntry (Journal): `id`, `user_id`, `currency`, `amount`, `locked_delta`, `kind`(order_lock, order_unlock, trade_fill, fee, deposit, withdrawal, adj), `ref_type`(order/trade/deposit/withdrawal), `ref_id`, `created_at`
+- Balance: `total = SUM(amount)`, `locked = SUM(locked_delta)`, `available = total - locked`.
 
-注: 今フェーズでは `orders/trades` はシミュレーテッドデータ。`ledger_entries` は入出金・調整のみを確定記録し、取引による資産移動は行わない。
+Note: In this phase, `orders/trades` are simulated data. `ledger_entries` only records confirmed deposits/withdrawals/adjustments; no asset movement via trading.
 
-## 2. DB(提案)
+## 2. DB (Proposed)
 
-以下はSupabase(PostgreSQL)想定のDDLドラフトです。(実装時はRLS/索引/制約を調整)。チェーン固有の入金フィールドは「12-multichain-deposit-spec.md」の拡張案を参照。
+Below is a DDL draft assuming Supabase (PostgreSQL). (RLS/indexes/constraints to be adjusted during implementation). See "12-multichain-deposit-spec.md" extension proposal for chain-specific deposit fields.
 
 ```sql
 -- markets
 CREATE TABLE markets (
-  id text PRIMARY KEY,          -- 例: 'BTC-USDT'
+  id text PRIMARY KEY,          -- e.g., 'BTC-USDT'
   base text NOT NULL,
   quote text NOT NULL,
   price_tick numeric(20,10) NOT NULL,
@@ -54,12 +54,12 @@ CREATE TABLE orders (
   status text NOT NULL DEFAULT 'new' CHECK (status IN ('new','open','partially_filled','filled','canceled','rejected')),
   time_in_force text NOT NULL DEFAULT 'GTC' CHECK (time_in_force IN ('GTC','IOC','FOK')),
   post_only boolean NOT NULL DEFAULT false,
-  client_id text,               -- 冪等性/外部ID
+  client_id text,               -- Idempotency/external ID
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 
--- trades（今フェーズはシミュレーションで生成）
+-- trades (generated via simulation this phase)
 CREATE TABLE trades (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   market text NOT NULL REFERENCES markets(id),
@@ -72,13 +72,13 @@ CREATE TABLE trades (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
--- ledger_entries (不可変)
+-- ledger_entries (immutable)
 CREATE TABLE ledger_entries (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id),
   currency text NOT NULL,
-  amount numeric(20,10) NOT NULL,           -- 正/負: 総残高に影響
-  locked_delta numeric(20,10) NOT NULL DEFAULT 0, -- 拘束残高の変化
+  amount numeric(20,10) NOT NULL,           -- Positive/negative: affects total balance
+  locked_delta numeric(20,10) NOT NULL DEFAULT 0, -- Change in locked balance
   kind text NOT NULL CHECK (kind IN ('order_lock','order_unlock','trade_fill','fee','deposit','withdrawal','adj')),
   ref_type text NOT NULL CHECK (ref_type IN ('order','trade','deposit','withdrawal','system')),
   ref_id uuid,
@@ -91,68 +91,67 @@ CREATE INDEX idx_trades_market_time ON trades(market, created_at DESC);
 CREATE INDEX idx_ledger_user_currency ON ledger_entries(user_id, currency);
 ```
 
-RLSの基本方針:
-- `orders`, `trades`, `ledger_entries`: 本人のみ参照可、作成は本人、更新は状態遷移を許す安全なRPC経由
-- `markets`: 公開読み取り、更新は管理者のみ
+RLS Basic Policy:
+- `orders`, `trades`, `ledger_entries`: Read by owner only, create by owner, update via safe RPC that allows state transitions
+- `markets`: Public read, update by admins only
 
-## 3. 業務ロジック（今回フェーズの運用）
+## 3. Business Logic (Current Phase Operation)
 
-- 注文・約定はUI表現のためにシミュレーションとして生成する（板・歩み値・自己履歴）。
-- 台帳は「入出金・調整」のみ確定記録する（取引による移動はしない）。
-- 価格/数量/最小取引金額などの検証はUIで行い、バックエンドでは軽量チェックに留める。
-- 取消/部分約定などの状態は擬似遷移で表現し、資産残高は変動させない。
+- Orders/fills are generated as simulation for UI expression (order book, tape, self history).
+- Ledger only records confirmed "deposits/withdrawals/adjustments" (no movement via trading).
+- Price/quantity/minimum notional validation done in UI; backend does lightweight checks only.
+- Cancel/partial fill states are expressed via pseudo-transitions; asset balances do not change.
 
-## 4. API(雛形)
+## 4. API (Template)
 
-REST/RPC (認証必須):
+REST/RPC (authentication required):
 - POST `/orders` {market, side, type, price?, qty, client_id?}
 - DELETE `/orders/{id}`
 - GET `/orders` (own, filter by status)
 - GET `/trades` (own)
-- GET `/balances` (集計ビュー)
+- GET `/balances` (aggregate view)
 RPC:
 - `place_limit_order(market, side, price, qty, tif, client_id)`
 - `cancel_order(order_id)` / `cancel_all_orders(market?)`
 - `get_orderbook_levels(market, side, limit)`
 - `get_my_trades(from?, to?, offset?, limit?)`
 
-入金関連（詳細は「12-multichain-deposit-spec.md」）:
-- GET `/deposit/address?chain=evm&asset=USDC`（受取先取得）
-- GET `/deposit/history`（自分の入金履歴）
-- POST `/withdrawals`（申請のみ。実送金は手動）
+Deposit related (details in "12-multichain-deposit-spec.md"):
+- GET `/deposit/address?chain=evm&asset=USDC` (get receiving address)
+- GET `/deposit/history` (own deposit history)
+- POST `/withdrawals` (request only. Actual transfer is manual)
 
-WebSocket(公開):
+WebSocket (public):
 - `ticker:{market}` / `trades:{market}` / `orderbook:{market}`
 
-WebSocket(認証):
-- `orders` (自分の注文/約定更新)
-- `balances` (自分の残高更新)
+WebSocket (authenticated):
+- `orders` (own order/fill updates)
+- `balances` (own balance updates)
 
-## 5. 精度/表示・ロックの意味
+## 5. Precision/Display & Lock Semantics
 
-- 保存は `numeric(20,10)` 等の十分精度
-- 表示用丸めはUI側（Tailwind+shadcn）で制御、内部は丸めない
-- 今フェーズでは取引用のロックは用いない（`locked_delta=0` 運用）。入出金/調整時のみ `amount` が変化。
+- Storage uses `numeric(20,10)` etc. for sufficient precision
+- Display rounding controlled on UI side (Tailwind+shadcn); no internal rounding
+- This phase does not use trading locks (`locked_delta=0` operation). Only `amount` changes during deposits/withdrawals/adjustments.
 
-## 6. 冪等性/整合性
+## 6. Idempotency/Consistency
 
-- `client_id` による重複防止
-- 状態遷移は単一トランザクションで台帳仕訳と同時確定
-- 再実行可能なイベント処理（注文投入/取消/擬似約定）
+- Duplicate prevention via `client_id`
+- State transitions confirmed in single transaction along with ledger entries
+- Re-runnable event processing (order submission/cancel/pseudo-fill)
 
-## 7. 監査/運用
+## 7. Audit/Operations
 
-- `audit_logs`: 管理操作/重要イベントの保管（入金検知/スイープ実行/出金承認など）
-- メトリクス: 入金取り込み遅延、失敗率、WS接続数、APIエラー率
-- 緊急停止: チェーン別の「入金受付スイッチ」を用意（準備中/受付停止を明示）
+- `audit_logs`: Store admin operations/important events (deposit detection/sweep execution/withdrawal approval etc.)
+- Metrics: Deposit intake delay, failure rate, WS connection count, API error rate
+- Emergency stop: Prepare "deposit acceptance switch" per chain (explicitly show "preparing/acceptance stopped")
 
-## 8. 非機能(抜粋)
+## 8. Non-Functional (Summary)
 
-- 可用性: 単一AZ障害に耐える（将来）
-- 拡張性: マーケット増加/チェーン追加時のスケールを意識
-- セキュリティ: 環境変数管理・最小権限・鍵非保持。2FA/出金保護は別フェーズ。
+- Availability: Tolerate single AZ failure (future)
+- Scalability: Consider scale when adding markets/chains
+- Security: Environment variable management, least privilege, key non-retention. 2FA/withdrawal protection in separate phase.
 
 ---
 
-この仕様は「公開デモ/ペーパートレード」の骨格です。実取引への拡張やチェーン別入金の詳細は、段階導入時点で本書および「12-multichain-deposit-spec.md」に反映します。
-
+This specification is the skeleton for "public demo/paper trade". Extensions for real trading and chain-specific deposit details will be reflected in this document and "12-multichain-deposit-spec.md" at the time of phased introduction.

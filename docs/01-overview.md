@@ -1,57 +1,57 @@
-# Undefined プロジェクト概要
+# Undefined Project Overview
 
-## プロダクト概要
-Undefinedは暗号資産の「取引・稼ぐ・両替」体験を提供するReactベースのSPAフロントエンドアプリケーションです。
+## Product Overview
+Undefined is a React-based SPA frontend application that provides cryptocurrency "trading, earning, and exchange" experiences.
 
-## 技術スタック
+## Technology Stack
 
-### フロントエンド
-- **React 18** + **TypeScript** - メインフレームワーク
-- **Vite 5** - ビルドツールと開発サーバー（ポート8080）
-- **React Router v6** - クライアントサイドルーティング
-- **Tailwind CSS** - ユーティリティファーストCSS
-- **shadcn/ui** - Radix UIベースのコンポーネントライブラリ
-- **Lucide React** - アイコンライブラリ
+### Frontend
+- **React 18** + **TypeScript** - Main framework
+- **Vite 5** - Build tool and development server (port 8080)
+- **React Router v6** - Client-side routing
+- **Tailwind CSS** - Utility-first CSS
+- **shadcn/ui** - Radix UI-based component library
+- **Lucide React** - Icon library
 
-### 状態管理・データ取得
-- **TanStack Query (@tanstack/react-query)** - サーバー状態管理
-- **React Context** - 認証状態管理
-- **React Hook Form + Zod** - フォーム処理とバリデーション
+### State Management & Data Fetching
+- **TanStack Query (@tanstack/react-query)** - Server state management
+- **React Context** - Authentication state management
+- **React Hook Form + Zod** - Form handling and validation
 
-### バックエンド・認証
-- **Supabase** - BaaS（認証・データベース・リアルタイム）
-- **PostgreSQL** - データベース（Supabaseホスト）
-- **Row Level Security (RLS)** - データアクセス制御
+### Backend & Authentication
+- **Supabase** - BaaS (Authentication, Database, Real-time)
+- **PostgreSQL** - Database (Supabase hosted)
+- **Row Level Security (RLS)** - Data access control
 
-### その他の主要ライブラリ
-- **Recharts** - チャート・グラフ表示
-- **date-fns** - 日付処理
-- **next-themes** - ダーク/ライトモード対応
+### Other Key Libraries
+- **Recharts** - Charts and graphs
+- **date-fns** - Date processing
+- **next-themes** - Dark/light mode support
 
-## アーキテクチャの特徴
-- **SPAアーキテクチャ**: 高速なユーザー体験
-- **コンポーネントベース**: 再利用可能なUI設計
-- **型安全性**: TypeScript + Zodによる厳密な型チェック
-- **モジュラー設計**: 機能別に分離された構造
-- **レスポンシブデザイン**: モバイルファースト設計
+## Architecture Characteristics
+- **SPA Architecture**: Fast user experience
+- **Component-Based**: Reusable UI design
+- **Type Safety**: Strict type checking with TypeScript + Zod
+- **Modular Design**: Feature-separated structure
+- **Responsive Design**: Mobile-first approach
 
-## 運用モード（今回の方針）
-- **取引所風ウォレット（公開デモ）**: 実取引は行わず、注文/約定はシミュレーション（ペーパートレード）。
-- **フェーズ1（入金検知のみ）**: 実入金は「検知のみ」。スイープ/出金は未実装または手動運用。サーバは秘密鍵を保持しない（手動署名前提）。
-- **対象チェーン（初期）**: BTC / ETH / TRC / XRP / USDT（ERC‑20/TRC‑20）/ ADA に対応（入金検知）。
-- **公開テスト目安**: フェーズ1（全チェーン入金検知のみ）を 2–3 週間で公開（並行検証込み）。
-- **KYC は任意**: 管理画面から ON/OFF。初期は OFF 想定（将来段階導入）。
-- **セキュリティ設定の範囲**: 2FA/フィッシング対策コード/回復キーは本フェーズ対象外。パスワード変更・凍結のみ提供。
+## Operation Mode (Current Approach)
+- **Exchange-Style Wallet (Public Demo)**: No real trading; orders/fills are simulated (paper trading).
+- **Phase 1 (Deposit Detection Only)**: Real deposits are "detection only". Sweep/withdrawal is not implemented or manually operated. Server does not store private keys (assumes manual signing).
+- **Target Chains (Initial)**: Supports BTC / ETH / TRC / XRP / USDT (ERC-20/TRC-20) / ADA (deposit detection).
+- **Public Test Timeline**: Phase 1 (all-chain deposit detection only) can be released in 2-3 weeks (including parallel verification).
+- **KYC is Optional**: Can be toggled ON/OFF from admin panel. Initially OFF (phased introduction planned).
+- **Security Configuration Scope**: 2FA/anti-phishing code/recovery keys are out of scope for this phase. Only password change and account freeze are provided.
 
-## フェーズ計画（要約）
-- P1: EVM(Ethereum)入金検知のみ（EOA/HD払い出し、手動スイープ）
-- P2: 取引UIのシミュレーション強化（板/歩み値/WS擬似）
-- P3: BTC入金（xpub払い出し、PSBT生成→手動署名）
-- P4: XRP入金（単一アドレス＋Destination Tag）
-- P5+: TRON 他チェーン、2FA、APIキー、KYC強化 等
+## Phase Plan (Summary)
+- P1: EVM (Ethereum) deposit detection only (EOA/HD distribution, manual sweep)
+- P2: Enhanced trading UI simulation (orderbook/trade history/pseudo WS)
+- P3: BTC deposits (xpub distribution, PSBT generation → manual signing)
+- P4: XRP deposits (single address + Destination Tag)
+- P5+: TRON and other chains, 2FA, API keys, KYC enhancement, etc.
 
-## 開発原則
-- **YAGNI (You Aren't Gonna Need It)** - 必要になるまで機能を実装しない
-- **DRY (Don't Repeat Yourself)** - コードの重複を避ける
-- **コンポーネント再利用** - shadcn/uiベースの統一UI
-- **型安全性重視** - TypeScriptとZodによる実行時型チェック
+## Development Principles
+- **YAGNI (You Aren't Gonna Need It)** - Don't implement features until needed
+- **DRY (Don't Repeat Yourself)** - Avoid code duplication
+- **Component Reuse** - Unified UI based on shadcn/ui
+- **Type Safety Focus** - Runtime type checking with TypeScript and Zod

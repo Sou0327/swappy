@@ -1,6 +1,10 @@
 # Undefined - Multi-Chain Cryptocurrency Trading Platform
 
+> 📖 **Note**: The English [README.md](README.md) is the primary documentation and always reflects the latest features and updates. This Japanese version focuses on detailed setup instructions.
+
 Undefinedは日本語対応のマルチチェーン暗号通貨取引プラットフォームです。
+
+**🌐 [English README](README.md)** | **🔗 [Live Demo](https://undefined-exchange.pages.dev/)**
 
 ---
 
@@ -192,7 +196,7 @@ cp .env.example .env
 ```env
 # Supabase設定（supabase start出力から取得）
 VITE_SUPABASE_URL=http://127.0.0.1:54321
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # チェーン別API設定（開発・テスト用）
 VITE_ETHEREUM_NETWORK=sepolia
@@ -645,7 +649,7 @@ supabase/
 本番環境用の環境変数を設定：
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your_anon_key
+VITE_SUPABASE_PUBLISHABLE_KEY=your_anon_key
 ```
 
 ### デプロイ

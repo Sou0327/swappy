@@ -1,127 +1,127 @@
-# ルーティングとページ仕様
+# Routing and Page Specifications
 
-## ルート構成 (`src/App.tsx`)
+## Route Configuration (`src/App.tsx`)
 
-### パブリックページ
-| パス | コンポーネント | 説明 |
-|------|-------------|------|
-| `/` | `Index.tsx` | ランディングページ |
-| `/auth` | `Auth.tsx` | ログイン・新規登録 |
-| `/redirect` | `AuthRedirect.tsx` | 認証後のロール別リダイレクト |
-| `/features` | `Features.tsx` | 機能紹介 |
-| `/about` | `About.tsx` | 会社概要 |
-| `/markets` | `Markets.tsx` | マーケット情報 |
-| `/trade` | `Trade.tsx` | 取引画面 |
-| `*` | `NotFound.tsx` | 404エラーページ |
+### Public Pages
+| Path | Component | Description |
+|------|-----------|-------------|
+| `/` | `Index.tsx` | Landing page |
+| `/auth` | `Auth.tsx` | Login / Sign up |
+| `/redirect` | `AuthRedirect.tsx` | Role-based redirect after authentication |
+| `/features` | `Features.tsx` | Feature introduction |
+| `/about` | `About.tsx` | About us |
+| `/markets` | `Markets.tsx` | Market information |
+| `/trade` | `Trade.tsx` | Trading screen |
+| `*` | `NotFound.tsx` | 404 error page |
 
-### 認証が必要なページ
-| パス | コンポーネント | 説明 |
-|------|-------------|------|
-| `/dashboard` | `Dashboard.tsx` | ユーザーダッシュボード |
-| `/wallet` | `WalletOverview.tsx` | ウォレット概要 |
-| `/deposit` | `Deposit.tsx` | 入金（フェーズ1: 検知のみ。BTC/ETH/TRC/XRP/USDT/ADA 対応） |
-| `/withdraw` | `Withdraw.tsx` | 出金 |
-| `/convert` | `Convert.tsx` | 両替 |
-| `/history` | `FinancialHistory.tsx` | 取引履歴 |
-| `/security` | `SecuritySettings.tsx` | セキュリティ設定（2FA/フィッシング/回復キーは非表示。パスワード変更・凍結のみ） |
-| `/kyc` | `KYC.tsx` | 本人確認（KYC） |
-| `/my-account` | `MyAccount.tsx` | アカウント設定 |
-| `/support` | `Support.tsx` | サポート |
-| `/my-page` | `MyPage.tsx` | マイページ（→`/dashboard`にリダイレクト） |
+### Authenticated Pages
+| Path | Component | Description |
+|------|-----------|-------------|
+| `/dashboard` | `Dashboard.tsx` | User dashboard |
+| `/wallet` | `WalletOverview.tsx` | Wallet overview |
+| `/deposit` | `Deposit.tsx` | Deposit (Phase 1: Detection only. Supports BTC/ETH/TRC/XRP/USDT/ADA) |
+| `/withdraw` | `Withdraw.tsx` | Withdrawal |
+| `/convert` | `Convert.tsx` | Exchange |
+| `/history` | `FinancialHistory.tsx` | Transaction history |
+| `/security` | `SecuritySettings.tsx` | Security settings (2FA/phishing/recovery hidden. Password change and freeze only) |
+| `/kyc` | `KYC.tsx` | KYC verification |
+| `/my-account` | `MyAccount.tsx` | Account settings |
+| `/support` | `Support.tsx` | Support |
+| `/my-page` | `MyPage.tsx` | My page (redirects to `/dashboard`) |
 
-### 管理者限定ページ
-| パス | コンポーネント | 説明 | 保護 |
-|------|-------------|------|------|
-| `/admin` | `AdminDashboard.tsx` | 管理ダッシュボード | `AdminRoute`で保護 |
-| `/admin/deposits/settings` | `AdminDepositSettings.tsx` | チェーン別受付スイッチ・確認数設定 | `AdminRoute` |
+### Admin-Only Pages
+| Path | Component | Description | Protection |
+|------|-----------|-------------|------------|
+| `/admin` | `AdminDashboard.tsx` | Admin dashboard | Protected by `AdminRoute` |
+| `/admin/deposits/settings` | `AdminDepositSettings.tsx` | Chain acceptance switch and confirmation settings | `AdminRoute` |
 
-## 認証フロー
+## Authentication Flow
 
-### 認証状態管理
-- `AuthContext` でユーザー状態とロール情報を管理
-- `onAuthStateChange` でSupabase認証状態を監視
-- ロール情報は `user_roles` テーブルから取得
+### Authentication State Management
+- `AuthContext` manages user state and role information
+- `onAuthStateChange` monitors Supabase authentication state
+- Role information is fetched from `user_roles` table
 
-### リダイレクト処理 (`/redirect`)
-1. **管理者 (`admin`)**: `/admin` へ
-2. **一般ユーザー**: `/dashboard` へ
-3. **未認証**: `/auth` へ
+### Redirect Processing (`/redirect`)
+1. **Admin (`admin`)**: Redirect to `/admin`
+2. **Regular User**: Redirect to `/dashboard`
+3. **Unauthenticated**: Redirect to `/auth`
 
-### ルート保護
-- `AdminRoute`: 管理者以外は `/dashboard` にリダイレクト
-- 未認証の場合は `/auth` にリダイレクト
+### Route Protection
+- `AdminRoute`: Non-admins are redirected to `/dashboard`
+- Unauthenticated users are redirected to `/auth`
 
-## ページ詳細仕様
+## Page Detailed Specifications
 
-### ランディングページ (`/`)
-- **コンポーネント**: `Header`, `HeroSection`, `MarketTable`, `HowItWorks`, `Footer`
-- **機能**: 製品紹介、市場データ表示、使い方説明
+### Landing Page (`/`)
+- **Components**: `Header`, `HeroSection`, `MarketTable`, `HowItWorks`, `Footer`
+- **Features**: Product introduction, market data display, how-to guide
 
-### 認証ページ (`/auth`)
-- **認証方式**: Email + Password（Supabase Auth）
-- **機能**: ログイン、新規登録、バリデーション
-- **登録時**: `full_name` をメタデータに保存
-- **成功後**: `/redirect` に遷移
+### Authentication Page (`/auth`)
+- **Authentication Method**: Email + Password (Supabase Auth)
+- **Features**: Login, sign up, validation
+- **On Registration**: Saves `full_name` to metadata
+- **On Success**: Navigate to `/redirect`
 
-### ダッシュボード (`/dashboard`)
-- **機能**: 
-  - ユーザー情報表示
-  - 総資産表示（`user_assets` 集計）
-  - 主要機能への導線（入金、取引等）
-  - チェーン受付状況バッジ（例: ETH: 有効 / BTC: 準備中）
+### Dashboard (`/dashboard`)
+- **Features**:
+  - User information display
+  - Total assets display (`user_assets` aggregation)
+  - Navigation to main features (deposit, trading, etc.)
+  - Chain acceptance status badges (e.g., ETH: Enabled / BTC: Coming Soon)
 
-### 管理画面 (`/admin`)
-- **タブ構成**:
-  - ユーザー管理（`profiles` + `user_roles`）
-  - 入金管理（`deposits`）
-  - 出金管理（`withdrawals`）
-  - 資産管理（`user_assets`）
-  - チェーン設定（`/admin/deposits/settings`）
-- **機能**: 
-  - 入出金の承認・拒否
-  - 残高のインライン編集
-  - ユーザーロール管理
+### Admin Panel (`/admin`)
+- **Tab Structure**:
+  - User management (`profiles` + `user_roles`)
+  - Deposit management (`deposits`)
+  - Withdrawal management (`withdrawals`)
+  - Asset management (`user_assets`)
+  - Chain settings (`/admin/deposits/settings`)
+- **Features**:
+  - Approve/reject deposits and withdrawals
+  - Inline balance editing
+  - User role management
 
-## レイアウトコンポーネント
+## Layout Components
 
-### 共通ヘッダー (`Header.tsx`)
-- ナビゲーションメニュー
-- ユーザー認証状態表示
-- レスポンシブデザイン
+### Common Header (`Header.tsx`)
+- Navigation menu
+- User authentication status display
+- Responsive design
 
-### ダッシュボードレイアウト (`DashboardLayout.tsx`)
-- サイドバーナビゲーション
-- トップバー
-- サインアウト機能
-- モバイル対応（サイドバー折りたたみ）
+### Dashboard Layout (`DashboardLayout.tsx`)
+- Sidebar navigation
+- Top bar
+- Sign out functionality
+- Mobile support (collapsible sidebar)
 
-### フッター (`Footer.tsx`)
-- リンク集
-- 会社情報
-- ソーシャルメディアリンク
+### Footer (`Footer.tsx`)
+- Link collection
+- Company information
+- Social media links
 
-## 入金ページ詳細 (`/deposit`)
+## Deposit Page Details (`/deposit`)
 
-- チェーン/アセット選択: `BTC`, `ETH`, `USDT(ERC-20/TRC-20)`, `TRX`, `XRP`, `ADA` を表示。
-- 受取先表示: ユーザー専用アドレス（EVM/TRON/ADA は HD 由来、BTC は xpub 派生、XRP は固定アドレス+Destination Tag）と QR コード。
-- 確認数表示: `.env` の `VITE_DEPOSIT_MIN_CONFIRMATIONS_*` を反映（例: ETH=12, BTC=3, XRP=1, TRON=19, ADA=15）。
-- 注意/FAQ: 誤チェーン送付の警告、XRP の Tag 必須、TRON/ADA の最終性、入金反映の目安時間。
-- 履歴: `deposits` から自分の入金履歴を取得し表示。
+- Chain/Asset Selection: Displays `BTC`, `ETH`, `USDT(ERC-20/TRC-20)`, `TRX`, `XRP`, `ADA`.
+- Receiving Address Display: User-specific address (EVM/TRON/ADA from HD derivation, BTC from xpub derivation, XRP is fixed address + Destination Tag) with QR code.
+- Confirmation Count Display: Reflects `VITE_DEPOSIT_MIN_CONFIRMATIONS_*` from `.env` (e.g., ETH=12, BTC=3, XRP=1, TRON=19, ADA=15).
+- Warnings/FAQ: Wrong chain transfer warning, XRP Tag requirement, TRON/ADA finality, estimated deposit reflection time.
+- History: Fetches and displays own deposit history from `deposits`.
 
-## アカウント設定 (`/my-account`)
+## Account Settings (`/my-account`)
 
-- 基本情報: フルネームのみ編集可能（生年月日・自己紹介は廃止）。
-- アバター: 画像アップロードなし（静的表示）。
+- Basic Information: Only full name is editable (birthday and bio removed).
+- Avatar: No image upload (static display).
 
-## セキュリティ設定 (`/security`)
+## Security Settings (`/security`)
 
-- 2FA/フィッシング対策コード/回復キー: 本フェーズ対象外（UI非表示）。
-- パスワード: ログインパスワードの変更に対応。
-- アカウント凍結: 凍結操作のUIを提供。
+- 2FA/Anti-phishing Code/Recovery Keys: Out of scope for this phase (hidden in UI).
+- Password: Supports login password change.
+- Account Freeze: Provides freeze operation UI.
 
-最小入金額の目安（推奨下限）
-- BTC: 0.0001〜0.001 BTC（下限 0.0001）
-- ETH: 0.01〜0.05 ETH（下限 0.01）
-- XRP: 20〜50 XRP（下限 20、Destination Tag 必須）
-- TRON(TRX): 10〜100 TRX（下限 10、確定目安 19 ブロック）
-- ADA: 1〜10 ADA（下限 1、UTXO の都合で集計反映に差が出る場合あり）
+Recommended Minimum Deposit Amounts
+- BTC: 0.0001-0.001 BTC (minimum 0.0001)
+- ETH: 0.01-0.05 ETH (minimum 0.01)
+- XRP: 20-50 XRP (minimum 20, Destination Tag required)
+- TRON(TRX): 10-100 TRX (minimum 10, ~19 blocks for finality)
+- ADA: 1-10 ADA (minimum 1, aggregation may vary due to UTXO)

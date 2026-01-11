@@ -1,110 +1,110 @@
-# 製品ロードマップ（取引所風ウォレット：公開デモ → 段階拡張）
+# Product Roadmap (Exchange-Style Wallet: Public Demo → Phased Expansion)
 
-本書は、「取引所の見え方をしたウォレット（少人数・手動運用）」として最短で公開するための段階的ロードマップです。まずは実取引を行わず（ペーパートレード）、入金のみをチェーン別に段階導入します。
+This document outlines a phased roadmap for launching an "exchange-looking wallet (small team / manual operation)" as quickly as possible. Initially, no real trading will occur (paper trading), and deposits will be introduced chain by chain.
 
-## フェーズ概要
+## Phase Overview
 
-- P0: セキュリティ/設定の是正（鍵非保持・環境分離）
-- P1: EVM入金（個別デポジットコントラクト → 手動スイープ）
-- P2: 取引UIのシミュレーション整備（板/注文/履歴の擬似生成・保存）
-- P3: BTC入金（xpub払い出し + PSBT生成）
-- P4: XRP入金（単一アドレス + Destination Tag）
-- P5: APIキー/署名/レート制限
-- P6: 2FA/出金防御（手動運用でも保護強化）
-- P7: KYC/AML（任意/段階導入）
-- P8: 可観測性/運用（監査ログ・メトリクス・バックアップ）
-- P9: UX整備/国際化/アクセシビリティ
+- P0: Security/Configuration Remediation (No key storage / Environment separation)
+- P1: EVM Deposits (Individual deposit contracts → Manual sweep)
+- P2: Trading UI Simulation (Pseudo-generation of orderbook/orders/history)
+- P3: BTC Deposits (xpub distribution + PSBT generation)
+- P4: XRP Deposits (Single address + Destination Tag)
+- P5: API Keys/Signatures/Rate Limiting
+- P6: 2FA/Withdrawal Protection (Enhanced protection even with manual operation)
+- P7: KYC/AML (Optional / Phased introduction)
+- P8: Observability/Operations (Audit logs, Metrics, Backup)
+- P9: UX/Internationalization/Accessibility
 
 ---
 
-## P0 セキュリティ/設定 (必須・先行)
+## P0 Security/Configuration (Required - Priority)
 
-- 目的: 機密情報の管理と環境分離を是正
-- タスク:
-  - Supabaseキーを環境変数化 (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`) とリリースキー入替
-  - 秘密情報の棚卸しと`.env.example`整備
-  - 依存パッケージの脆弱性チェック/アップデート方針
-- 受入基準:
-  - ビルド/起動が環境変数依存で安定稼働し、鍵の直書きが無い
+- Purpose: Remediate secrets management and environment separation
+- Tasks:
+  - Environment variable configuration for Supabase keys (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`) and key rotation
+  - Audit of secrets and `.env.example` setup
+  - Dependency vulnerability check/update policy
+- Acceptance Criteria:
+  - Build/startup is stable with environment variable dependencies, no hardcoded keys
 
-## P1 全チェーン入金（検知のみ・鍵非保持）
+## P1 All-Chain Deposits (Detection Only - No Key Storage)
 
-- 目的: 最短で「本当に入る（検知のみ）」を提供（BTC/ETH/XRP/TRON/ADA/USDT）。
-- タスク:
-  - 各チェーンでユーザー専用受取先の払い出し（ETH/TRON/ADA: HD、BTC: xpub、XRP: 固定+Tag）
-  - 入金の取り込み → `deposits` 計上 → 確認数到達で `confirmed` → `user_assets` 反映
-  - スイープ/出金は運用時間帯に手動対応（監査ログは記録）
-- 受入基準:
-  - 各チェーンの少額入金がUI/履歴に反映（ETH/USDT=12, BTC=3〜6, XRP=1, TRON=19, ADA=15 目安）。
-  - チェーン受付スイッチと必要確認数が管理画面から調整可能。
+- Purpose: Deliver "real deposits (detection only)" as quickly as possible (BTC/ETH/XRP/TRON/ADA/USDT)
+- Tasks:
+  - Issue user-specific receiving addresses per chain (ETH/TRON/ADA: HD, BTC: xpub, XRP: Fixed + Tag)
+  - Deposit capture → Record in `deposits` → Status `confirmed` upon reaching required confirmations → Reflect in `user_assets`
+  - Sweep/withdrawal handled manually during operational hours (audit logs recorded)
+- Acceptance Criteria:
+  - Small deposits on each chain are reflected in UI/history (ETH/USDT=12, BTC=3-6, XRP=1, TRON=19, ADA=15 confirmations as guidelines)
+  - Chain acceptance switch and required confirmations configurable from admin panel
 
-## P2 取引UIのシミュレーション整備
+## P2 Trading UI Simulation
 
-- 目的: 実取引なしで“取引所の見え方”を完成
-- タスク:
-  - 注文ライフサイクルを擬似データで表現（new/open/partially_filled/filled/canceled）
-  - 板/歩み値/履歴の擬似生成・保存
-  - WS配信（擬似）: `ticker`, `trades`, `orderbook`
-- 受入基準:
-  - UIが擬似データのみで安定動作し、台帳と矛盾しない（資産移動なし）
+- Purpose: Complete the "exchange look" without real trading
+- Tasks:
+  - Express order lifecycle with pseudo data (new/open/partially_filled/filled/canceled)
+  - Pseudo-generation and storage of orderbook/trade history
+  - WS broadcast (pseudo): `ticker`, `trades`, `orderbook`
+- Acceptance Criteria:
+  - UI operates stably with pseudo data only, no contradiction with ledger (no asset movement)
 
-## P3 BTC入金
+## P3 BTC Deposits
 
-- 目的: BTCでの入金受付
-- タスク:
-  - xpubからのアドレス払い出し、入金検知、`deposits` 計上
-  - PSBT生成（手動署名）と監査ログ
-- 受入基準:
-  - 少額入金がUI/履歴に反映、スイープ集約が運用可能
+- Purpose: Accept BTC deposits
+- Tasks:
+  - Address distribution from xpub, deposit detection, record in `deposits`
+  - PSBT generation (manual signing) and audit logs
+- Acceptance Criteria:
+  - Small deposits reflected in UI/history, sweep aggregation operationally viable
 
-## P4 XRP入金
+## P4 XRP Deposits
 
-- 目的: XRPでの入金受付
-- タスク:
-  - 単一アドレス＋Destination Tagでユーザー識別
-  - 入金検知、`deposits` 計上
-- 受入基準:
-  - 入金がUI/履歴に反映、運用が安定
+- Purpose: Accept XRP deposits
+- Tasks:
+  - User identification via single address + Destination Tag
+  - Deposit detection, record in `deposits`
+- Acceptance Criteria:
+  - Deposits reflected in UI/history, stable operation
 
-## P5 APIキー/署名/レート制限
+## P5 API Keys/Signatures/Rate Limiting
 
-- タスク: APIキー発行/失効、HMAC署名、時刻ずれ検証、IP/キー単位レート制限
-- 受入基準: 注文/残高のプライベートAPIが実運用可能
+- Tasks: API key issuance/revocation, HMAC signatures, clock skew verification, IP/key-based rate limiting
+- Acceptance Criteria: Private APIs for orders/balances are production-ready
 
-## P6 2FA/出金防御
+## P6 2FA/Withdrawal Protection
 
-- タスク: TOTP/バックアップコード/強制2FA、アドレス帳・クールダウン
-- 受入基準: 出金時の保護が成立
+- Tasks: TOTP/backup codes/forced 2FA, address book, cooldown period
+- Acceptance Criteria: Withdrawal protection is established
 
 ## P7 KYC/AML
 
-- タスク: レベル別KYC、PEP/制裁スクリーニング、疑わしい取引モニタリング(ルール)
-- 受入基準: 主要地域での最小コンプライアンスを満たす
+- Tasks: Tiered KYC, PEP/sanctions screening, suspicious transaction monitoring (rules)
+- Acceptance Criteria: Minimum compliance for major regions is met
 
-## P8 可観測性/運用
+## P8 Observability/Operations
 
-- タスク: 構造化ログ/トレース、ビジネスメトリクス、バックアップ/DR、管理者監査ログ(WORM)
-- 受入基準: 障害時の原因追跡と復旧手順が運用できる
+- Tasks: Structured logs/traces, business metrics, backup/DR, admin audit logs (WORM)
+- Acceptance Criteria: Root cause analysis and recovery procedures are operational during incidents
 
-## P9 UX/国際化
+## P9 UX/Internationalization
 
-- タスク: リアルタイムUI、エラー/ローディング統一、i18n、A11y、仮想化
-- 受入基準: 主要画面のUXが一貫している
+- Tasks: Real-time UI, unified error/loading states, i18n, A11y, virtualization
+- Acceptance Criteria: UX is consistent across major screens
 
 ---
 
-## スプリント例（最初の3スプリント）
+## Sprint Example (First 3 Sprints)
 
-- Sprint 1 (P0+P1): 環境変数対応、全チェーンの入金検知（受取先払い出し・取り込み・履歴反映）
-- Sprint 2 (P2): 取引UIのシミュレーション整備、擬似WS配信、履歴保存
-- Sprint 3 (P3): BTC入金（xpub/PSBT）と監査ログ
+- Sprint 1 (P0+P1): Environment variables, all-chain deposit detection (address distribution, capture, history display)
+- Sprint 2 (P2): Trading UI simulation, pseudo WS broadcast, history storage
+- Sprint 3 (P3): BTC deposits (xpub/PSBT) and audit logs
 
-## 公開テストの目安
+## Public Test Timeline
 
-- フェーズ1（ETH+USDT 入金検知のみ）: 5–7 営業日で公開テスト可能。
+- Phase 1 (ETH+USDT deposit detection only): Ready for public testing in 5-7 business days
 
-## リスク/前提
+## Risks/Assumptions
 
-- サーバは秘密鍵を保持しない（署名は運用側ウォレット）。
-- チェーン連携は段階的に導入（まずEVM→BTC→XRP、その他は後段）。
-- 将来、自動化や本格的な取引機能へ拡張する場合は別途SOWで定義。
+- Server does not store private keys (signing handled by operational wallet)
+- Chain integration is phased (EVM → BTC → XRP first, others later)
+- For future automation or full trading functionality, define separately in SOW

@@ -1,190 +1,190 @@
-# 機能仕様書
+# Feature Specifications
 
-## 実装済み機能
+## Implemented Features
 
-### 🔐 認証・ユーザー管理
-**現在の実装レベル: 完了**
+### 🔐 Authentication & User Management
+**Current Implementation Level: Complete**
 
-- **サインアップ/ログイン**: Email + Password
-- **ロール管理**: admin, moderator, user
-- **セッション管理**: 自動リフレッシュ、永続化
-- **認証状態監視**: リアルタイム更新
+- **Sign Up/Login**: Email + Password
+- **Role Management**: admin, moderator, user
+- **Session Management**: Auto-refresh, persistence
+- **Authentication State Monitoring**: Real-time updates
 
-### 📊 ダッシュボード
-**現在の実装レベル: 基本完了**
+### 📊 Dashboard
+**Current Implementation Level: Basic Complete**
 
-- **総資産表示**: `user_assets` テーブル集計
-- **ユーザー情報**: プロフィール表示
-- **クイックアクション**: 入金、取引、セキュリティへの導線
-- **レスポンシブレイアウト**: モバイル・デスクトップ対応
+- **Total Assets Display**: `user_assets` table aggregation
+- **User Information**: Profile display
+- **Quick Actions**: Navigation to deposit, trading, security
+- **Responsive Layout**: Mobile & desktop support
 
-### 💰 ウォレット・資産管理
-**現在の実装レベル: UI完了、機能部分実装**
+### 💰 Wallet & Asset Management
+**Current Implementation Level: UI Complete, Partial Functionality**
 
-#### ウォレット概要 (`/wallet`)
-- ✅ 資産一覧表示（`user_assets` から取得）
-- ✅ 検索・フィルタリング
-- ✅ 小額資産非表示オプション
-- ✅ 主要通貨のゼロ残高表示
+#### Wallet Overview (`/wallet`)
+- ✅ Asset list display (from `user_assets`)
+- ✅ Search & filtering
+- ✅ Hide small balance option
+- ✅ Show zero balance for major currencies
 
-#### 入金機能 (`/deposit`)
-- ✅ コイン・ネットワーク選択UI
-- ✅ 受取アドレス表示・QRコード
-- ✅ FAQ セクション
-- 🔜 フェーズ1実装: Ethereum の ETH/USDT(ERC-20) 入金検知（所定の確認数後に残高反映）
-- 🔜 受取アドレス: ユーザー専用EOA（HD払い出し想定）。署名は運用ウォレットで手動。
-- ⏸ スイープ/出金: 手動運用（本フェーズは未実装）
-- ⏳ BTC/XRP/TRON: 準備中（順次追加）
+#### Deposit Feature (`/deposit`)
+- ✅ Coin/network selection UI
+- ✅ Receiving address display & QR code
+- ✅ FAQ section
+- 🔜 Phase 1 implementation: Ethereum ETH/USDT(ERC-20) deposit detection (balance reflected after required confirmations)
+- 🔜 Receiving address: User-dedicated EOA (HD allocation assumed). Signing via operational wallet manually.
+- ⏸ Sweep/withdrawal: Manual operation (not implemented this phase)
+- ⏳ BTC/XRP/TRON: In preparation (sequential addition)
 
-#### 出金機能 (`/withdraw`)
-- ✅ 送金先アドレス入力・バリデーション
-- ✅ 金額入力・パーセンテージ選択
-- ✅ XRPタグ必須入力対応
-- ❌ 実際の送金処理（UIのみ）
-- ❌ 手数料計算
+#### Withdrawal Feature (`/withdraw`)
+- ✅ Destination address input & validation
+- ✅ Amount input & percentage selection
+- ✅ XRP tag required input support
+- ❌ Actual transfer processing (UI only)
+- ❌ Fee calculation
 
-### 📈 取引機能（ペーパートレード方針）
-**現在の実装レベル: UI完了、データはダミー / 今回フェーズは実取引なし**
+### 📈 Trading Features (Paper Trade Policy)
+**Current Implementation Level: UI Complete, Dummy Data / No Real Trades This Phase**
 
-#### 取引画面 (`/trade`)
-- ✅ 価格チャート（Recharts）
-- ✅ オーダーブック表示
-- ✅ 売買注文フォーム
-- ❌ リアルタイム価格データ
-- ❌ 実際の注文処理（本フェーズはシミュレーションで代替）
+#### Trading Screen (`/trade`)
+- ✅ Price chart (Recharts)
+- ✅ Order book display
+- ✅ Buy/sell order form
+- ❌ Real-time price data
+- ❌ Actual order processing (simulation substitute this phase)
 
-#### マーケット (`/markets`)
-- ✅ 銘柄一覧テーブル
-- ✅ 価格・変動率表示
-- ❌ 実データ連携
+#### Markets (`/markets`)
+- ✅ Asset list table
+- ✅ Price & change rate display
+- ❌ Real data integration
 
-### 💎 稼ぐ機能（Earn）
-**現在の実装レベル: UI完了、機能未実装**
+### 💎 Earn Features
+**Current Implementation Level: UI Complete, Functionality Not Implemented**
 
-#### 稼ぐランディング (`/earn`)
-- ✅ ステーキングオプション表示
-- ✅ APY・リスク情報
-- ✅ 人気プール一覧
-- ❌ 実際のステーキング処理
+#### Earn Landing (`/earn`)
+- ✅ Staking options display
+- ✅ APY & risk information
+- ✅ Popular pools list
+- ❌ Actual staking processing
 
-#### 稼ぐ概要 (`/earn-overview`)
-- ✅ プロダクト紹介UI
-- ✅ 利率バッジ表示
-- ❌ 実データ連携
+#### Earn Overview (`/earn-overview`)
+- ✅ Product introduction UI
+- ✅ Rate badge display
+- ❌ Real data integration
 
-#### 稼ぐ履歴 (`/earn-history`)
-- ✅ 履歴テーブルUI
-- ✅ 期間フィルター
-- ❌ 実データ（プレースホルダーのみ）
+#### Earn History (`/earn-history`)
+- ✅ History table UI
+- ✅ Period filter
+- ❌ Real data (placeholder only)
 
-### 🔄 両替機能
-**現在の実装レベル: UI完了、機能未実装**
+### 🔄 Convert Feature
+**Current Implementation Level: UI Complete, Functionality Not Implemented**
 
-#### 通貨両替 (`/convert`)
-- ✅ 通貨選択・入れ替えUI
-- ✅ レート表示エリア
-- ✅ 金額入力フォーム
-- ❌ 実際のレート取得
-- ❌ 両替処理
+#### Currency Convert (`/convert`)
+- ✅ Currency selection & swap UI
+- ✅ Rate display area
+- ✅ Amount input form
+- ❌ Actual rate retrieval
+- ❌ Convert processing
 
-### 👥 紹介機能
-**現在の実装レベル: UI完了、機能未実装**
+### 👥 Referral Feature
+**Current Implementation Level: UI Complete, Functionality Not Implemented**
 
-#### 紹介プログラム (`/referral`)
-- ✅ 紹介リンク・コード表示
-- ✅ コピー機能
-- ✅ 紹介履歴テーブル（空状態）
-- ❌ 紹介コード生成
-- ❌ 報酬計算
+#### Referral Program (`/referral`)
+- ✅ Referral link & code display
+- ✅ Copy functionality
+- ✅ Referral history table (empty state)
+- ❌ Referral code generation
+- ❌ Reward calculation
 
-### 📋 履歴・取引記録
-**現在の実装レベル: UI完了、部分実装**
+### 📋 History & Transaction Records
+**Current Implementation Level: UI Complete, Partial Implementation**
 
-#### 金融履歴 (`/history`)
-- ✅ タブ式インターフェース（入金・出金・注文等）
-- ✅ フィルター・検索UI
-- ❌ 実データ表示（プレースホルダー）
+#### Financial History (`/history`)
+- ✅ Tab interface (deposits, withdrawals, orders, etc.)
+- ✅ Filter & search UI
+- ❌ Real data display (placeholder)
 
-### 🔒 セキュリティ
-**現在の実装レベル: UI簡素化**
+### 🔒 Security
+**Current Implementation Level: Simplified UI**
 
-#### セキュリティ設定 (`/security`)
-- ✅ パスワード変更フォーム（動作）
-- ✅ アカウント凍結（UI）
-- ⏸ 2FA/フィッシング対策コード/回復キー: 本フェーズ対象外（UI非表示）
+#### Security Settings (`/security`)
+- ✅ Password change form (functional)
+- ✅ Account freeze (UI)
+- ⏸ 2FA/Anti-phishing code/Recovery keys: Out of scope this phase (UI hidden)
 
-### 👤 アカウント管理
-**現在の実装レベル: 基本情報のみ**
+### 👤 Account Management
+**Current Implementation Level: Basic Info Only**
 
-#### マイアカウント (`/my-account`)
-- ✅ フルネーム編集（保存動作）
-- ⏸ 生年月日・自己紹介: 廃止
-- ⏸ 画像アップロード: 非対応（静的アバター）
+#### My Account (`/my-account`)
+- ✅ Full name edit (save functional)
+- ⏸ Birthday/bio: Removed
+- ⏸ Image upload: Not supported (static avatar)
 
-### 🛠️ 管理機能
-**現在の実装レベル: 完了**
+### 🛠️ Admin Features
+**Current Implementation Level: Complete**
 
-#### 管理ダッシュボード (`/admin`)
-- ✅ ユーザー管理（`profiles` + `user_roles`）
-- ✅ 入金管理（`deposits` 承認・拒否）
-- ✅ 出金管理（`withdrawals` 承認・拒否）
-- ✅ 資産管理（`user_assets` インライン編集）
-- ✅ ロール権限チェック
+#### Admin Dashboard (`/admin`)
+- ✅ User management (`profiles` + `user_roles`)
+- ✅ Deposit management (`deposits` approve/reject)
+- ✅ Withdrawal management (`withdrawals` approve/reject)
+- ✅ Asset management (`user_assets` inline edit)
+- ✅ Role permission checks
 
-## 未実装・制限事項（今回の方針反映）
+## Not Implemented / Limitations (Current Policy Reflected)
 
-### 🚫 完全に未実装
-- KYC機能: 任意（管理画面でON/OFF可能。初期はOFF）
-- 実際の暗号資産処理: チェーン別に段階導入（まずEVM入金のみ）
-- リアルタイムマーケットデータ: WebSocket連携なし
-- 注文マッチングエンジン: 実取引なし（シミュレーションで代替）
-- 手数料計算: 入出金・取引手数料は後段
-- 通知システム: メール・プッシュ通知
-- API レート制限: DoS対策未導入
+### 🚫 Completely Not Implemented
+- KYC feature: Optional (ON/OFF from admin panel. Initially OFF)
+- Actual cryptocurrency processing: Phased by chain (EVM deposit only first)
+- Real-time market data: No WebSocket integration
+- Order matching engine: No real trades (simulation substitute)
+- Fee calculation: Deposit/withdrawal/trading fees later phase
+- Notification system: Email/push notifications
+- API rate limiting: No DoS protection
 
-### ⚠️ 部分実装・改善が必要
-- **環境変数未使用**: Supabaseクライアント設定
-- **エラーハンドリング**: 統一的なエラー処理
-- **ローディング状態**: 一部画面でのUX改善
-- **バリデーション**: フォーム検証の強化
-- **国際化**: 日本語固定（i18n未導入）
+### ⚠️ Partial Implementation / Needs Improvement
+- **Environment variables unused**: Supabase client configuration
+- **Error handling**: Unified error processing
+- **Loading states**: UX improvement on some screens
+- **Validation**: Form validation enhancement
+- **Internationalization**: Japanese fixed (i18n not introduced)
 
-### 🔄 データ連携が必要
-- **外部API連携**: 価格データ、マーケット情報
-- **ブロックチェーン連携**: ウォレット、トランザクション
-- **決済システム連携**: フィアット入金
-- **KYC サービス連携**: 本人確認
+### 🔄 Data Integration Needed
+- **External API integration**: Price data, market information
+- **Blockchain integration**: Wallet, transactions
+- **Payment system integration**: Fiat deposits
+- **KYC service integration**: Identity verification
 
-## 次回開発優先度 (MVP再編：取引所風ウォレット)
+## Next Development Priority (MVP Restructure: Exchange-Style Wallet)
 
-参考: 詳細は `docs/09-product-roadmap.md`, `docs/10-exchange-functional-spec.md`
+Reference: See `docs/09-product-roadmap.md`, `docs/10-exchange-functional-spec.md` for details
 
-### 🔴 最高優先度 (P0〜P2)
-1. 環境変数対応/鍵非保持: セキュリティ是正 (P0)
-2. EVM入金の導入: 個別デポジットコントラクト→手動スイープ運用 (P1)
-3. 取引UIのシミュレーション整備: 板/注文/履歴の擬似生成・保存 (P2)
+### 🔴 Highest Priority (P0-P2)
+1. Environment variable support/key non-retention: Security correction (P0)
+2. EVM deposit introduction: Individual deposit contract → manual sweep operation (P1)
+3. Trading UI simulation setup: Pseudo-generation/saving of order book/orders/history (P2)
 
-### 🟠 高優先度 (P3〜P4)
-1. BTC入金: xpub払い出し＋PSBT生成（手動署名）(P3)
-2. XRP入金: 単一アドレス＋Destination Tag (P4)
-3. エラーハンドリング統一: フロント/API共通ポリシー
+### 🟠 High Priority (P3-P4)
+1. BTC deposit: xpub allocation + PSBT generation (manual signing) (P3)
+2. XRP deposit: Single address + Destination Tag (P4)
+3. Unified error handling: Common policy for frontend/API
 
-### 🟡 中優先度 (P5〜P7)
-1. APIキー/署名/レート制限 (P5)
-2. 2FA/出金防御（手動運用でも保護強化） (P6)
-3. KYC/AML（任意/段階導入） (P7)
+### 🟡 Medium Priority (P5-P7)
+1. API keys/signatures/rate limiting (P5)
+2. 2FA/withdrawal protection (enhanced protection even with manual operation) (P6)
+3. KYC/AML (optional/phased introduction) (P7)
 
-### 🟢 低優先度 (P8〜P9)
-1. **可観測性/監査** (P8)
-2. **国際化/UX整備** (P9)
-3. **稼ぐ/紹介等の拡張**
+### 🟢 Low Priority (P8-P9)
+1. **Observability/audit** (P8)
+2. **Internationalization/UX setup** (P9)
+3. **Earn/referral extensions**
 
-## MVP範囲(抜粋)
+## MVP Scope (Summary)
 
-- 取引: ペーパートレード（実約定なし）。UIの指値/成行/取消/部分約定は擬似遷移で表現
-- 台帳: 入出金/調整の不可変仕訳、残高照会ビュー（取引による資産移動は行わない）
-- 入出金: チェーン別段階導入（P1: EVM、P3: BTC、P4: XRP）。承認/反映/履歴は管理画面で手動運用
+- Trading: Paper trade (no real execution). Limit/market/cancel/partial fill in UI expressed via pseudo-transitions
+- Ledger: Immutable journal entries for deposits/withdrawals/adjustments, balance query view (no asset movement via trading)
+- Deposits/Withdrawals: Phased by chain (P1: EVM, P3: BTC, P4: XRP). Approval/reflection/history manually operated from admin panel
 
-## 単一マーケット運用
-- 未上場トークン1銘柄のみ取引する最小構成に対応。
-- 手順は `docs/11-single-market-setup.md` を参照。
+## Single Market Operation
+- Supports minimal configuration trading only one unlisted token.
+- See `docs/11-single-market-setup.md` for procedures.

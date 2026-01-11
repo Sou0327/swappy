@@ -1,71 +1,71 @@
-# 開発環境とセットアップ
+# Development Environment and Setup
 
-## 必要な環境
-- Node.js (推奨: 18以上)
-- npm または yarn
+## Requirements
+- Node.js (recommended: 18 or higher)
+- npm or yarn
 
-## 開発コマンド
+## Development Commands
 
-### 基本コマンド
+### Basic Commands
 ```bash
-# 依存関係のインストール
+# Install dependencies
 npm install
 
-# 開発サーバー起動（http://localhost:8080）
+# Start development server (http://localhost:8080)
 npm run dev
 
-# 本番用ビルド
+# Production build
 npm run build
 
-# 開発モードでビルド
+# Development mode build
 npm run build:dev
 
-# 本番ビルドのプレビュー
+# Preview production build
 npm run preview
 
-# ESLintによるコードチェック
+# ESLint code check
 npm run lint
 ```
 
-## 開発設定
+## Development Configuration
 
-### Vite設定 (`vite.config.ts`)
-- 開発サーバーポート: 8080
-- パスエイリアス: `@` → `./src`
-- プラグイン: React SWC, Lovable Tagger（開発モードのみ）
+### Vite Configuration (`vite.config.ts`)
+- Development server port: 8080
+- Path alias: `@` → `./src`
+- Plugins: React SWC, Lovable Tagger (dev mode only)
 
-### ESLint設定 (`eslint.config.js`)
+### ESLint Configuration (`eslint.config.js`)
 - TypeScript ESLint
-- React Hooks ルール
-- React Refresh プラグイン
-- `@typescript-eslint/no-unused-vars` 無効化
+- React Hooks rules
+- React Refresh plugin
+- `@typescript-eslint/no-unused-vars` disabled
 
-### TypeScript設定
-- 厳密度: 中程度（`noImplicitAny: false`, `strictNullChecks: false`）
-- パスエイリアス: `@/*` → `./src/*`
+### TypeScript Configuration
+- Strictness: Moderate (`noImplicitAny: false`, `strictNullChecks: false`)
+- Path alias: `@/*` → `./src/*`
 
-### Tailwind CSS設定 (`tailwind.config.ts`)
-- shadcn/ui拡張テーマ
-- カスタムカラー変数
-- アニメーション拡張
-- レスポンシブブレークポイント
+### Tailwind CSS Configuration (`tailwind.config.ts`)
+- shadcn/ui extended theme
+- Custom color variables
+- Animation extensions
+- Responsive breakpoints
 
-## 環境変数
+## Environment Variables
 
-### 設定ファイル (`.env`)
+### Configuration File (`.env`)
 ```
-# Supabase（必須）
+# Supabase (Required)
 VITE_SUPABASE_PROJECT_ID="your-project-id"
-VITE_SUPABASE_PUBLISHABLE_KEY="[公開キー]"
+VITE_SUPABASE_PUBLISHABLE_KEY="[public key]"
 VITE_SUPABASE_URL="https://your-project-id.supabase.co"
 
-# フェーズ1: 全チェーン入金検知（検知のみ）
-# EVM（どちらか片方でOK）
-VITE_ALCHEMY_API_KEY="[任意]"
-VITE_INFURA_PROJECT_ID="[任意]"
+# Phase 1: All-chain deposit detection (detection only)
+# EVM (either one is OK)
+VITE_ALCHEMY_API_KEY="[optional]"
+VITE_INFURA_PROJECT_ID="[optional]"
 
-# ネットワーク/確認数/機能トグル（フロント表示制御用）
-VITE_ETHEREUM_NETWORK="mainnet"   # 例: sepolia, mainnet
+# Network/Confirmations/Feature toggles (for frontend display control)
+VITE_ETHEREUM_NETWORK="mainnet"   # e.g.: sepolia, mainnet
 VITE_DEPOSIT_MIN_CONFIRMATIONS_ETH=12
 VITE_DEPOSIT_MIN_CONFIRMATIONS_BTC=3
 VITE_DEPOSIT_MIN_CONFIRMATIONS_XRP=1
@@ -78,45 +78,45 @@ VITE_DEPOSIT_ENABLED_XRP=true
 VITE_DEPOSIT_ENABLED_TRON=true
 VITE_DEPOSIT_ENABLED_ADA=true
 
-# KYC 任意フラグ（UI/ルート制御用）
+# KYC optional flag (for UI/route control)
 VITE_FEATURE_KYC_OPTIONAL=true
 ```
 
-### 注意事項
-✅ Supabaseクライアントは `.env` の `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` を使用します。テンプレートは `.env.example` を参照してください。
+### Notes
+✅ The Supabase client uses `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from `.env`. See `.env.example` for a template.
 
-## ディレクトリ構造
+## Directory Structure
 ```
 src/
-├── components/          # 共通コンポーネント
-│   └── ui/             # shadcn/ui プリミティブ
-├── pages/              # ページコンポーネント
-├── hooks/              # カスタムフック
+├── components/          # Shared components
+│   └── ui/             # shadcn/ui primitives
+├── pages/              # Page components
+├── hooks/              # Custom hooks
 ├── contexts/           # React Context
-├── integrations/       # 外部サービス統合
-│   └── supabase/      # Supabase関連
-├── lib/               # ユーティリティ関数
+├── integrations/       # External service integrations
+│   └── supabase/      # Supabase related
+├── lib/               # Utility functions
 └── ...
 ```
 
-## 入金検知（フェーズ1想定：全チェーン）
+## Deposit Detection (Phase 1: All Chains)
 
-- 実装方針: 「入金検知のみ」を最短で提供。集約送金（スイープ）や出金は手動/別フェーズ。
-- 監視実装の置き場: Supabase Edge Functions もしくは軽量 Node ワーカー（本リポジトリ外）を想定。
-- 連携方法: 入金検知→Supabase の `deposits` に `pending` で記録→所定の確認数に達したら `confirmed` に更新。
-- フロントエンド: `VITE_DEPOSIT_ENABLED_*` と `VITE_DEPOSIT_MIN_CONFIRMATIONS_*` を参照して UI 表示/警告を切替。
+- Implementation Approach: Deliver "deposit detection only" as quickly as possible. Aggregation transfers (sweep) and withdrawals are manual/separate phase.
+- Monitoring Implementation Location: Assumed to be in Supabase Edge Functions or lightweight Node worker (outside this repository).
+- Integration Method: Deposit detection → Record in Supabase `deposits` as `pending` → Update to `confirmed` when required confirmations are reached.
+- Frontend: References `VITE_DEPOSIT_ENABLED_*` and `VITE_DEPOSIT_MIN_CONFIRMATIONS_*` to switch UI display/warnings.
 
-## UIの簡素化（本リリース構成）
+## UI Simplification (Current Release Configuration)
 
-- ナビゲーション: 「稼ぐ」「紹介」はルーティングごと廃止。
-- ダッシュボード: セキュリティレベル表示・アクセス履歴を非表示。
-- マイアカウント: 生年月日・自己紹介・画像アップロードなし（フルネームのみ）。
-- セキュリティ設定: 2FA/フィッシング対策コード/回復キーは非表示。パスワード変更・凍結のみ提供。
+- Navigation: "Earn" and "Referral" routes are removed entirely.
+- Dashboard: Security level display and access history are hidden.
+- My Account: No birthday, bio, or image upload (full name only).
+- Security Settings: 2FA/anti-phishing code/recovery keys are hidden. Only password change and freeze are provided.
 
-## 開発ワークフロー
-1. 機能要求の確認
-2. 型定義の作成/更新
-3. コンポーネント開発（shadcn/ui使用）
-4. テスト（手動）
-5. ESLintチェック
-6. ビルド確認
+## Development Workflow
+1. Confirm feature requirements
+2. Create/update type definitions
+3. Component development (using shadcn/ui)
+4. Testing (manual)
+5. ESLint check
+6. Build verification

@@ -1,18 +1,18 @@
-# Undefined データベースERD図
+# Undefined Database ERD Diagram
 
-> 本番環境: Supabase PostgreSQL
-> 生成日: 2026-01-07
+> Production Environment: Supabase PostgreSQL
+> Generated: 2026-01-07
 
-## 概要
+## Overview
 
-Undefinedプラットフォームは5つのブロックチェーン（BTC, ETH, XRP, TRON, Cardano）に対応した暗号資産取引プラットフォームです。
-このERD図は、システムの主要テーブルとその関係性を示しています。
+The Undefined platform is a cryptocurrency trading platform supporting 5 blockchains (BTC, ETH, XRP, TRON, Cardano).
+This ERD diagram shows the main tables and their relationships.
 
-## ERD図（完全版）
+## ERD Diagram (Complete Version)
 
 ```mermaid
 erDiagram
-    %% ===== 認証・ユーザー管理 =====
+    %% ===== Authentication & User Management =====
     auth_users {
         uuid id PK
         text email
@@ -39,7 +39,7 @@ erDiagram
         timestamptz created_at
     }
 
-    %% ===== 資産管理 =====
+    %% ===== Asset Management =====
     user_assets {
         uuid id PK
         uuid user_id FK "auth.users.id"
@@ -62,7 +62,7 @@ erDiagram
         timestamptz created_at
     }
 
-    %% ===== 入金システム =====
+    %% ===== Deposit System =====
     deposits {
         uuid id PK
         uuid user_id FK "auth.users.id"
@@ -130,7 +130,7 @@ erDiagram
         timestamptz created_at
     }
 
-    %% ===== 出金システム =====
+    %% ===== Withdrawal System =====
     withdrawals {
         uuid id PK
         uuid user_id FK "auth.users.id"
@@ -143,7 +143,7 @@ erDiagram
         timestamptz processed_at
     }
 
-    %% ===== 取引システム =====
+    %% ===== Trading System =====
     markets {
         text id PK "BTC-USDT"
         text base
@@ -182,7 +182,7 @@ erDiagram
         timestamptz created_at
     }
 
-    %% ===== ユーザー間送金 =====
+    %% ===== User Transfers =====
     user_transfers {
         uuid id PK
         uuid from_user_id FK "auth.users.id"
@@ -208,7 +208,7 @@ erDiagram
         timestamptz created_at
     }
 
-    %% ===== 紹介システム =====
+    %% ===== Referral System =====
     referral_codes {
         uuid id PK
         uuid user_id FK,UK "auth.users.id"
@@ -242,7 +242,7 @@ erDiagram
         timestamptz created_at
     }
 
-    %% ===== 運用管理 =====
+    %% ===== Operations Management =====
     admin_wallets {
         uuid id PK
         text chain
@@ -281,7 +281,7 @@ erDiagram
         timestamptz created_at
     }
 
-    %% ===== 通知・サポート =====
+    %% ===== Notifications & Support =====
     notifications {
         uuid id PK
         uuid user_id FK "auth.users.id"
@@ -304,7 +304,7 @@ erDiagram
         timestamptz resolved_at
     }
 
-    %% ===== リレーションシップ =====
+    %% ===== Relationships =====
     auth_users ||--|| profiles : "has profile"
     auth_users ||--o{ user_roles : "has roles"
     auth_users ||--o{ user_assets : "owns assets"
@@ -338,111 +338,111 @@ erDiagram
     referrals ||--o{ referral_rewards : "generates"
 ```
 
-## テーブル概要
+## Table Overview
 
-### 認証・ユーザー管理（3テーブル）
+### Authentication & User Management (3 Tables)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `auth.users` | Supabase認証ユーザー（システム管理） | - |
-| `profiles` | ユーザープロファイル（KYC状態、表示名等） | ✅ |
-| `user_roles` | ロール管理（admin/moderator/user） | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `auth.users` | Supabase authenticated users (system managed) | - |
+| `profiles` | User profiles (KYC status, display name, etc.) | ✅ |
+| `user_roles` | Role management (admin/moderator/user) | ✅ |
 
-### 資産管理（2テーブル）
+### Asset Management (2 Tables)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `user_assets` | ユーザー資産残高（通貨別） | ✅ |
-| `ledger_entries` | 不変台帳（取引履歴の真実のソース） | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `user_assets` | User asset balances (per currency) | ✅ |
+| `ledger_entries` | Immutable ledger (source of truth for transaction history) | ✅ |
 
-### 入金システム（5テーブル）
+### Deposit System (5 Tables)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `deposits` | 入金記録（確認数追跡） | ✅ |
-| `deposit_addresses` | ユーザー入金アドレス（HD派生） | ✅ |
-| `deposit_transactions` | 検知トランザクション | ✅ |
-| `chain_configs` | チェーン設定（確認数、最小入金額） | ✅ |
-| `xrp_fixed_addresses` | XRP固定アドレス（Destination Tag方式） | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `deposits` | Deposit records (confirmation tracking) | ✅ |
+| `deposit_addresses` | User deposit addresses (HD derived) | ✅ |
+| `deposit_transactions` | Detected transactions | ✅ |
+| `chain_configs` | Chain configuration (confirmations, minimum deposit) | ✅ |
+| `xrp_fixed_addresses` | XRP fixed addresses (Destination Tag method) | ✅ |
 
-### 出金システム（1テーブル）
+### Withdrawal System (1 Table)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `withdrawals` | 出金リクエスト・処理状況 | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `withdrawals` | Withdrawal requests and processing status | ✅ |
 
-### 取引システム（3テーブル）
+### Trading System (3 Tables)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `markets` | 取引ペア（BTC-USDT等） | ✅ |
-| `orders` | 注文（指値/成行） | ✅ |
-| `trades` | 約定記録 | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `markets` | Trading pairs (BTC-USDT, etc.) | ✅ |
+| `orders` | Orders (limit/market) | ✅ |
+| `trades` | Trade execution records | ✅ |
 
-### ユーザー間送金（2テーブル）
+### User Transfers (2 Tables)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `user_transfers` | プラットフォーム内送金 | ✅ |
-| `transfer_limits` | 送金限度額（日次/月次/1回） | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `user_transfers` | Platform internal transfers | ✅ |
+| `transfer_limits` | Transfer limits (daily/monthly/per-transaction) | ✅ |
 
-### 紹介システム（3テーブル）
+### Referral System (3 Tables)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `referral_codes` | 紹介コード（ユーザーごとに一意） | ✅ |
-| `referrals` | 紹介関係追跡 | ✅ |
-| `referral_rewards` | 報酬配布記録 | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `referral_codes` | Referral codes (unique per user) | ✅ |
+| `referrals` | Referral relationship tracking | ✅ |
+| `referral_rewards` | Reward distribution records | ✅ |
 
-### 運用管理（3テーブル）
+### Operations Management (3 Tables)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `admin_wallets` | 管理用集約ウォレット | ✅ |
-| `sweep_jobs` | スイープ（集約送金）ジョブ | ✅ |
-| `audit_logs` | 監査ログ | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `admin_wallets` | Administrative aggregation wallets | ✅ |
+| `sweep_jobs` | Sweep (aggregation transfer) jobs | ✅ |
+| `audit_logs` | Audit logs | ✅ |
 
-### 通知・サポート（2テーブル）
+### Notifications & Support (2 Tables)
 
-| テーブル | 説明 | RLS |
-|---------|------|-----|
-| `notifications` | ユーザー通知 | ✅ |
-| `support_tickets` | サポートチケット | ✅ |
+| Table | Description | RLS |
+|-------|-------------|-----|
+| `notifications` | User notifications | ✅ |
+| `support_tickets` | Support tickets | ✅ |
 
-## セキュリティ設計
+## Security Design
 
-### Row Level Security (RLS) ポリシー
+### Row Level Security (RLS) Policies
 
-全テーブルでRLSが有効化されており、以下のパターンを採用:
+RLS is enabled on all tables with the following patterns:
 
-1. **ユーザー自身のデータ**: `auth.uid() = user_id` で本人のみアクセス可
-2. **管理者権限**: `has_role(auth.uid(), 'admin')` で管理者は全データにアクセス可
-3. **公開データ**: `markets`, `trades` は誰でも閲覧可（市場データ）
+1. **User's own data**: `auth.uid() = user_id` allows access only to the owner
+2. **Admin privileges**: `has_role(auth.uid(), 'admin')` grants admins access to all data
+3. **Public data**: `markets`, `trades` are viewable by anyone (market data)
 
-### 制約とバリデーション
+### Constraints and Validation
 
 ```sql
--- 自己送金防止
+-- Prevent self-transfer
 CONSTRAINT no_self_transfer CHECK (from_user_id != to_user_id)
 
--- 金額検証
+-- Amount validation
 CONSTRAINT positive_amount CHECK (amount > 0)
 
--- ステータス列挙
+-- Status enumeration
 CONSTRAINT valid_status CHECK (status IN ('pending', 'confirmed', 'failed'))
 ```
 
-## チェーン別対応状況
+## Chain Support Status
 
-| チェーン | chain値 | network例 | 対応トークン |
-|---------|---------|-----------|-------------|
+| Chain | chain value | network examples | Supported Tokens |
+|-------|-------------|------------------|------------------|
 | Bitcoin | `btc` | `mainnet`, `testnet` | BTC |
 | Ethereum | `evm` | `ethereum`, `sepolia` | ETH, USDT(ERC20) |
 | XRP Ledger | `xrp` | `mainnet`, `testnet` | XRP |
 | TRON | `trc` | `mainnet`, `shasta` | TRX, USDT(TRC20) |
 | Cardano | `ada` | `mainnet`, `testnet` | ADA |
 
-## 関連ドキュメント
+## Related Documentation
 
-- [データベーススキーマ詳細](../04-database-schema.md)
-- [マルチチェーン入金仕様](../12-multichain-deposit-spec.md)
+- [Database Schema Details](../04-database-schema.md)
+- [Multi-Chain Deposit Specifications](../12-multichain-deposit-spec.md)

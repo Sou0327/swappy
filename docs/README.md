@@ -1,124 +1,124 @@
-# Undefined ドキュメント
+# Undefined Documentation
 
-このディレクトリには、Undefinedプロジェクトの詳細な技術仕様書が含まれています。
+This directory contains detailed technical specifications for the Undefined project.
 
-## 📚 ドキュメント構成
+## 📚 Documentation Structure
 
 ### [01-overview.md](./01-overview.md)
-**プロジェクト概要**
-- 技術スタック
-- アーキテクチャ概要
-- 開発原則
+**Project Overview**
+- Technology Stack
+- Architecture Overview
+- Development Principles
 
-### [02-development-setup.md](./02-development-setup.md) 
-**開発環境とセットアップ**
-- 開発コマンド
-- 設定ファイル詳細
-- ディレクトリ構造
+### [02-development-setup.md](./02-development-setup.md)
+**Development Environment and Setup**
+- Development Commands
+- Configuration File Details
+- Directory Structure
 
 ### [03-routing-pages.md](./03-routing-pages.md)
-**ルーティングとページ仕様**
-- 全ルート一覧
-- 認証フロー
-- ページ機能詳細
+**Routing and Page Specifications**
+- Complete Route List
+- Authentication Flow
+- Page Feature Details
 
 ### [04-database-schema.md](./04-database-schema.md)
-**データベーススキーマ**
-- テーブル定義
-- RLS設定
-- ユーティリティ関数
+**Database Schema**
+- Table Definitions
+- RLS Configuration
+- Utility Functions
 
 ### [05-authentication-authorization.md](./05-authentication-authorization.md)
-**認証・認可システム**
-- Supabase Auth設定
-- ロール管理
-- セキュリティ機能
+**Authentication and Authorization System**
+- Supabase Auth Configuration
+- Role Management
+- Security Features
 
 ### [06-ui-design-system.md](./06-ui-design-system.md)
-**UIデザインシステム**
-- コンポーネントライブラリ
-- テーマシステム
-- レスポンシブデザイン
+**UI Design System**
+- Component Library
+- Theme System
+- Responsive Design
 
 ### [07-feature-specifications.md](./07-feature-specifications.md)
-**機能仕様書**
-- 実装済み機能の詳細
-- 実装レベル評価
-- 開発優先度
+**Feature Specifications**
+- Details of Implemented Features
+- Implementation Level Evaluation
+- Development Priority
 
 ### [09-product-roadmap.md](./09-product-roadmap.md)
-**ロードマップ**
-- 「取引所風ウォレット」公開デモまでの段階計画
-- チェーン別入金の導入順と受入基準
+**Roadmap**
+- Phased Plan for "Exchange-Style Wallet" Public Demo
+- Chain-by-Chain Deposit Introduction Order and Acceptance Criteria
 
-### [08-known-issues.md](./08-known-issues.md)
-**既知の問題点と制限事項**
-- セキュリティ問題
-- バグ・不整合
-- 対応優先度
+### [08-beta-limitations.md](./08-beta-limitations.md)
+**Beta Limitations and Constraints**
+- Security Considerations
+- Bugs and Inconsistencies
+- Response Priority
 
-### 取引/入金の詳細仕様
-- [10-exchange-functional-spec.md](./10-exchange-functional-spec.md): 取引所風ウォレットの機能仕様（ペーパートレード）
-- [11-single-market-setup.md](./11-single-market-setup.md): 単一マーケット運用ガイド（参考）
-- [12-multichain-deposit-spec.md](./12-multichain-deposit-spec.md): マルチチェーン入金仕様（段階導入・手動運用）
+### Trading/Deposit Detailed Specifications
+- [10-exchange-functional-spec.md](./10-exchange-functional-spec.md): Exchange-Style Wallet Functional Specifications (Paper Trading)
+- [11-single-market-setup.md](./11-single-market-setup.md): Single Market Operation Guide (Reference)
+- [12-multichain-deposit-spec.md](./12-multichain-deposit-spec.md): Multi-Chain Deposit Specifications (Phased Introduction / Manual Operation)
 
-## 🎯 このドキュメント群の目的
+## 🎯 Purpose of This Documentation
 
-### 開発者向け
-- **新規参加者**: プロジェクト理解の迅速化
-- **既存メンバー**: 仕様確認と開発指針
-- **レビュアー**: コード品質とアーキテクチャ評価
+### For Developers
+- **New Contributors**: Rapid project understanding
+- **Existing Members**: Specification reference and development guidelines
+- **Reviewers**: Code quality and architecture evaluation
 
-### プロジェクト管理
-- **機能要求**: 実装状況の把握
-- **品質管理**: 既知問題の追跡
-- **リリース計画**: 優先度と工数見積もり
+### Project Management
+- **Feature Requests**: Understanding implementation status
+- **Quality Management**: Tracking known issues
+- **Release Planning**: Priority and effort estimation
 
-## 📋 使用方法
+## 📋 Usage
 
-### 新機能開発時
-1. 関連する仕様書を確認
-2. 既知問題との重複チェック  
-3. アーキテクチャ原則に従った実装
-4. 実装後は仕様書を更新
+### During New Feature Development
+1. Review related specifications
+2. Check for overlap with known issues
+3. Implement following architecture principles
+4. Update specifications after implementation
 
-### バグ修正時
-1. `08-known-issues.md` で既知問題を確認
-2. 根本原因の特定
-3. 修正後は該当問題をクローズ
+### During Bug Fixes
+1. Check known issues in `08-beta-limitations.md`
+2. Identify root cause
+3. Close relevant issue after fix
 
-### コードレビュー時
-1. 仕様書との整合性確認
-2. 設計原則への適合性チェック
-3. セキュリティ要件の確認
+### During Code Review
+1. Verify consistency with specifications
+2. Check compliance with design principles
+3. Confirm security requirements
 
-## 🔄 ドキュメント更新ルール
+## 🔄 Documentation Update Rules
 
-### 更新タイミング
-- 新機能実装完了後
-- アーキテクチャ変更時
-- 重大バグ発見・修正時
-- 環境・設定変更時
+### Update Timing
+- After new feature implementation
+- During architecture changes
+- Upon major bug discovery/fix
+- During environment/configuration changes
 
-### 更新責任
-- **実装者**: 機能仕様の更新
-- **アーキテクト**: 設計ドキュメントの保守
-- **QA**: 既知問題の管理
+### Update Responsibility
+- **Implementers**: Update feature specifications
+- **Architects**: Maintain design documentation
+- **QA**: Manage known issues
 
-## 🚀 クイックスタート
+## 🚀 Quick Start
 
-初回開発参加者は以下の順序で読むことを推奨：
+First-time contributors are recommended to read in this order:
 
-1. **[01-overview.md](./01-overview.md)** - 全体像把握
-2. **[02-development-setup.md](./02-development-setup.md)** - 環境構築
-3. **[03-routing-pages.md](./03-routing-pages.md)** - 画面構成理解
-4. **[05-authentication-authorization.md](./05-authentication-authorization.md)** - 認証システム
-5. **[08-known-issues.md](./08-known-issues.md)** - 注意すべき問題
+1. **[01-overview.md](./01-overview.md)** - Understand the big picture
+2. **[02-development-setup.md](./02-development-setup.md)** - Set up environment
+3. **[03-routing-pages.md](./03-routing-pages.md)** - Understand screen structure
+4. **[05-authentication-authorization.md](./05-authentication-authorization.md)** - Authentication system
+5. **[08-beta-limitations.md](./08-beta-limitations.md)** - Issues to be aware of
 
-その他のドキュメントは担当分野に応じて参照してください。
+Refer to other documentation as needed based on your area of responsibility.
 
 ---
 
-**📅 最終更新**: 2025年9月5日  
-**✍️ 更新者**: Codex  
-**📝 バージョン**: v1.1（取引所風ウォレット方針を反映）
+**📅 Last Updated**: September 5, 2025
+**✍️ Updated By**: Codex
+**📝 Version**: v1.1 (Reflects exchange-style wallet approach)
