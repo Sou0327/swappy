@@ -50,6 +50,9 @@ export const BRAND = {
   },
 } as const;
 
+// GitHub リポジトリ URL
+export const GITHUB_URL = import.meta.env.VITE_GITHUB_URL || "https://github.com/Sou0327/undefined-exchange";
+
 // 個別エクスポート（コンポーネントでの使いやすさのため）
 export const PLATFORM_NAME = BRAND.name;
 export const PLATFORM_TAGLINE = BRAND.tagline;

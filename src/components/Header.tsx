@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Menu, Github } from "lucide-react";
-import { PLATFORM_NAME } from "@/config/branding";
+import { PLATFORM_NAME, GITHUB_URL } from "@/config/branding";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export const Header = () => {
@@ -71,6 +71,19 @@ export const Header = () => {
             {/* Language Switcher */}
             <LanguageSwitcher compact />
 
+            {/* GitHub Link - Always visible on homepage */}
+            {isHomePage && !isDemoMode && (
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-all duration-300"
+                aria-label="View on GitHub"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+            )}
+
             {user ? (
               <div className="flex items-center gap-4">
                 <Button
@@ -105,10 +118,11 @@ export const Header = () => {
               </div>
             ) : (
               <a
-                href="https://github.com/Sou0327/undefined-exchange"
+                href={GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 transition-all duration-300"
+                aria-label={t('header.viewOnGithub')}
               >
                 <Github className="h-4 w-4" />
                 {t('header.viewOnGithub')}
@@ -188,11 +202,12 @@ export const Header = () => {
                     </div>
                   ) : (
                     <a
-                      href="https://github.com/Sou0327/undefined-exchange"
+                      href={GITHUB_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 w-full text-base font-medium text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-xl px-4 py-3 transition-all duration-300"
                       onClick={() => setIsOpen(false)}
+                      aria-label={t('header.viewOnGithub')}
                     >
                       <Github className="h-5 w-5" />
                       {t('header.viewOnGithub')}

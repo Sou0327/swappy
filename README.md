@@ -18,6 +18,14 @@
 
 ---
 
+## 🌐 Live Demo
+
+Try the demo at: **[https://undefined-exchange.pages.dev/](https://undefined-exchange.pages.dev/)**
+
+> 💡 Use the "Try Demo" button to explore all features without registration!
+
+---
+
 ## ⚠️ Beta Software Notice
 
 > **This project is currently in BETA.** The following features are incomplete or under active development:
@@ -26,9 +34,10 @@
 > - 🔶 **Withdrawal Processing**: Manual intervention required
 > - 🔶 **Email Notifications**: Template-based, not fully automated
 >
-> **DO NOT use in production with real funds** without thorough testing and professional security audit.
+> **This is a beta version.** We recommend using demo mode or testing with small amounts first.
+> For production use, please conduct your own security audit.
 >
-> This software is provided "AS IS" without warranty. The authors are not responsible for any financial losses.
+> This software is provided "AS IS" without warranty. See [LICENSE](LICENSE) for details.
 
 ---
 
@@ -180,6 +189,8 @@ Open http://localhost:8080 🎉
 | Dashboard | Deposit | Trading |
 |-----------|---------|---------|
 | ![Dashboard](docs/screenshots/dashboard.png) | ![Deposit](docs/screenshots/deposit.png) | ![Trading](docs/screenshots/trading.png) |
+
+> 📷 *Screenshots coming soon! In the meantime, try the [Live Demo](https://undefined-exchange.pages.dev/).*
 
 </details>
 

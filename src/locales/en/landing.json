@@ -1,0 +1,70 @@
+{
+  "hero": {
+    "title": "Your Own Exchange,",
+    "titleHighlight": "Open Source",
+    "subtitle": "White-label ready. Fork it, customize it, deploy it.",
+    "subtitleSecond": "Production-ready cryptocurrency exchange platform.",
+    "tryDemo": "Try Demo",
+    "viewOnGithub": "View on GitHub",
+    "getStarted": "Get Started"
+  },
+
+  "badges": {
+    "license": "MIT License",
+    "typescript": "TypeScript",
+    "react": "React 18",
+    "supabase": "Supabase"
+  },
+
+  "featureCards": {
+    "multiChain": {
+      "title": "Multi-Chain Support",
+      "description": "BTC, ETH, XRP, TRON and EVM-compatible chains out of the box."
+    },
+    "hdWallet": {
+      "title": "HD Wallet Architecture",
+      "description": "BIP-32/39/44 compliant. Secure hierarchical key derivation."
+    },
+    "whiteLabel": {
+      "title": "Fully Customizable",
+      "description": "White-label ready. Brand it your way with environment variables."
+    }
+  },
+
+  "features": {
+    "title": "Built for",
+    "titleHighlight": "Developers",
+    "subtitle": "Everything you need to launch your own exchange",
+
+    "multiChain": {
+      "title": "Multi-Chain Support",
+      "description": "Bitcoin, Ethereum, XRP, TRON, and all EVM-compatible chains. Add new chains with minimal configuration."
+    },
+    "hdWallet": {
+      "title": "HD Wallet Architecture",
+      "description": "Industry-standard BIP-32/39/44 implementation. Secure hierarchical deterministic wallet generation."
+    },
+    "whiteLabel": {
+      "title": "White-Label Ready",
+      "description": "Customize branding through environment variables. Logo, colors, and platform name — all configurable."
+    },
+    "realtime": {
+      "title": "Real-Time Detection",
+      "description": "Webhook-based deposit detection for instant transaction processing. No polling required."
+    },
+    "security": {
+      "title": "Security First",
+      "description": "Row-Level Security (RLS), Role-Based Access Control (RBAC), and comprehensive audit logging."
+    },
+    "i18n": {
+      "title": "Internationalization",
+      "description": "English and Japanese out of the box. Easy to add more languages with the react-i18next framework."
+    }
+  },
+
+  "cta": {
+    "star": "Star on GitHub",
+    "fork": "Fork Repository",
+    "docs": "Read Documentation"
+  }
+}

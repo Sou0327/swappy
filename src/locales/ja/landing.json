@@ -1,0 +1,70 @@
+{
+  "hero": {
+    "title": "オープンソースで始める、",
+    "titleHighlight": "あなただけの取引所",
+    "subtitle": "White-label対応。フォークして、カスタマイズして、デプロイ。",
+    "subtitleSecond": "本番環境対応の暗号通貨取引プラットフォーム。",
+    "tryDemo": "デモを試す",
+    "viewOnGithub": "GitHubで見る",
+    "getStarted": "今すぐ始める"
+  },
+
+  "badges": {
+    "license": "MIT License",
+    "typescript": "TypeScript",
+    "react": "React 18",
+    "supabase": "Supabase"
+  },
+
+  "featureCards": {
+    "multiChain": {
+      "title": "マルチチェーン対応",
+      "description": "BTC、ETH、XRP、TRONおよびEVM互換チェーンに標準対応。"
+    },
+    "hdWallet": {
+      "title": "HDウォレット",
+      "description": "BIP-32/39/44準拠。安全な階層的鍵導出を実現。"
+    },
+    "whiteLabel": {
+      "title": "完全カスタマイズ可能",
+      "description": "White-label対応。環境変数で自由にブランディング。"
+    }
+  },
+
+  "features": {
+    "title": "開発者のための、",
+    "titleHighlight": "本格プラットフォーム",
+    "subtitle": "独自の取引所を立ち上げるために必要なすべてを提供",
+
+    "multiChain": {
+      "title": "マルチチェーン対応",
+      "description": "Bitcoin、Ethereum、XRP、TRON、すべてのEVM互換チェーン。最小限の設定で新しいチェーンを追加可能。"
+    },
+    "hdWallet": {
+      "title": "HDウォレット アーキテクチャ",
+      "description": "業界標準のBIP-32/39/44実装。安全な階層的決定性ウォレット生成。"
+    },
+    "whiteLabel": {
+      "title": "White-label対応",
+      "description": "環境変数でブランディングをカスタマイズ。ロゴ、カラー、プラットフォーム名、すべて設定可能。"
+    },
+    "realtime": {
+      "title": "リアルタイム検出",
+      "description": "Webhook連携による入金検出で、トランザクションを即時処理。ポーリング不要。"
+    },
+    "security": {
+      "title": "セキュリティ ファースト",
+      "description": "Row-Level Security (RLS)、Role-Based Access Control (RBAC)、包括的な監査ログを完備。"
+    },
+    "i18n": {
+      "title": "国際化対応",
+      "description": "英語・日本語を標準搭載。react-i18nextフレームワークで簡単に言語追加可能。"
+    }
+  },
+
+  "cta": {
+    "star": "GitHubでスター",
+    "fork": "リポジトリをフォーク",
+    "docs": "ドキュメントを読む"
+  }
+}
