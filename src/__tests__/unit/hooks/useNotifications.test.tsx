@@ -30,11 +30,24 @@ describe('useNotifications', () => {
   beforeEach(() => {
     // localStorageモック
     mockStorage = {}
-    vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key: string) => {
-      return mockStorage[key] || null
-    })
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key: string, value: string) => {
-      mockStorage[key] = value
+    const localStorageMock = {
+      getItem: vi.fn((key: string) => {
+        return key in mockStorage ? mockStorage[key] : null
+      }),
+      setItem: vi.fn((key: string, value: string) => {
+        mockStorage[key] = value
+      }),
+      removeItem: vi.fn((key: string) => {
+        delete mockStorage[key]
+      }),
+      clear: vi.fn(() => {
+        mockStorage = {}
+      })
+    }
+    vi.stubGlobal('localStorage', localStorageMock)
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+      configurable: true
     })
 
     // Notification APIモック
@@ -52,6 +65,10 @@ describe('useNotifications', () => {
     mockNotificationConstructor.permission = 'default'
 
     global.Notification = mockNotificationConstructor as unknown as typeof Notification
+    Object.defineProperty(window, 'Notification', {
+      value: mockNotificationConstructor,
+      configurable: true
+    })
 
     // Audio APIモック
     global.Audio = vi.fn().mockImplementation((src: string) => ({
@@ -74,6 +91,7 @@ describe('useNotifications', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
+    vi.unstubAllGlobals()
   })
 
   describe('初期化', () => {
