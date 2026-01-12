@@ -4,6 +4,7 @@
 
 ### Modern Multi-Chain Cryptocurrency Exchange Platform
 
+[![CI](https://github.com/Sou0327/undefined-exchange/actions/workflows/ci.yml/badge.svg)](https://github.com/Sou0327/undefined-exchange/actions/workflows/ci.yml)
 [![Beta](https://img.shields.io/badge/status-beta-yellow.svg)](https://github.com/Sou0327/undefined-exchange)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-18-61dafb.svg)](https://reactjs.org/)
