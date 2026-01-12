@@ -120,6 +120,7 @@ export function useRealtimeDeposits(
 
   // 新規入金イベント処理
   const handleNewDeposit = useCallback((data: DepositEventData) => {
+    console.log('🆕 新規入金検知:', data);
     setState(prev => {
       const newDeposits = enableEventHistory
         ? [data, ...prev.deposits].slice(0, maxEvents)
@@ -153,6 +154,7 @@ export function useRealtimeDeposits(
 
   // 入金更新イベント処理
   const handleDepositUpdate = useCallback((data: DepositEventData) => {
+    console.log('🔄 入金状態更新:', data);
     setState(prev => {
       const updatedDeposits = enableEventHistory
         ? [data, ...prev.deposits].slice(0, maxEvents)
@@ -174,6 +176,7 @@ export function useRealtimeDeposits(
 
   // ステータス変更イベント処理
   const handleStatusChange = useCallback((data: DepositEventData & { oldStatus?: string; newStatus: string }) => {
+    console.log('📈 入金ステータス変更:', data);
     setState(prev => ({
       ...prev,
       eventCounts: {
@@ -210,6 +213,7 @@ export function useRealtimeDeposits(
 
   // 確認数更新イベント処理
   const handleConfirmationUpdate = useCallback((data: DepositEventData & { oldConfirmations?: number; newConfirmations: number }) => {
+    console.log('✅ 確認数更新:', data);
     setState(prev => ({
       ...prev,
       eventCounts: {
@@ -254,6 +258,7 @@ export function useRealtimeDeposits(
 
   // 接続変更イベント処理
   const handleConnectionChange = useCallback((connected: boolean, quality: 'good' | 'poor' | 'disconnected') => {
+    console.log('📡 接続状態変更:', { connected, quality });
     setState(prev => ({
       ...prev,
       connectionState: {
@@ -283,6 +288,8 @@ export function useRealtimeDeposits(
 
       await clientRef.current.subscribe(callbacks);
 
+      console.log('🔔 リアルタイム入金監視開始');
+
       setState(prev => ({
         ...prev,
         isSubscribed: true,
@@ -298,6 +305,7 @@ export function useRealtimeDeposits(
   const unsubscribe = useCallback(async () => {
     try {
       await clientRef.current.unsubscribe();
+      console.log('🔕 リアルタイム入金監視停止');
 
       setState(prev => ({
         ...prev,
@@ -317,6 +325,7 @@ export function useRealtimeDeposits(
   // 手動再接続
   const retryConnection = useCallback(async () => {
     try {
+      console.log('🔄 手動再接続実行');
       setState(prev => ({ ...prev, error: null }));
       await clientRef.current.retryConnection();
 

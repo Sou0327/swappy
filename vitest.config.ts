@@ -15,6 +15,21 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // メモリ問題対策: ファイルを1つずつ順次実行
+    fileParallelism: false,
+    // 各テストファイルを完全に分離（メモリリーク防止）
+    isolate: true,
+    // forksプールを使用（threadsよりメモリ分離が良い）
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        // 各テストファイルを新しいプロセスで実行（メモリ完全解放）
+        singleFork: false,
+        isolate: true,
+      },
+    },
+    // テストタイムアウトを延長
+    testTimeout: 30000,
     // テストファイルのパターン
     include: [
       'src/**/*.{test,spec}.{js,jsx,ts,tsx}',

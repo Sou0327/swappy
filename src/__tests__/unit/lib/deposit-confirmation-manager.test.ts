@@ -10,6 +10,7 @@ import {
   type ConfirmationConfig,
   type DepositInfo
 } from '@/lib/deposit-confirmation-manager'
+import { supabase } from '@/integrations/supabase/client'
 
 // Supabaseモック用の型定義
 interface MockDeposit {
@@ -484,13 +485,23 @@ describe('DepositConfirmationManager', () => {
   })
 
   describe('ログ出力', () => {
-    it('処理開始時にログが出力される', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    it('エラー発生時にconsole.errorが呼ばれる', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      // エラーを発生させるためにSupabaseモックを設定
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            order: vi.fn().mockRejectedValue(new Error('テストエラー'))
+          })
+        })
+      })
+      vi.mocked(supabase.from).mockImplementation(mockFrom)
 
       await manager.startConfirmationProcess()
 
-      expect(consoleSpy).toHaveBeenCalled()
-      consoleSpy.mockRestore()
+      expect(consoleErrorSpy).toHaveBeenCalledWith('未確認入金処理エラー:', expect.any(Error))
+      consoleErrorSpy.mockRestore()
     })
   })
 })

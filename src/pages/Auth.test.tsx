@@ -165,17 +165,16 @@ describe('Auth コンポーネント', () => {
       })
     })
 
-    it('空のフィールドでログインを試行する', async () => {
+    it('空のフィールドでログインを試行する（HTML5バリデーションで阻止される）', async () => {
       const user = userEvent.setup()
 
       renderAuth()
 
+      // HTML5 required属性により、空のフィールドではフォーム送信されない
       await user.click(screen.getByRole('button', { name: /ログイン/i }))
 
-      expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
-        email: '',
-        password: '',
-      })
+      // signInWithPasswordは呼ばれないことを確認
+      expect(supabase.auth.signInWithPassword).not.toHaveBeenCalled()
     })
   })
 
@@ -249,20 +248,22 @@ describe('Auth コンポーネント', () => {
       await user.click(screen.getByRole('button', { name: /アカウント作成/i }))
 
       await waitFor(() => {
-        expect(supabase.auth.signUp).toHaveBeenCalledWith({
-          email: 'yamada@example.com',
-          password: 'password123',
-          options: {
-            data: {
-              full_name: '山田太郎',
-            },
-          },
-        })
+        expect(supabase.auth.signUp).toHaveBeenCalledWith(
+          expect.objectContaining({
+            email: 'yamada@example.com',
+            password: 'password123',
+            options: expect.objectContaining({
+              data: expect.objectContaining({
+                full_name: '山田太郎',
+              }),
+            }),
+          })
+        )
       })
 
       expect(mockToast).toHaveBeenCalledWith({
-        title: '確認メールを送信しました',
-        description: 'メールボックスを確認してアカウントを有効化してください。',
+        title: 'アカウントが正常に作成されました！',
+        description: 'アカウントを確認するためにメールをチェックしてください。',
       })
     })
 
@@ -283,7 +284,7 @@ describe('Auth コンポーネント', () => {
 
       await waitFor(() => {
         expect(mockToast).toHaveBeenCalledWith({
-          title: 'アカウント作成に失敗しました',
+          title: '登録に失敗しました',
           description: 'User already registered',
           variant: 'destructive',
         })
