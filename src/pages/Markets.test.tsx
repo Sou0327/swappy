@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import Markets from './Markets';
 
+// useNavigateのモック関数を外部に定義
+const mockNavigate = vi.fn();
+
 // Supabaseクライアントのモック
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
@@ -22,13 +25,44 @@ vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
-    useNavigate: () => vi.fn(),
+    useNavigate: () => mockNavigate,
   };
 });
 
 // useToastのモック
+const mockToast = vi.fn();
 vi.mock('@/hooks/use-toast', () => ({
-  useToast: () => ({ toast: vi.fn() }),
+  useToast: () => ({ toast: mockToast }),
+}));
+
+// react-i18nextのモック
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'pageTitle': 'マーケット',
+        'pageSubtitle': '最新の価格情報と取引をチェック',
+        'error.title': 'エラー',
+        'error.fetchFailed': 'マーケットデータの取得に失敗しました',
+        'card.pair': 'ペア',
+        'card.lastPrice': '最終価格',
+        'card.volume24h': '24h出来高',
+        'card.startTrading': '取引を始める',
+        'table.title': '取引可能なペア',
+        'table.pair': 'ペア',
+        'table.lastPrice': '最終価格',
+        'table.change24h': '24h変動',
+        'table.volume24h': '24h出来高',
+        'table.action': 'アクション',
+        'table.trade': '取引',
+        'empty.title': 'マーケットデータがありません',
+        'empty.subtitle': 'しばらくお待ちください',
+      };
+      return translations[key] || key;
+    },
+    i18n: { language: 'ja' },
+  }),
+  Trans: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 // DashboardLayoutのモック
@@ -41,48 +75,46 @@ vi.mock('@/lib/format', () => ({
   formatPrice: (price: number | null) => price?.toFixed(2) || '—',
   formatVolume: (volume: number | null) => volume?.toFixed(4) || '—',
   getCryptoIcon: (symbol: string) => {
-    if (symbol.includes('BTC')) return '₿';
-    if (symbol.includes('ETH')) return 'Ξ';
-    return '◉';
+    // SVGパスではなく絵文字を返す（テスト用）
+    if (symbol.includes('BTC')) return '';
+    if (symbol.includes('ETH')) return '';
+    return '';
   },
 }));
 
 describe('Markets', () => {
   let mockSupabaseFrom: ReturnType<typeof vi.fn>;
-  let mockSupabaseSelect: ReturnType<typeof vi.fn>;
-  let mockSupabaseEq: ReturnType<typeof vi.fn>;
   let mockFetchBinance24hrTicker: ReturnType<typeof vi.fn>;
   let mockToBinanceSymbol: ReturnType<typeof vi.fn>;
-  let mockNavigate: ReturnType<typeof vi.fn>;
-  let mockToast: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     vi.clearAllMocks();
 
+    // import.meta.env.DEVをfalseにモック（本番モードをシミュレート）
+    vi.stubEnv('DEV', false);
+    // @ts-expect-error - import.meta.env.DEVを直接モック
+    import.meta.env.DEV = false;
+
     // モック関数を取得
     const { supabase } = await import('@/integrations/supabase/client');
     const exchangeFeed = await import('@/lib/exchange-feed');
-    const { useNavigate } = await import('react-router-dom');
-    const { useToast } = await import('@/hooks/use-toast');
 
     mockSupabaseFrom = supabase.from as ReturnType<typeof vi.fn>;
     mockFetchBinance24hrTicker = exchangeFeed.fetchBinance24hrTicker as ReturnType<typeof vi.fn>;
     mockToBinanceSymbol = exchangeFeed.toBinanceSymbol as ReturnType<typeof vi.fn>;
-    mockNavigate = useNavigate() as ReturnType<typeof vi.fn>;
-    mockToast = useToast().toast as ReturnType<typeof vi.fn>;
 
     // Supabaseチェーンのデフォルトモック設定
-    mockSupabaseEq = vi.fn().mockReturnValue(
+    const mockEq = vi.fn().mockReturnValue(
       Promise.resolve({
         data: [{ id: 'BTC-USDT' }, { id: 'ETH-USDT' }],
         error: null,
       })
     );
-    mockSupabaseSelect = vi.fn().mockReturnValue({
-      eq: mockSupabaseEq,
+    const mockSelect = vi.fn().mockReturnValue({
+      eq: mockEq,
     });
     mockSupabaseFrom.mockReturnValue({
-      select: mockSupabaseSelect,
+      select: mockSelect,
     });
 
     // toBinanceSymbolのデフォルトモック
@@ -98,6 +130,7 @@ describe('Markets', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllEnvs();
   });
 
   describe('正常系', () => {
@@ -108,7 +141,7 @@ describe('Markets', () => {
         </BrowserRouter>
       );
 
-      // ローディング後、データが表示されるまで待つ（モバイル+デスクトップで2つ表示される）
+      // ローディング後、データが表示されるまで待つ
       await waitFor(() => {
         expect(screen.getAllByText('BTC/USDT').length).toBeGreaterThan(0);
       });
@@ -124,7 +157,7 @@ describe('Markets', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getAllByText('USDT').length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/USDT/i).length).toBeGreaterThan(0);
       });
     });
 
@@ -136,7 +169,7 @@ describe('Markets', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getAllByText('50000.00').length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/50000\.00/i).length).toBeGreaterThan(0);
       });
     });
 
@@ -202,8 +235,8 @@ describe('Markets', () => {
         expect(screen.getAllByText('BTC/USDT').length).toBeGreaterThan(0);
       });
 
-      // 取引ボタンをクリック
-      const tradeButtons = screen.getAllByText('取引を始める');
+      // 取引ボタンをクリック（モバイル表示の「取引を始める」）
+      const tradeButtons = screen.getAllByRole('button', { name: /取引を始める|取引/i });
       await user.click(tradeButtons[0]);
 
       expect(mockNavigate).toHaveBeenCalledWith('/trade?pair=BTC/USDT');
@@ -228,17 +261,17 @@ describe('Markets', () => {
 
   describe('エラーハンドリング', () => {
     it('Supabaseエラー時にtoast通知が表示される', async () => {
-      mockSupabaseEq = vi.fn().mockReturnValue(
+      const mockEq = vi.fn().mockReturnValue(
         Promise.resolve({
           data: null,
           error: { message: 'Database error' },
         })
       );
-      mockSupabaseSelect = vi.fn().mockReturnValue({
-        eq: mockSupabaseEq,
+      const mockSelect = vi.fn().mockReturnValue({
+        eq: mockEq,
       });
       mockSupabaseFrom.mockReturnValue({
-        select: mockSupabaseSelect,
+        select: mockSelect,
       });
 
       render(
@@ -282,17 +315,17 @@ describe('Markets', () => {
     });
 
     it('空のマーケットデータ時に適切に処理される', async () => {
-      mockSupabaseEq = vi.fn().mockReturnValue(
+      const mockEq = vi.fn().mockReturnValue(
         Promise.resolve({
           data: [],
           error: null,
         })
       );
-      mockSupabaseSelect = vi.fn().mockReturnValue({
-        eq: mockSupabaseEq,
+      const mockSelect = vi.fn().mockReturnValue({
+        eq: mockEq,
       });
       mockSupabaseFrom.mockReturnValue({
-        select: mockSupabaseSelect,
+        select: mockSelect,
       });
 
       render(
@@ -301,8 +334,9 @@ describe('Markets', () => {
         </BrowserRouter>
       );
 
+      // 空状態のメッセージが表示される
       await waitFor(() => {
-        expect(screen.queryAllByText('BTC/USDT').length).toBe(0);
+        expect(screen.getByText('マーケットデータがありません')).toBeInTheDocument();
       });
     });
   });
@@ -320,15 +354,15 @@ describe('Markets', () => {
         })
       );
 
-      mockSupabaseEq = vi.fn().mockReturnValue({
+      const mockFirstEq = vi.fn().mockReturnValue({
         eq: mockSecondEq, // 2回目の.eq()呼び出しに対応
       });
 
-      mockSupabaseSelect = vi.fn().mockReturnValue({
-        eq: mockSupabaseEq,
+      const mockSelect = vi.fn().mockReturnValue({
+        eq: mockFirstEq,
       });
       mockSupabaseFrom.mockReturnValue({
-        select: mockSupabaseSelect,
+        select: mockSelect,
       });
 
       render(

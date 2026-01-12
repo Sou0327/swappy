@@ -37,11 +37,13 @@ describe('MaintenancePage', () => {
       expect(screen.getByText(/安全に保管/)).toBeInTheDocument();
     });
 
-    it('サポートへの案内が表示される', async () => {
+    it('お問い合わせへの案内が表示される', async () => {
       const { MaintenancePage } = await import('./MaintenancePage');
       render(<MaintenancePage />);
 
-      expect(screen.getByText(/サポート/)).toBeInTheDocument();
+      // 「お問い合わせ」は見出しと説明文の両方に含まれるため、getAllByTextを使用
+      const contactElements = screen.getAllByText(/お問い合わせ/);
+      expect(contactElements.length).toBeGreaterThan(0);
     });
 
     it('メンテナンスアイコンまたはビジュアルが表示される', async () => {
