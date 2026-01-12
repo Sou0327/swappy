@@ -79,3 +79,20 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 })
+
+// Pointer Events APIのモック（Radix UI / shadcn/ui用）
+// jsdomはhasPointerCapture/releasePointerCaptureを完全サポートしていない
+if (typeof Element.prototype.hasPointerCapture === 'undefined') {
+  Element.prototype.hasPointerCapture = vi.fn().mockReturnValue(false)
+}
+if (typeof Element.prototype.releasePointerCapture === 'undefined') {
+  Element.prototype.releasePointerCapture = vi.fn()
+}
+if (typeof Element.prototype.setPointerCapture === 'undefined') {
+  Element.prototype.setPointerCapture = vi.fn()
+}
+
+// scrollIntoViewのモック（jsdom未サポート）
+if (typeof Element.prototype.scrollIntoView === 'undefined') {
+  Element.prototype.scrollIntoView = vi.fn()
+}
