@@ -1,8 +1,8 @@
 # Jekyll configuration for GitHub Pages
 # This file enables GitHub Pages to render README.md as a website
 
-# Theme - minimal design that works well with technical documentation
-theme: jekyll-theme-minimal
+# Theme - Cayman has a nice header and better styling for badges
+theme: jekyll-theme-cayman
 
 # Site settings
 title: Undefined Exchange
