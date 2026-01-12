@@ -84,7 +84,29 @@ describe('AdminRoute - サービス制限機能', () => {
       });
     });
 
-    it('管理者でも管理画面へのアクセスがブロックされる', () => {
+    it('partialモードでも管理者は管理画面にアクセスできる', () => {
+      // 実装: isAdminAccessEnabled() は mode !== 'full' を返す
+      // つまり partial モードでも管理画面アクセスは許可される
+      renderAdminRoute();
+
+      expect(screen.getByTestId('admin-content')).toBeInTheDocument();
+    });
+  });
+
+  describe('完全制限（mode: full）', () => {
+    beforeEach(() => {
+      import.meta.env.VITE_SERVICE_RESTRICTION_MODE = 'full';
+
+      // 管理者ユーザーとしてログイン
+      mockUseAuth.mockReturnValue({
+        user: { id: 'admin-user-id', email: 'admin@example.com' },
+        userRole: 'admin',
+        loading: false,
+        roleLoading: false,
+      });
+    });
+
+    it('fullモードでは管理者でも管理画面へのアクセスがブロックされる', () => {
       renderAdminRoute();
 
       expect(screen.queryByTestId('admin-content')).not.toBeInTheDocument();
@@ -93,21 +115,21 @@ describe('AdminRoute - サービス制限機能', () => {
     it('制限メッセージが表示される', () => {
       renderAdminRoute();
 
-      expect(screen.getByText(/管理画面は現在メンテナンス中です/i)).toBeInTheDocument();
-      expect(screen.getByText(/システムの安定性/i)).toBeInTheDocument();
+      expect(screen.getByText(/管理画面へのアクセス制限/i)).toBeInTheDocument();
+      expect(screen.getByText(/一時的に制限されております/i)).toBeInTheDocument();
     });
 
-    it('制限メッセージにユーザーサービスへの影響の記述がある', () => {
+    it('既存ユーザーの保護についての記述がある', () => {
       renderAdminRoute();
 
-      expect(screen.getByText(/ユーザーサービスへの影響/i)).toBeInTheDocument();
-      expect(screen.getByText(/ログイン、取引機能は正常に稼働/i)).toBeInTheDocument();
+      expect(screen.getByText(/既存ユーザーの保護/i)).toBeInTheDocument();
+      expect(screen.getByText(/エンドユーザーの資産と権利は完全に保護されています/i)).toBeInTheDocument();
     });
 
-    it('制限メッセージに問い合わせ先が含まれる', () => {
+    it('ダッシュボードへ戻るボタンがある', () => {
       renderAdminRoute();
 
-      expect(screen.getByText(/開発チームまでお問い合わせ/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /ダッシュボードへ戻る/i })).toBeInTheDocument();
     });
   });
 
