@@ -4,6 +4,11 @@ import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { MarketTable } from './MarketTable';
 
+const { mockNavigate, mockToast } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+  mockToast: vi.fn(),
+}));
+
 // Supabaseクライアントのモック
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
@@ -22,13 +27,13 @@ vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
-    useNavigate: () => vi.fn(),
+    useNavigate: () => mockNavigate,
   };
 });
 
 // useToastのモック
 vi.mock('@/hooks/use-toast', () => ({
-  useToast: () => ({ toast: vi.fn() }),
+  useToast: () => ({ toast: mockToast }),
 }));
 
 // format関数のモック
@@ -50,8 +55,6 @@ describe('MarketTable', () => {
   let mockSupabaseLimit: ReturnType<typeof vi.fn>;
   let mockFetchBinance24hrTicker: ReturnType<typeof vi.fn>;
   let mockToBinanceSymbol: ReturnType<typeof vi.fn>;
-  let mockNavigate: ReturnType<typeof vi.fn>;
-  let mockToast: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -59,14 +62,10 @@ describe('MarketTable', () => {
     // モック関数を取得
     const { supabase } = await import('@/integrations/supabase/client');
     const exchangeFeed = await import('@/lib/exchange-feed');
-    const { useNavigate } = await import('react-router-dom');
-    const { useToast } = await import('@/hooks/use-toast');
 
     mockSupabaseFrom = supabase.from as ReturnType<typeof vi.fn>;
     mockFetchBinance24hrTicker = exchangeFeed.fetchBinance24hrTicker as ReturnType<typeof vi.fn>;
     mockToBinanceSymbol = exchangeFeed.toBinanceSymbol as ReturnType<typeof vi.fn>;
-    mockNavigate = useNavigate() as ReturnType<typeof vi.fn>;
-    mockToast = useToast().toast as ReturnType<typeof vi.fn>;
 
     // Supabaseチェーンのデフォルトモック設定
     mockSupabaseLimit = vi.fn().mockReturnValue(
@@ -169,7 +168,7 @@ describe('MarketTable', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getAllByText('USDT').length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/USDT/).length).toBeGreaterThan(0);
       });
     });
 
@@ -194,7 +193,7 @@ describe('MarketTable', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getAllByText('50000.00').length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/50000\.00/).length).toBeGreaterThan(0);
       });
     });
 
