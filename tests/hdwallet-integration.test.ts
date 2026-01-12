@@ -22,9 +22,13 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || '';
 // CI環境では SERVICE_ROLE_KEY が設定されていない場合、テストをスキップ
 const SKIP_INTEGRATION_TESTS = !SUPABASE_SERVICE_ROLE_KEY;
 
-// テスト用クライアント
-const serviceClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// テスト用クライアント（キーが存在する場合のみ作成）
+const serviceClient = SUPABASE_SERVICE_ROLE_KEY
+  ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+  : null;
+const userClient = SUPABASE_ANON_KEY
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
 
 // テスト用Admin権限設定
 let testUserId: string;
