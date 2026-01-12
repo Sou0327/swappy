@@ -26,6 +26,8 @@ export default defineConfig({
         // 各テストファイルを新しいプロセスで実行（メモリ完全解放）
         singleFork: false,
         isolate: true,
+        // CI環境でのメモリ制限対策: 同時実行ワーカー数を1に制限
+        maxForks: 1,
       },
     },
     // テストタイムアウトを延長
