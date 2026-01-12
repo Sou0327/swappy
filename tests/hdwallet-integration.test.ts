@@ -9,7 +9,7 @@
  * - 既存システムとの互換性
  */
 
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
 import { validateMnemonic, mnemonicToSeedSync } from '@scure/bip39';
 import { HDKey } from '@scure/bip32';

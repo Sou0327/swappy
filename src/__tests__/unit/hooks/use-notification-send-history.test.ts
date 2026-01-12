@@ -35,8 +35,7 @@ vi.mock('@/hooks/use-error-handler', () => ({
   })
 }))
 
-// Supabaseクライアントのモック
-vi.mock('@/integrations/supabase/client')
+// Supabaseクライアントのモックは src/test/setup.ts で設定済み
 
 describe('useNotificationSendHistory', () => {
   // モックデータ

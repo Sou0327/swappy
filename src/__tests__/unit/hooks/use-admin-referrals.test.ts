@@ -8,8 +8,7 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { useAdminReferrals } from '@/hooks/use-admin-referrals'
 import type { AdminReferralStats, ReferralDetail, TopReferrer } from '@/hooks/use-admin-referrals'
 
-// Supabaseクライアントのモック
-vi.mock('@/integrations/supabase/client')
+// Supabaseクライアントのモックは src/test/setup.ts で設定済み
 
 describe('useAdminReferrals', () => {
   // モック統計データ

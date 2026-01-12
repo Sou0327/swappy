@@ -16,7 +16,7 @@ afterEach(() => {
 // 環境変数のモック（ウォレット関連テスト用）
 vi.stubEnv('WALLET_MASTER_PASSWORD', 'test-master-password-for-testing')
 vi.stubEnv('VITE_SUPABASE_URL', 'https://test.supabase.co')
-vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'test-anon-key')
+vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'test-publishable-key')
 
 // 翻訳リソースのインポート（テスト用に必要な名前空間のみ）
 import jaAuth from '@/locales/ja/auth.json'
