@@ -32,3 +32,4 @@ exclude:
   - .env*
   - .github/
   - .claude/
+  - index.html
