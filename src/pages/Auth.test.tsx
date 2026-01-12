@@ -434,41 +434,49 @@ describe('Auth コンポーネント', () => {
         import.meta.env.VITE_SERVICE_RESTRICTION_MODE = 'partial'
       })
 
-      it('新規登録タブをクリックすると、制限メッセージが表示される', async () => {
+      it('partialモードでも新規登録タブをクリックすると、登録フォームが表示される', async () => {
+        // 実装: isRegistrationEnabled() は mode !== 'full' を返す
+        // つまり partial モードでも登録は許可される（ショーケース用）
         const user = userEvent.setup()
         renderAuth()
 
         await user.click(screen.getByRole('tab', { name: /新規登録/i }))
 
         await waitFor(() => {
-          expect(screen.getByText(/新規登録の一時停止/i)).toBeInTheDocument()
-          expect(screen.getByText(/システムメンテナンス中/i)).toBeInTheDocument()
+          expect(screen.getByLabelText(/氏名/i)).toBeInTheDocument()
+          expect(screen.getByRole('button', { name: /アカウント作成/i })).toBeInTheDocument()
         })
       })
 
-      it('新規登録フォームは表示されない', async () => {
+      it('partialモードでは制限メッセージは表示されない', async () => {
         const user = userEvent.setup()
         renderAuth()
 
         await user.click(screen.getByRole('tab', { name: /新規登録/i }))
 
         await waitFor(() => {
-          expect(screen.queryByLabelText(/氏名/i)).not.toBeInTheDocument()
+          expect(screen.queryByText(/新規登録の一時停止/i)).not.toBeInTheDocument()
+        })
+      })
+    })
+
+    describe('完全制限（mode: full）', () => {
+      beforeEach(() => {
+        vi.resetModules()
+        vi.unstubAllEnvs()
+        // 完全制限モードを設定
+        import.meta.env.VITE_SERVICE_RESTRICTION_MODE = 'full'
+      })
+
+      it('fullモードでは新規登録タブをクリックすると、制限メッセージが表示される', async () => {
+        const user = userEvent.setup()
+        renderAuth()
+
+        await user.click(screen.getByRole('tab', { name: /新規登録/i }))
+
+        await waitFor(() => {
+          // fullモードでは登録がブロックされる
           expect(screen.queryByRole('button', { name: /アカウント作成/i })).not.toBeInTheDocument()
-        })
-      })
-
-      it('制限メッセージにエンドユーザー保護の記述がある', async () => {
-        const user = userEvent.setup()
-        renderAuth()
-
-        await user.click(screen.getByRole('tab', { name: /新規登録/i }))
-
-        await waitFor(() => {
-          const userElements = screen.getAllByText(/既存ユーザー/i)
-          expect(userElements.length).toBeGreaterThan(0)
-          const protectionElements = screen.getAllByText(/保護/i)
-          expect(protectionElements.length).toBeGreaterThan(0)
         })
       })
     })
