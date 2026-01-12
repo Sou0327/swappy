@@ -1086,7 +1086,7 @@ const Deposit = () => {
                     <label className="text-sm font-medium">{t('deposit.form.asset')}</label>
                   </div>
                   <Select value={selectedAsset} onValueChange={(value) => setSelectedAsset(value as SupportedAsset)}>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full" aria-label="資産を選択">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
