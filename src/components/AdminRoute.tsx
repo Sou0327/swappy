@@ -1,5 +1,6 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { SERVICE_RESTRICTIONS } from '@/lib/service-restrictions';
 import { AlertCircle, Home } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +13,7 @@ interface AdminRouteProps {
 const AdminRoute = ({ children }: AdminRouteProps) => {
   const { user, userRole, loading, roleLoading } = useAuth();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   if (loading || roleLoading) {
     return (
@@ -49,7 +51,7 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <h4 className="font-semibold text-gray-900 mb-2">お知らせ</h4>
                   <div className="text-sm text-gray-700 space-y-2 whitespace-pre-line">
-                    {SERVICE_RESTRICTIONS.getAdminRestrictionMessage()}
+                    {i18n.language === 'en' ? SERVICE_RESTRICTIONS.getAdminRestrictionMessageEn() : SERVICE_RESTRICTIONS.getAdminRestrictionMessage()}
                   </div>
                 </div>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

@@ -1,14 +1,17 @@
 {
   "banner": {
     "title": "ショーケースモードで閲覧中",
-    "subtitle": "機能をお試しいただけます",
-    "viewGithub": "GitHub で見る"
+    "subtitle": "プラットフォームの機能をお試しいただけます",
+    "viewGithub": "GitHub で見る",
+    "learnMore": "詳しく見る"
   },
   "restriction": {
     "title": "ショーケースモードでは{{feature}}機能をお試しいただけません",
-    "description": "このプラットフォームはショーケースモードで閲覧中です。",
+    "description": "このインスタンスはデモンストレーション用に設定されています。",
     "disabledMessage": "実際の{{feature}}操作は無効化されています。",
-    "viewGithub": "GitHub で見る"
+    "viewGithub": "GitHub で見る",
+    "availableFeatures": "利用可能な機能",
+    "restrictedFeatures": "制限されている機能"
   },
   "features": {
     "deposit": "入金",
@@ -16,8 +19,16 @@
     "trading": "取引",
     "transfer": "送金",
     "convert": "両替",
-    "kyc": "KYC",
     "security": "セキュリティ設定",
-    "account": "アカウント設定"
+    "account": "アカウント設定",
+    "balance": "残高確認",
+    "login": "ログイン",
+    "register": "アカウント作成"
+  },
+  "info": {
+    "selfHosted": "セルフホスト型ウォレットプラットフォーム",
+    "openSource": "完全オープンソース",
+    "privacyFirst": "プライバシー重視",
+    "deployYourOwn": "自分のサーバーにデプロイして本番運用が可能です"
   }
 }

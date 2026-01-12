@@ -1,23 +1,34 @@
 {
   "banner": {
     "title": "Viewing in Showcase Mode",
-    "subtitle": "Try out the features",
-    "viewGithub": "View on GitHub"
+    "subtitle": "Try out the platform features",
+    "viewGithub": "View on GitHub",
+    "learnMore": "Learn More"
   },
   "restriction": {
     "title": "{{feature}} is not available in Showcase Mode",
-    "description": "This platform is being viewed in showcase mode.",
+    "description": "This instance is configured for demonstration purposes.",
     "disabledMessage": "Actual {{feature}} operations are disabled.",
-    "viewGithub": "View on GitHub"
+    "viewGithub": "View on GitHub",
+    "availableFeatures": "Available Features",
+    "restrictedFeatures": "Restricted Features"
   },
   "features": {
     "deposit": "Deposit",
-    "withdraw": "Withdraw",
+    "withdraw": "Withdrawal",
     "trading": "Trading",
     "transfer": "Transfer",
     "convert": "Conversion",
-    "kyc": "KYC",
     "security": "Security Settings",
-    "account": "Account Settings"
+    "account": "Account Settings",
+    "balance": "Balance View",
+    "login": "Login",
+    "register": "Account Creation"
+  },
+  "info": {
+    "selfHosted": "Self-hosted wallet platform",
+    "openSource": "100% Open Source",
+    "privacyFirst": "Privacy-focused",
+    "deployYourOwn": "Deploy on your own server for production use"
   }
 }

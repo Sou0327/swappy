@@ -111,17 +111,17 @@ export const HowItWorks = () => {
           <div className="hidden md:inline-flex items-center gap-6 bg-gradient-to-r from-gray-50 to-white rounded-2xl p-6 border border-gray-100">
             <div className="flex items-center gap-3 text-sm text-gray-700">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">{t('howItWorks.features.noKyc')}</span>
+              <span className="font-medium">{t('howItWorks.features.selfCustody')}</span>
             </div>
             <div className="w-px h-4 bg-gray-200"></div>
             <div className="flex items-center gap-3 text-sm text-gray-700">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">{t('howItWorks.features.support')}</span>
+              <span className="font-medium">{t('howItWorks.features.openSource')}</span>
             </div>
             <div className="w-px h-4 bg-gray-200"></div>
             <div className="flex items-center gap-3 text-sm text-gray-700">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">{t('howItWorks.features.instant')}</span>
+              <span className="font-medium">{t('howItWorks.features.multiChain')}</span>
             </div>
           </div>
 
@@ -129,15 +129,15 @@ export const HowItWorks = () => {
           <div className="md:hidden bg-gradient-to-r from-gray-50 to-white rounded-2xl p-4 border border-gray-100 space-y-3">
             <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">{t('howItWorks.features.noKyc')}</span>
+              <span className="font-medium">{t('howItWorks.features.selfCustody')}</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">{t('howItWorks.features.support')}</span>
+              <span className="font-medium">{t('howItWorks.features.openSource')}</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">{t('howItWorks.features.instant')}</span>
+              <span className="font-medium">{t('howItWorks.features.multiChain')}</span>
             </div>
           </div>
         </div>

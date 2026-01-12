@@ -93,9 +93,9 @@
       }
     },
     "features": {
-      "noKyc": "KYC不要で即開始",
-      "support": "24時間365日サポート",
-      "instant": "即時入出金"
+      "selfCustody": "セルフカストディ",
+      "openSource": "完全オープンソース",
+      "multiChain": "100+チェーン対応"
     }
   },
 

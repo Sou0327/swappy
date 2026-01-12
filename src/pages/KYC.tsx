@@ -29,7 +29,7 @@ interface PersonalInfo {
 }
 
 const KYC = () => {
-  const { t } = useTranslation('kyc');
+  const { t, i18n } = useTranslation('kyc');
   const { user } = useAuth();
   const { toast } = useToast();
   const { kycInfo, settings, documents, loading: kycLoading, isKYCRequired, isKYCCompleted, uploadDocument, submitKYCApplication, refresh } = useKYC();
@@ -252,7 +252,7 @@ const KYC = () => {
         )}
 
         {/* Service Restriction Notice */}
-        {!SERVICE_RESTRICTIONS.isKYCEnabled() ? (
+        {SERVICE_RESTRICTIONS.isFullRestriction() ? (
           <Card className="bg-white border border-yellow-300 shadow-lg">
             <CardHeader>
               <CardTitle className="text-xl font-semibold flex items-center gap-2 text-gray-900">
@@ -268,7 +268,7 @@ const KYC = () => {
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <h4 className="font-semibold text-gray-900 mb-2">{t('suspended.notice')}</h4>
                   <div className="text-sm text-gray-700 space-y-2 whitespace-pre-line">
-                    {SERVICE_RESTRICTIONS.getRestrictionMessage()}
+                    {i18n.language === 'en' ? SERVICE_RESTRICTIONS.getRestrictionMessageEn() : SERVICE_RESTRICTIONS.getRestrictionMessage()}
                   </div>
                 </div>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

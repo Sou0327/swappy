@@ -2,12 +2,12 @@
  * サービス制限機能
  *
  * システムの状態に応じて、サービスの一部機能を制限します。
- * 既存ユーザーの資産保護を最優先とし、重要な機能（ログイン、出金）は維持します。
+ * セルフホスト型ウォレットプラットフォーム向けの設計です。
  *
  * 制限モード:
  * - 'none': 制限なし（通常運用）
- * - 'partial': 部分制限 - 「開発中」表記（新規登録・KYC・入金・管理画面を制限）
- * - 'full': 完全制限 - 「メンテナンス」表記（アプリケーション全体を制限）
+ * - 'partial': 部分制限 - 準備中モード（入金・出金・取引を制限）
+ * - 'full': 完全制限 - メンテナンスモード（アプリケーション全体を制限）
  *
  * 環境変数: VITE_SERVICE_RESTRICTION_MODE
  */
@@ -41,30 +41,42 @@ export const SERVICE_RESTRICTIONS = {
 
   /**
    * 新規ユーザー登録が有効かどうか
+   * partialモードでも登録は許可（ショーケース用）
    */
   isRegistrationEnabled(): boolean {
-    return this.mode === 'none';
-  },
-
-  /**
-   * KYC申請が有効かどうか
-   */
-  isKYCEnabled(): boolean {
-    return this.mode === 'none';
+    return this.mode !== 'full';
   },
 
   /**
    * 入金機能が有効かどうか
+   * partialモードで制限
    */
   isDepositEnabled(): boolean {
     return this.mode === 'none';
   },
 
   /**
+   * 出金機能が有効かどうか
+   * partialモードで制限
+   */
+  isWithdrawalEnabled(): boolean {
+    return this.mode === 'none';
+  },
+
+  /**
+   * 取引機能が有効かどうか
+   * partialモードで制限
+   */
+  isTradeEnabled(): boolean {
+    return this.mode === 'none';
+  },
+
+  /**
    * 管理画面へのアクセスが有効かどうか
+   * partialモードでも管理画面は許可
    */
   isAdminAccessEnabled(): boolean {
-    return this.mode === 'none';
+    return this.mode !== 'full';
   },
 
   /**
@@ -72,22 +84,6 @@ export const SERVICE_RESTRICTIONS = {
    * fullモードのみ無効
    */
   isLoginEnabled(): boolean {
-    return this.mode !== 'full';
-  },
-
-  /**
-   * 取引機能が有効かどうか
-   * fullモードのみ無効
-   */
-  isTradeEnabled(): boolean {
-    return this.mode !== 'full';
-  },
-
-  /**
-   * 出金機能が有効かどうか
-   * fullモードのみ無効
-   */
-  isWithdrawalEnabled(): boolean {
     return this.mode !== 'full';
   },
 
@@ -114,117 +110,194 @@ export const SERVICE_RESTRICTIONS = {
   },
 
   /**
-   * エンドユーザー向けの制限メッセージを取得
+   * エンドユーザー向けの制限メッセージを取得（日本語）
    */
   getRestrictionMessage(): string {
     if (this.mode === 'none') {
       return '';
     }
 
-    // partial モードは「開発中」表記
+    // partial モードは「準備中」表記（カジュアルなトーン）
     if (this.mode === 'partial') {
       return `
-🚧 現在、一部機能を開発中です。
+🚧 現在準備中です
 
-【開発中の機能】
-- 新規ユーザー登録
-- KYC（本人確認）申請
-- 新規入金
-- 出金申請の承認処理
+この機能は現在開発中のため、ご利用いただけません。
+もうしばらくお待ちください！
+
+【準備中の機能】
+- 入金
+- 出金
+- 取引
 
 【ご利用いただける機能】
-- ログイン
-- 取引機能
-- 残高確認
-- 既存資産の保管
+- アカウント作成・ログイン
+- ウォレット残高の確認
+- 画面の閲覧
 
-開発完了まで今しばらくお待ちください。
+準備が整い次第、すべての機能をご利用いただけます。
       `.trim();
     }
 
     // full モードは「メンテナンス」表記
     return `
-現在、システムメンテナンス中のため、一部機能を一時的に制限しております。
+🔧 システムメンテナンス中
 
-【メンテナンス中の制限機能】
-- 新規ユーザー登録
-- KYC（本人確認）申請
-- 新規入金
-- 新規出金申請の承認処理
+現在、すべての機能を一時的に制限しております。
 
-【ご利用いただける機能】
+【制限されている機能】
+- 入金・出金
+- 取引
 - ログイン
-- 取引機能
-- 残高確認
-- 既存資産の保管（安全に保護されています）
 
-【メンテナンス完了後】
-すべての機能が通常通りご利用いただけます。
-
-【お問い合わせ】
-ご不明な点がございましたら、サポートまでお問い合わせください。
+メンテナンス完了後、すべての機能が復旧します。
     `.trim();
   },
 
   /**
-   * 管理者向けの制限メッセージを取得
+   * エンドユーザー向けの制限メッセージを取得（英語）
+   */
+  getRestrictionMessageEn(): string {
+    if (this.mode === 'none') {
+      return '';
+    }
+
+    // partial mode - "Under Preparation" (casual tone)
+    if (this.mode === 'partial') {
+      return `
+🚧 Under Preparation
+
+This feature is currently under development.
+Please wait a moment!
+
+[Features in Preparation]
+- Deposits
+- Withdrawals
+- Trading
+
+[Available Features]
+- Account creation & login
+- Wallet balance viewing
+- Interface browsing
+
+All features will be available once preparation is complete.
+      `.trim();
+    }
+
+    // full mode - "Maintenance"
+    return `
+🔧 System Maintenance
+
+All features are temporarily restricted.
+
+[Restricted Features]
+- Deposits & Withdrawals
+- Trading
+- Login
+
+All features will be restored after maintenance is complete.
+    `.trim();
+  },
+
+  /**
+   * 管理者向けの制限メッセージを取得（日本語）
    */
   getAdminRestrictionMessage(): string {
     if (this.mode === 'none') {
       return '';
     }
 
-    // partial モードは「開発中」表記
+    // partial モードは「準備中」表記
     if (this.mode === 'partial') {
       return `
-🚧 管理画面は現在開発中です。
+🚧 準備中モード稼働中
 
-【開発中の機能】
-管理機能へのアクセスは開発完了までご利用いただけません。
+【制限状況】
+- 入金・出金・取引機能は無効化されています
+- ユーザーは閲覧のみ可能です
 
-【ユーザーサービスへの影響】
-- ログイン、取引機能は正常に稼働
-- 新規の入出金申請は承認待ち状態となります
-- 既存の資産は安全に保管されています
+【管理者への影響】
+- 管理画面へのアクセスは可能です
+- 設定の変更は反映されます
 
-開発完了まで今しばらくお待ちください。
+本番運用を開始する場合は、環境変数 VITE_SERVICE_RESTRICTION_MODE を削除または 'none' に設定してください。
       `.trim();
     }
 
     // full モードは「メンテナンス」表記
     return `
-管理画面は現在メンテナンス中です。
+🔧 メンテナンスモード稼働中
 
-【メンテナンスについて】
-システムの安定性とセキュリティ向上のため、一時的に管理機能へのアクセスを制限しております。
+【制限状況】
+- すべてのユーザー機能が無効化されています
+- 管理画面へのアクセスも制限されています
 
-【ユーザーサービスへの影響】
-- ログイン、取引機能は正常に稼働
-- 新規の入出金申請は承認待ち状態となります
-- 既存の資産は安全に保管されています
-
-【お問い合わせ】
-詳細については開発チームまでお問い合わせください。
+メンテナンス完了後、環境変数 VITE_SERVICE_RESTRICTION_MODE を削除してください。
     `.trim();
   },
 
   /**
-   * 完全制限モード用のメンテナンスメッセージを取得
+   * 管理者向けの制限メッセージを取得（英語）
+   */
+  getAdminRestrictionMessageEn(): string {
+    if (this.mode === 'none') {
+      return '';
+    }
+
+    // partial mode - "Under Preparation"
+    if (this.mode === 'partial') {
+      return `
+🚧 Preparation Mode Active
+
+[Restriction Status]
+- Deposit, withdrawal, and trading features are disabled
+- Users can only browse
+
+[Admin Impact]
+- Admin dashboard access is available
+- Configuration changes will be applied
+
+To start production operation, remove or set VITE_SERVICE_RESTRICTION_MODE to 'none'.
+      `.trim();
+    }
+
+    // full mode - "Maintenance"
+    return `
+🔧 Maintenance Mode Active
+
+[Restriction Status]
+- All user features are disabled
+- Admin dashboard access is also restricted
+
+After maintenance, remove the VITE_SERVICE_RESTRICTION_MODE environment variable.
+    `.trim();
+  },
+
+  /**
+   * 完全制限モード用のメンテナンスメッセージを取得（日本語）
    */
   getFullRestrictionMessage(): string {
     return `
-現在、システムメンテナンス中です。
+🔧 システムメンテナンス中
 
-【お知らせ】
 すべてのサービスを一時的に停止しております。
 ご不便をおかけして申し訳ございません。
 
-【お客様の資産について】
-お客様の資産は安全に保管されております。
 メンテナンス完了後、すべての機能をご利用いただけます。
+    `.trim();
+  },
 
-【お問い合わせ】
-お問い合わせはサポートまでご連絡ください。
+  /**
+   * 完全制限モード用のメンテナンスメッセージを取得（英語）
+   */
+  getFullRestrictionMessageEn(): string {
+    return `
+🔧 System Maintenance
+
+All services are temporarily suspended.
+We apologize for any inconvenience.
+
+All features will be available after maintenance is complete.
     `.trim();
   },
 } as const;

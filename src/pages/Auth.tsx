@@ -13,7 +13,7 @@ import { SERVICE_RESTRICTIONS } from "@/lib/service-restrictions";
 import { PLATFORM_NAME } from "@/config/branding";
 
 const Auth = () => {
-  const { t } = useTranslation('auth');
+  const { t, i18n } = useTranslation('auth');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -349,7 +349,7 @@ const Auth = () => {
                       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                         <h4 className="font-semibold text-gray-900 mb-2">{t('restriction.notice')}</h4>
                         <div className="text-sm text-gray-700 space-y-2 whitespace-pre-line">
-                          {SERVICE_RESTRICTIONS.getRestrictionMessage()}
+                          {i18n.language === 'en' ? SERVICE_RESTRICTIONS.getRestrictionMessageEn() : SERVICE_RESTRICTIONS.getRestrictionMessage()}
                         </div>
                       </div>
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

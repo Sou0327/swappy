@@ -1,4 +1,5 @@
 import { AlertTriangle, Shield, Clock, Mail } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { SERVICE_RESTRICTIONS } from "@/lib/service-restrictions";
 import { PLATFORM_NAME } from "@/config/branding";
 
@@ -11,7 +12,8 @@ import { PLATFORM_NAME } from "@/config/branding";
  * - サポートへの連絡方法を案内
  */
 export function MaintenancePage() {
-  const message = SERVICE_RESTRICTIONS.getFullRestrictionMessage();
+  const { i18n } = useTranslation();
+  const message = i18n.language === 'en' ? SERVICE_RESTRICTIONS.getFullRestrictionMessageEn() : SERVICE_RESTRICTIONS.getFullRestrictionMessage();
 
   return (
     <main
