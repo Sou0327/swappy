@@ -12,7 +12,8 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: 'jsdom',
+    // happy-domはjsdomより軽量でメモリ効率が良い（CI OOM対策）
+    environment: 'happy-dom',
     setupFiles: ['./src/test/setup.ts'],
     css: true,
     // メモリ問題対策: ファイルを1つずつ順次実行
