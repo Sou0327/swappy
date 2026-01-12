@@ -1,9 +1,9 @@
-# Undefined
+# Swappy
 
 **Modern Multi-Chain Cryptocurrency Exchange Platform**
 
-[![CI](https://github.com/Sou0327/undefined-exchange/actions/workflows/ci.yml/badge.svg)](https://github.com/Sou0327/undefined-exchange/actions/workflows/ci.yml)
-[![Beta](https://img.shields.io/badge/status-beta-yellow.svg)](https://github.com/Sou0327/undefined-exchange)
+[![CI](https://github.com/Sou0327/swappy/actions/workflows/ci.yml/badge.svg)](https://github.com/Sou0327/swappy/actions/workflows/ci.yml)
+[![Beta](https://img.shields.io/badge/status-beta-yellow.svg)](https://github.com/Sou0327/swappy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-18-61dafb.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6.svg)](https://www.typescriptlang.org/)
@@ -11,13 +11,13 @@
 
 > A white-label ready crypto exchange platform built with React, TypeScript, and Supabase
 
-📖 [Documentation](docs/) · 🐛 [Report Bug](https://github.com/Sou0327/undefined-exchange/issues)
+📖 [Documentation](docs/) · 🐛 [Report Bug](https://github.com/Sou0327/swappy/issues)
 
 ---
 
 ## 🌐 Live Demo
 
-Try the demo at: **[https://undefined-exchange.pages.dev/](https://undefined-exchange.pages.dev/)**
+Try the demo at: **[https://swappy.pages.dev/](https://swappy.pages.dev/)**
 
 > 💡 Use the "Try Demo" button to explore all features without registration!
 
@@ -208,8 +208,8 @@ Try the demo at: **[https://undefined-exchange.pages.dev/](https://undefined-exc
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/Sou0327/undefined-exchange.git
-cd undefined-exchange
+git clone https://github.com/Sou0327/swappy.git
+cd swappy
 npm install
 ```
 
@@ -252,7 +252,7 @@ Open http://localhost:8080 🎉
 
 ## 📸 Screenshots
 
-> 📷 **See it in action!** Try the [Live Demo](https://undefined-exchange.pages.dev/) to explore the full UI.
+> 📷 **See it in action!** Try the [Live Demo](https://swappy.pages.dev/) to explore the full UI.
 
 ---
 
@@ -318,7 +318,7 @@ Configure chains in the admin dashboard at `/admin/chain-configs`.
 If you discover a security vulnerability, please **do not** open a public issue.
 
 **Report via GitHub Security Advisories:**
-- 🔒 [Report a Vulnerability](https://github.com/Sou0327/undefined-exchange/security/advisories/new)
+- 🔒 [Report a Vulnerability](https://github.com/Sou0327/swappy/security/advisories/new)
 
 We will acknowledge receipt within 48 hours and provide a detailed response within 7 days.
 
@@ -357,14 +357,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | Role | Contact |
 |------|---------|
 | **Lead Maintainer** | [@Sou0327](https://github.com/Sou0327) |
-| **Issues** | [GitHub Issues](https://github.com/Sou0327/undefined-exchange/issues) |
-| **Discussions** | [GitHub Discussions](https://github.com/Sou0327/undefined-exchange/discussions) |
+| **Issues** | [GitHub Issues](https://github.com/Sou0327/swappy/issues) |
+| **Discussions** | [GitHub Discussions](https://github.com/Sou0327/swappy/discussions) |
 
 ### Getting Help
 
 - 📖 **Documentation**: Check the [docs/](docs/) directory
-- 💬 **Questions**: Open a [Discussion](https://github.com/Sou0327/undefined-exchange/discussions)
-- 🐛 **Bug Reports**: File an [Issue](https://github.com/Sou0327/undefined-exchange/issues)
+- 💬 **Questions**: Open a [Discussion](https://github.com/Sou0327/swappy/discussions)
+- 🐛 **Bug Reports**: File an [Issue](https://github.com/Sou0327/swappy/issues)
 - 🔒 **Security**: See [Security](#-security) section above
 
 ---
@@ -389,4 +389,4 @@ If you find this project useful, please consider:
 
 ---
 
-**Built with ❤️ by the Undefined Team**
+**Built with ❤️ by the Swappy Team**

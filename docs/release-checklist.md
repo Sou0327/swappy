@@ -1,6 +1,6 @@
 # Release Checklist
 
-> Pre-release verification checklist for Undefined Exchange OSS release.
+> Pre-release verification checklist for Swappy Exchange OSS release.
 
 ---
 
@@ -62,7 +62,7 @@
 - [ ] **LICENSE**
   - MIT License
   - Year: 2024-2026
-  - Copyright holder: Undefined Team
+  - Copyright holder: Swappy Team
 
 - [ ] **CHANGELOG.md**
   - v0.1.0-beta entry complete
@@ -165,7 +165,7 @@ VITE_BETA_MODE=true
 ### GitHub Repository
 
 - [ ] **Repository created**
-  - Name: `undefined-exchange`
+  - Name: `swappy`
   - Visibility: Public
 
 - [ ] **Repository settings**
@@ -182,9 +182,9 @@ VITE_BETA_MODE=true
 ```bash
 git init
 git add .
-git commit -m "Initial commit: Undefined Exchange v0.1.0-beta"
+git commit -m "Initial commit: Swappy Exchange v0.1.0-beta"
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/undefined-exchange.git
+git remote add origin https://github.com/YOUR_USERNAME/swappy.git
 git push -u origin main
 ```
 
@@ -212,7 +212,7 @@ gh release create v0.1.0-beta \
 
 - [ ] **Clone test**
   ```bash
-  git clone https://github.com/YOUR_USERNAME/undefined-exchange.git test-clone
+  git clone https://github.com/YOUR_USERNAME/swappy.git test-clone
   cd test-clone
   npm install
   npm run build
@@ -259,9 +259,9 @@ gh release create v0.1.0-beta \
 ./scripts/create-clean-copy.sh --check-secrets
 
 # Create clean copy
-./scripts/create-clean-copy.sh ../undefined-exchange
+./scripts/create-clean-copy.sh ../swappy
 
 # Verify clean copy
-cd ../undefined-exchange
+cd ../swappy
 npm install && npm run build
 ```

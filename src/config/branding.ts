@@ -13,16 +13,16 @@
 
 export const BRAND = {
   /** プラットフォーム名 */
-  name: import.meta.env.VITE_APP_NAME || 'Undefined',
+  name: import.meta.env.VITE_APP_NAME || 'Swappy',
 
   /** タグライン（キャッチコピー） */
   tagline: import.meta.env.VITE_APP_TAGLINE || '次世代暗号通貨取引プラットフォーム',
 
   /** ドメイン名（スキームなし） */
-  domain: import.meta.env.VITE_APP_DOMAIN || 'undefined.jp',
+  domain: import.meta.env.VITE_APP_DOMAIN || 'swappy.example.com',
 
   /** Twitter ユーザー名（@なし） */
-  twitter: import.meta.env.VITE_APP_TWITTER || 'undefined_jp',
+  twitter: import.meta.env.VITE_APP_TWITTER || 'swappy_official',
 
   /** フル URL（https:// 付き） */
   get url(): string {
@@ -51,7 +51,7 @@ export const BRAND = {
 } as const;
 
 // GitHub リポジトリ URL
-export const GITHUB_URL = import.meta.env.VITE_GITHUB_URL || "https://github.com/Sou0327/undefined-exchange";
+export const GITHUB_URL = import.meta.env.VITE_GITHUB_URL || "https://github.com/Sou0327/swappy";
 
 // 個別エクスポート（コンポーネントでの使いやすさのため）
 export const PLATFORM_NAME = BRAND.name;

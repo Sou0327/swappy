@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
+import { GITHUB_URL } from "@/config/branding";
 import { AlertTriangle, Github } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-const GITHUB_URL = "https://github.com/Sou0327/undefined-exchange";
 
 // Feature keys that map to demo.json features.*
 export type RestrictedFeature =

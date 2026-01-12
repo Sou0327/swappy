@@ -1,7 +1,9 @@
-import { generateEVMAddress, type EVMWalletKeyPair } from './evm-wallet-utils';
-import { generateBTCAddress as createBTCWallet, type BTCWalletKeyPair } from './btc-wallet-utils';
-import { type XRPDepositInfo } from './xrp-wallet-utils';
-import { sha256, hashTo32BitInt } from './crypto-utils';
+import { generateEVMAddress } from './evm-wallet-utils';
+import { generateBTCAddress as createBTCWallet } from './btc-wallet-utils';
+import { sha256 } from './crypto-utils';
+import { Wallet, getBytes } from 'ethers';
+import bs58check from 'bs58check';
+import { bech32 } from 'bech32';
 
 // サポートされるチェーン
 export type SupportedChain = 'eth' | 'btc' | 'trc' | 'xrp' | 'ada';
@@ -40,6 +42,15 @@ export interface ChainConfig {
   addressType: 'derived' | 'fixed' | 'xpub';
   requiresDestinationTag?: boolean;
 }
+
+const hexToBytes = (hex: string): Uint8Array => {
+  const normalized = hex.length % 2 === 0 ? hex : `0${hex}`;
+  const bytes = new Uint8Array(normalized.length / 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = Number.parseInt(normalized.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+};
 
 // チェーン設定マップ
 export const CHAIN_CONFIGS: Record<SupportedChain, Partial<Record<SupportedNetwork, ChainConfig>>> = {
@@ -185,11 +196,14 @@ function generateCardanoAddress(
   const addressIndex = generateAddressIndex(userId, asset);
   const derivationPath = `m/1852'/1815'/0'/0/${addressIndex}`;
   
-  // 簡易的なCardanoアドレス生成（実際はより複雑）
-  const hash = sha256(`${userId}-${asset}-ada-${addressIndex}`);
-  const prefix = network === 'mainnet' ? 'addr1' : 'addr_test1';
-  const addressSuffix = hash.slice(0, 52);
-  const address = `${prefix}${addressSuffix}`;
+  // 簡易的なCardanoアドレス生成（本番はaddress-allocatorを使用）
+  const seed = `${userId}-${asset}-ada-${addressIndex}-${network}`;
+  const primaryHash = sha256(seed);
+  const secondaryHash = sha256(`${seed}-extra`);
+  const payload = hexToBytes(`${primaryHash}${secondaryHash}`).slice(0, 57);
+  const words = bech32.toWords(payload);
+  const prefix = network === 'mainnet' ? 'addr' : 'addr_test';
+  const address = bech32.encode(prefix, words, 1023);
   
   return {
     chain: 'ada',
@@ -209,15 +223,18 @@ function generateTronAddress(
   network: SupportedNetwork,
   asset: SupportedAsset
 ): MultichainAddressInfo {
-  // Tron特有のアドレス生成ロジック（モック）
+  // Tron特有のアドレス生成ロジック（本番はaddress-allocatorを使用）
   const addressIndex = generateAddressIndex(userId, asset);
   const derivationPath = `m/44'/195'/0'/0/${addressIndex}`;
   
-  // 簡易的なTronアドレス生成（実際はより複雑）
-  const hash = sha256(`${userId}-${asset}-trc-${addressIndex}`);
-  
-  // Base58エンコード（簡易）
-  const address = 'T' + hash.slice(0, 32).toUpperCase();
+  const seed = `${userId}-${asset}-trc-${addressIndex}-${network}`;
+  const privateKey = `0x${sha256(seed)}`;
+  const wallet = new Wallet(privateKey);
+  const evmAddressBytes = getBytes(wallet.address);
+  const tronPayload = new Uint8Array(21);
+  tronPayload[0] = 0x41;
+  tronPayload.set(evmAddressBytes, 1);
+  const address = bs58check.encode(tronPayload);
   
   return {
     chain: 'trc',
@@ -260,10 +277,23 @@ export function generateMultichainAddress(
   network: SupportedNetwork,
   asset: SupportedAsset
 ): MultichainAddressInfo {
+  if (!userId) {
+    throw new Error('ユーザーIDが必要です');
+  }
+
   // チェーン設定の確認
   const chainConfig = CHAIN_CONFIGS[chain]?.[network];
   if (!chainConfig) {
     throw new Error(`Unsupported chain/network combination: ${chain}/${network}`);
+  }
+
+  const supportedAssets = getSupportedAssets(chain, network);
+  if (!supportedAssets.includes(asset)) {
+    throw new Error(`未対応の資産です: ${asset} (${chain})`);
+  }
+
+  if (import.meta.env.PROD && (chain === 'trc' || chain === 'ada')) {
+    throw new Error('本番環境ではTRON/ADAアドレスをローカル生成できません');
   }
   
   switch (chain) {
@@ -315,11 +345,17 @@ export function validateMultichainAddress(
   chain: SupportedChain,
   network: SupportedNetwork
 ): boolean {
+  if (typeof address !== 'string' || address.length === 0) {
+    return false;
+  }
+
   switch (chain) {
     case 'eth':
-    case 'trc':
       // EVM系のアドレス検証
-      return /^0x[a-fA-F0-9]{40}$/.test(address) || /^T[A-Za-z1-9]{33}$/.test(address);
+      return /^0x[a-fA-F0-9]{40}$/.test(address);
+    
+    case 'trc':
+      return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address);
     
     case 'btc':
       // Bitcoin address validation (simplified)
@@ -334,8 +370,8 @@ export function validateMultichainAddress(
     
     case 'ada':
       return network === 'mainnet' 
-        ? /^addr1[a-z0-9]{52,}$/.test(address)
-        : /^addr_test1[a-z0-9]{52,}$/.test(address);
+        ? /^addr1[a-z0-9]{98,}$/.test(address)
+        : /^addr_test1[a-z0-9]{98,}$/.test(address);
     
     default:
       return false;

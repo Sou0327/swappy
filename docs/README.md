@@ -1,6 +1,6 @@
-# Undefined Documentation
+# Swappy Documentation
 
-This directory contains detailed technical specifications for the Undefined project.
+This directory contains detailed technical specifications for the Swappy project.
 
 ## 📚 Documentation Structure
 

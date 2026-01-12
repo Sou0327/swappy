@@ -209,7 +209,7 @@ function ripemd160(data: Uint8Array): Uint8Array {
 import { getPublicKey } from 'https://esm.sh/@noble/secp256k1@1.7.1';
 
 /*
-  Undefined HDウォレット・マスターキー管理システム
+  Swappy HDウォレット・マスターキー管理システム
   Layer 2: xpub導出・wallet_roots管理層
 
   機能:

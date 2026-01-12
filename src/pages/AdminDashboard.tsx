@@ -1630,6 +1630,9 @@ const AdminDashboard = () => {
         targetAsset: SupportedAsset,
         targetUserId: string
       ): Promise<Pick<MultichainAddressInfo, 'address' | 'derivationPath' | 'destinationTag'>> => {
+        if (import.meta.env.PROD && (targetChain === 'trc' || targetChain === 'ada')) {
+          throw new Error('本番環境ではTRON/ADAの入金アドレスは自動発行を利用してください');
+        }
         if (targetChain === 'xrp') {
           if (targetNetwork !== 'mainnet' && targetNetwork !== 'testnet') {
             throw new Error('XRP は mainnet/testnet のみサポートしています');

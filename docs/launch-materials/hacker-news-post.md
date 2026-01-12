@@ -8,20 +8,20 @@
 
 Choose one that fits the 80-character limit:
 
-1. **Show HN: Undefined – Open-source multi-chain crypto exchange platform**
+1. **Show HN: Swappy – Open-source multi-chain crypto exchange platform**
 2. **Show HN: I built an open-source cryptocurrency exchange with React & Supabase**
-3. **Show HN: Undefined – White-label crypto exchange with HD wallet support**
+3. **Show HN: Swappy – White-label crypto exchange with HD wallet support**
 
 ---
 
 ## Submission Text
 
 ```
-Show HN: Undefined – Open-source multi-chain crypto exchange platform
+Show HN: Swappy – Open-source multi-chain crypto exchange platform
 
-I've been working on Undefined, an open-source cryptocurrency exchange platform. It's designed to be a foundation for building your own crypto trading platform.
+I've been working on Swappy, an open-source cryptocurrency exchange platform. It's designed to be a foundation for building your own crypto trading platform.
 
-GitHub: https://github.com/Sou0327/undefined-exchange
+GitHub: https://github.com/Sou0327/swappy
 
 Key features:
 - Multi-chain: ETH, BTC, XRP, TRON, Polygon, BNB
@@ -63,7 +63,7 @@ Happy to answer any questions about the implementation.
 Show HN: Open-source crypto exchange platform with multi-chain HD wallets
 
 Built an open-source cryptocurrency exchange platform:
-- GitHub: https://github.com/Sou0327/undefined-exchange
+- GitHub: https://github.com/Sou0327/swappy
 
 Multi-chain (ETH, BTC, XRP, TRON), HD wallet architecture (BIP-32/39/44), white-label ready.
 
@@ -87,7 +87,7 @@ Existing solutions tend to be either:
 2. Overly complex for learning/small projects
 3. Focused on single chain (usually just EVM)
 
-Undefined aims to be simple enough to understand while supporting multiple chains.
+Swappy aims to be simple enough to understand while supporting multiple chains.
 ```
 
 **Q: Why Supabase instead of traditional backend?**

@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { GITHUB_URL } from "@/config/branding";
 import { Github } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-const GITHUB_URL = "https://github.com/Sou0327/undefined-exchange";
 
 export const DemoBanner = () => {
   const { isDemoMode } = useAuth();

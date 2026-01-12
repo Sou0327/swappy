@@ -269,7 +269,7 @@ serve(async (req) => {
       const response = await fetch(apiUrl, {
         headers: {
           'Accept': 'application/json',
-          'User-Agent': 'Undefined-Binance-Proxy/1.0'
+          'User-Agent': 'Swappy-Binance-Proxy/1.0'
         },
         signal: controller.signal
       });

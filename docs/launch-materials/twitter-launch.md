@@ -9,7 +9,7 @@
 ### Tweet 1 (Main Announcement)
 
 ```
-🚀 Launching Undefined - an open-source multi-chain crypto exchange platform
+🚀 Launching Swappy - an open-source multi-chain crypto exchange platform
 
 Built with:
 ⚛️ React 18 + TypeScript
@@ -20,13 +20,13 @@ Supporting: ETH, BTC, XRP, TRON, Polygon, BNB
 
 100% open source (MIT) 👇
 
-🔗 GitHub: github.com/YOUR_USERNAME/undefined-exchange
+🔗 GitHub: github.com/YOUR_USERNAME/swappy
 ```
 
 ### Tweet 2 (Features)
 
 ```
-What makes Undefined special:
+What makes Swappy special:
 
 🔐 HD Wallet Architecture
 → One master key = unlimited addresses
@@ -85,7 +85,7 @@ If you find this useful:
 
 Let's build the future of open-source crypto together!
 
-github.com/YOUR_USERNAME/undefined-exchange
+github.com/YOUR_USERNAME/swappy
 ```
 
 ---
@@ -93,7 +93,7 @@ github.com/YOUR_USERNAME/undefined-exchange
 ## Single Tweet Version
 
 ```
-🚀 Just launched Undefined - open-source multi-chain crypto exchange
+🚀 Just launched Swappy - open-source multi-chain crypto exchange
 
 • ETH, BTC, XRP, TRON support
 • HD Wallet (BIP-32/39/44)
@@ -102,7 +102,7 @@ github.com/YOUR_USERNAME/undefined-exchange
 
 Beta release - feedback welcome!
 
-⭐ github.com/YOUR_USERNAME/undefined-exchange
+⭐ github.com/YOUR_USERNAME/swappy
 
 #opensource #crypto #react #typescript
 ```
@@ -119,31 +119,31 @@ Multi-chain (ETH, BTC, XRP, TRON), HD wallets, React + Supabase stack.
 
 Still beta, but the core works. Looking for feedback.
 
-github.com/YOUR_USERNAME/undefined-exchange
+github.com/YOUR_USERNAME/swappy
 ```
 
 ### Version B (Story)
 ```
-After months of work, I'm releasing Undefined - an open-source crypto exchange.
+After months of work, I'm releasing Swappy - an open-source crypto exchange.
 
 Why? Because building a crypto exchange shouldn't require a team of 50 engineers.
 
 It's beta, it's free, it's MIT licensed.
 
-github.com/YOUR_USERNAME/undefined-exchange
+github.com/YOUR_USERNAME/swappy
 ```
 
 ### Version C (Question)
 ```
 Would you use an open-source crypto exchange platform?
 
-Just launched Undefined:
+Just launched Swappy:
 - Multi-chain (ETH, BTC, XRP, TRON)
 - HD Wallet architecture
 - React + TypeScript + Supabase
 - White-label ready
 
-github.com/YOUR_USERNAME/undefined-exchange
+github.com/YOUR_USERNAME/swappy
 
 Feedback? 👇
 ```
@@ -197,7 +197,7 @@ Good question! [Answer the question]. If you want to dive deeper, check out the 
 ### LinkedIn Post
 
 ```
-🚀 Excited to announce the launch of Undefined - an open-source cryptocurrency exchange platform.
+🚀 Excited to announce the launch of Swappy - an open-source cryptocurrency exchange platform.
 
 After working on this for months, I'm releasing it to the community. It's built with modern technologies (React, TypeScript, Supabase) and supports multiple blockchains (Ethereum, Bitcoin, XRP, TRON).
 
@@ -209,7 +209,7 @@ Key features:
 
 This is a beta release - perfect for learning and development, but please use caution with real funds.
 
-Check it out: github.com/YOUR_USERNAME/undefined-exchange
+Check it out: github.com/YOUR_USERNAME/swappy
 
 I'd love your feedback and contributions. What features would you like to see?
 
@@ -220,7 +220,7 @@ I'd love your feedback and contributions. What features would you like to see?
 
 1. "I Built an Open-Source Crypto Exchange with React and Supabase"
 2. "How I Built a Multi-Chain Cryptocurrency Exchange (Open Source)"
-3. "Undefined: An Open-Source White-Label Crypto Exchange Platform"
+3. "Swappy: An Open-Source White-Label Crypto Exchange Platform"
 4. "Building a Crypto Exchange with HD Wallets, React, and Supabase"
 
 ---

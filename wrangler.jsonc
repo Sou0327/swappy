@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   // プロジェクト名（Cloudflare Dashboard で表示される名前）
-  "name": "undefined-exchange",
+  "name": "swappy",
 
   // Workers 互換性日付（新機能と互換性のバランス）
   "compatibility_date": "2025-01-01",

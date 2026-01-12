@@ -5,7 +5,7 @@
  * Enterprise-grade features with refactored architecture
  *
  * @version 2.0.0
- * @author Undefined Development Team
+ * @author Swappy Development Team
  */
 
 // ====================================

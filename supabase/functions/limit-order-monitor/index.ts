@@ -118,7 +118,7 @@ async function fetchPriceViaRest(symbol: string): Promise<number> {
       signal: controller.signal,
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'Undefined-Limit-Order-Monitor/1.0',
+        'User-Agent': 'Swappy-Limit-Order-Monitor/1.0',
       },
     });
 

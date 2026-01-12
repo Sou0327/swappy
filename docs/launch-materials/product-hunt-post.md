@@ -7,7 +7,7 @@
 ## Product Information
 
 ### Name
-**Undefined**
+**Swappy**
 
 ### Tagline (60 characters max)
 > Open-source multi-chain crypto exchange platform
@@ -19,9 +19,9 @@
 
 **Full Description:**
 
-🚀 **Undefined - Build Your Own Crypto Exchange**
+🚀 **Swappy - Build Your Own Crypto Exchange**
 
-We're launching Undefined, an open-source cryptocurrency exchange platform that makes it easy to run your own multi-chain trading platform.
+We're launching Swappy, an open-source cryptocurrency exchange platform that makes it easy to run your own multi-chain trading platform.
 
 **🔗 Multi-Chain Support**
 - Ethereum (ETH + ERC-20)
@@ -66,7 +66,7 @@ Fork it, customize it, contribute to it. Build the crypto exchange of your dream
 ```
 Hey Product Hunt! 👋
 
-I'm excited to share Undefined - an open-source cryptocurrency exchange platform.
+I'm excited to share Swappy - an open-source cryptocurrency exchange platform.
 
 **Why we built this:**
 Building a crypto exchange from scratch is incredibly complex. We wanted to create a solid foundation that developers can use to launch their own platforms.
@@ -112,8 +112,8 @@ Use project logo or hero image
 
 ## Links
 
-- **GitHub:** https://github.com/Sou0327/undefined-exchange
-- **Documentation:** https://github.com/Sou0327/undefined-exchange/tree/main/docs
+- **GitHub:** https://github.com/Sou0327/swappy
+- **Documentation:** https://github.com/Sou0327/swappy/tree/main/docs
 
 ---
 

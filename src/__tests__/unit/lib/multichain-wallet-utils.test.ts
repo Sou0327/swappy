@@ -212,7 +212,7 @@ describe('multichain-wallet-utils', () => {
       expect(result.chain).toBe('trc')
       expect(result.network).toBe('mainnet')
       expect(result.asset).toBe('TRX')
-      expect(result.address).toMatch(/^T[A-Z0-9]{32}$/)
+      expect(result.address).toMatch(/^T[1-9A-HJ-NP-Za-km-z]{33}$/)
       expect(result.derivationPath).toMatch(/^m\/44'\/195'\/0'\/0\/\d+$/)
       expect(result.addressIndex).toBeGreaterThanOrEqual(0)
     })
@@ -222,7 +222,7 @@ describe('multichain-wallet-utils', () => {
 
       expect(result.chain).toBe('trc')
       expect(result.network).toBe('shasta')
-      expect(result.address).toMatch(/^T[A-Z0-9]{32}$/)
+      expect(result.address).toMatch(/^T[1-9A-HJ-NP-Za-km-z]{33}$/)
     })
   })
 
@@ -250,7 +250,7 @@ describe('multichain-wallet-utils', () => {
       expect(result.chain).toBe('ada')
       expect(result.network).toBe('mainnet')
       expect(result.asset).toBe('ADA')
-      expect(result.address).toMatch(/^addr1[a-z0-9]{52}$/)
+      expect(result.address).toMatch(/^addr1[a-z0-9]{98,}$/)
       expect(result.derivationPath).toMatch(/^m\/1852'\/1815'\/0'\/0\/\d+$/)
       expect(result.addressIndex).toBeGreaterThanOrEqual(0)
     })
@@ -260,7 +260,7 @@ describe('multichain-wallet-utils', () => {
 
       expect(result.chain).toBe('ada')
       expect(result.network).toBe('testnet')
-      expect(result.address).toMatch(/^addr_test1[a-z0-9]{52}$/)
+      expect(result.address).toMatch(/^addr_test1[a-z0-9]{98,}$/)
     })
   })
 
@@ -366,13 +366,13 @@ describe('multichain-wallet-utils', () => {
 
   describe('validateMultichainAddress - ADA', () => {
     it('有効なADA mainnetアドレスを検証する', () => {
-      const validAddress = 'addr1qxy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6'
+      const validAddress = 'addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp'
 
       expect(validateMultichainAddress(validAddress, 'ada', 'mainnet')).toBe(true)
     })
 
     it('有効なADA testnetアドレスを検証する', () => {
-      const validAddress = 'addr_test1qxy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6qy3kdm6'
+      const validAddress = 'addr_test1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp'
 
       expect(validateMultichainAddress(validAddress, 'ada', 'testnet')).toBe(true)
     })

@@ -13,7 +13,7 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const FROM_EMAIL = Deno.env.get('FROM_EMAIL') || 'noreply@yourdomain.com';
-const PLATFORM_NAME = Deno.env.get('PLATFORM_NAME') || 'Undefined Platform';
+const PLATFORM_NAME = Deno.env.get('PLATFORM_NAME') || 'Swappy';
 const PLATFORM_URL = Deno.env.get('PLATFORM_URL') || 'https://yourdomain.com';
 const IS_DEV = Deno.env.get('ENVIRONMENT') === 'development';
 const ENABLE_EMAIL = Deno.env.get('ENABLE_ACTUAL_EMAIL_SENDING') === 'true';

@@ -11,7 +11,7 @@
 #   ./scripts/create-clean-copy.sh --check-secrets
 #
 # Examples:
-#   ./scripts/create-clean-copy.sh ../undefined-exchange
+#   ./scripts/create-clean-copy.sh ../swappy
 #   ./scripts/create-clean-copy.sh --dry-run ../test-copy
 #   ./scripts/create-clean-copy.sh --check-secrets
 #
@@ -54,7 +54,7 @@ while [[ $# -gt 0 ]]; do
             echo "  -h, --help       Show this help message"
             echo ""
             echo "Examples:"
-            echo "  $0 ../undefined-exchange"
+            echo "  $0 ../swappy"
             echo "  $0 --dry-run ../test-copy"
             echo "  $0 --check-secrets"
             exit 0
@@ -314,7 +314,7 @@ create_clean_copy() {
         echo "  2. git init"
         echo "  3. git add ."
         echo "  4. git commit -m 'Initial commit: Undefined Exchange v0.1.0-beta'"
-        echo "  5. git remote add origin https://github.com/YOUR_USERNAME/undefined-exchange.git"
+        echo "  5. git remote add origin https://github.com/YOUR_USERNAME/swappy.git"
         echo "  6. git push -u origin main"
     fi
 }

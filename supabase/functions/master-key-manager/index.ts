@@ -16,7 +16,7 @@ import { wordlist } from 'https://esm.sh/@scure/bip39@1.2.1/wordlists/english';
 import { HDKey } from 'https://esm.sh/@scure/bip32@1.3.1';
 
 /*
-  Undefined HDウォレット・マスターキー管理システム
+  Swappy HDウォレット・マスターキー管理システム
   Layer 1: マスターキー生成・管理層
 
   機能:

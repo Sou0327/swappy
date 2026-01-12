@@ -1,7 +1,7 @@
-# Undefined Project Overview
+# Swappy Project Overview
 
 ## Product Overview
-Undefined is a React-based SPA frontend application that provides cryptocurrency "trading, earning, and exchange" experiences.
+Swappy is a React-based SPA frontend application that provides cryptocurrency "trading, earning, and exchange" experiences.
 
 ## Technology Stack
 

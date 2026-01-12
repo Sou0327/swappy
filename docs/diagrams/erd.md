@@ -1,11 +1,11 @@
-# Undefined Database ERD Diagram
+# Swappy Database ERD Diagram
 
 > Production Environment: Supabase PostgreSQL
 > Generated: 2026-01-07
 
 ## Overview
 
-The Undefined platform is a cryptocurrency trading platform supporting 5 blockchains (BTC, ETH, XRP, TRON, Cardano).
+The Swappy platform is a cryptocurrency trading platform supporting 5 blockchains (BTC, ETH, XRP, TRON, Cardano).
 This ERD diagram shows the main tables and their relationships.
 
 ## ERD Diagram (Complete Version)

@@ -5,12 +5,12 @@
 theme: jekyll-theme-cayman
 
 # Site settings
-title: Undefined Exchange
+title: Swappy
 description: Modern Multi-Chain Cryptocurrency Exchange Platform
 logo: # Add logo URL if available
 
 # Repository info (used by the theme for links)
-repository: Sou0327/undefined-exchange
+repository: Sou0327/swappy
 
 # Build settings
 markdown: kramdown

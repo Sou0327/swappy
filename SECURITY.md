@@ -2,7 +2,7 @@
 
 ## Overview
 
-The security of **undefined-exchange** is a top priority. As a cryptocurrency exchange platform handling sensitive financial operations and HD wallet generation (BIP32/39/44), we take all security vulnerabilities seriously.
+The security of **swappy** is a top priority. As a cryptocurrency exchange platform handling sensitive financial operations and HD wallet generation (BIP32/39/44), we take all security vulnerabilities seriously.
 
 This document outlines our security policies, how to report vulnerabilities, and best practices for users.
 
@@ -21,11 +21,11 @@ We recommend always running the latest version to ensure you have the most recen
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in undefined-exchange, please report it responsibly. **Do not disclose security vulnerabilities publicly** until we have had an opportunity to address them.
+If you discover a security vulnerability in swappy, please report it responsibly. **Do not disclose security vulnerabilities publicly** until we have had an opportunity to address them.
 
 ### How to Report
 
-1. **GitHub Security Advisories** (Preferred): [Report a Vulnerability](https://github.com/Sou0327/undefined-exchange/security/advisories/new)
+1. **GitHub Security Advisories** (Preferred): [Report a Vulnerability](https://github.com/Sou0327/swappy/security/advisories/new)
 2. **Include the following information**:
    - Description of the vulnerability
    - Steps to reproduce the issue
@@ -144,14 +144,14 @@ Security advisories and updates will be published through:
 
 For security-related inquiries:
 
-- **Security Reports**: [GitHub Security Advisories](https://github.com/Sou0327/undefined-exchange/security/advisories/new)
-- **General Inquiries**: [GitHub Discussions](https://github.com/Sou0327/undefined-exchange/discussions)
+- **Security Reports**: [GitHub Security Advisories](https://github.com/Sou0327/swappy/security/advisories/new)
+- **General Inquiries**: [GitHub Discussions](https://github.com/Sou0327/swappy/discussions)
 
 ---
 
 ## Acknowledgments
 
-We appreciate the security research community's efforts in helping keep undefined-exchange and its users safe. Contributors who report valid security vulnerabilities will be acknowledged in our security advisories (with their permission).
+We appreciate the security research community's efforts in helping keep swappy and its users safe. Contributors who report valid security vulnerabilities will be acknowledged in our security advisories (with their permission).
 
 ---
 

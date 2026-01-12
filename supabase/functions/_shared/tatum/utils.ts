@@ -28,7 +28,7 @@ export class TatumHttpClient {
     this.defaultHeaders = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
-      'User-Agent': 'Undefined-Tatum-Client/1.0.0'
+      'User-Agent': 'Swappy-Tatum-Client/1.0.0'
     };
   }
 

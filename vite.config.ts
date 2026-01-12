@@ -37,10 +37,10 @@ export default defineConfig(({ mode }) => {
         inject: {
           data: {
             // loadEnv で読み込んだ環境変数を使用
-            VITE_APP_NAME: env.VITE_APP_NAME || 'Undefined',
+            VITE_APP_NAME: env.VITE_APP_NAME || 'Swappy',
             VITE_APP_TAGLINE: env.VITE_APP_TAGLINE || '次世代暗号通貨取引プラットフォーム',
-            VITE_APP_DOMAIN: env.VITE_APP_DOMAIN || 'undefined.jp',
-            VITE_APP_TWITTER: env.VITE_APP_TWITTER || 'undefined_jp',
+            VITE_APP_DOMAIN: env.VITE_APP_DOMAIN || 'swappy.example.com',
+            VITE_APP_TWITTER: env.VITE_APP_TWITTER || 'swappy_official',
           },
         },
       }),

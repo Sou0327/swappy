@@ -1,10 +1,10 @@
-# Undefined - Multi-Chain Cryptocurrency Trading Platform
+# Swappy - Multi-Chain Cryptocurrency Trading Platform
 
 > 📖 **Note**: The English [README.md](README.md) is the primary documentation and always reflects the latest features and updates. This Japanese version focuses on detailed setup instructions.
 
-Undefinedは日本語対応のマルチチェーン暗号通貨取引プラットフォームです。
+Swappyは日本語対応のマルチチェーン暗号通貨取引プラットフォームです。
 
-**🌐 [English README](README.md)** | **🔗 [Live Demo](https://undefined-exchange.pages.dev/)**
+**🌐 [English README](README.md)** | **🔗 [Live Demo](https://swappy.pages.dev/)**
 
 ---
 
@@ -109,7 +109,7 @@ Undefinedは日本語対応のマルチチェーン暗号通貨取引プラッ�
 ### 1. リポジトリのクローン
 ```bash
 git clone <YOUR_GIT_URL>
-cd undefined-exchange
+cd swappy
 ```
 
 ### 2. 🔒 セキュリティ設定（重要）
@@ -937,4 +937,4 @@ GitHubのIssuesで報告してください。
 
 ---
 
-**Undefined Development Team**
+**Swappy Development Team**

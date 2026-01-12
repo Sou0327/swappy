@@ -363,6 +363,7 @@ const Deposit = () => {
 
       // アドレス割当Edge Functionを優先（EVM/BTC/TRON/ADA対応）
       const allocatorSupportedChains: SupportedChain[] = ['eth', 'btc', 'trc', 'ada'];
+      const restrictLocalGeneration = import.meta.env.PROD && (chain === 'trc' || chain === 'ada');
       if (allocatorSupportedChains.includes(chain)) {
         // address-allocatorはチェーンに応じた正規化パラメータを期待する
         const allocatorChain = chain === 'eth' ? 'evm' : chain === 'btc' ? 'btc' : chainKey;
@@ -376,8 +377,14 @@ const Deposit = () => {
         // BTCは強制的にBTC資産で呼び出す（UI資産は常にBTC想定）
         const allocatorAsset = chain === 'btc' ? 'BTC' : asset;
 
+        const idempotencyKey = `deposit:${user.id}:${allocatorChain}:${allocatorNetwork}:${allocatorAsset}`;
         const { data, error } = await supabase.functions.invoke('address-allocator', {
-          body: { chain: allocatorChain, network: allocatorNetwork, asset: allocatorAsset }
+          body: {
+            chain: allocatorChain,
+            network: allocatorNetwork,
+            asset: allocatorAsset,
+            idempotency_key: idempotencyKey
+          }
         });
 
         if (!error) {
@@ -395,8 +402,15 @@ const Deposit = () => {
               type: 'standard'
             };
           }
-        } else {
+        }
+
+        if (error) {
           console.error('address-allocator invocation failed, falling back to local generation:', error);
+        }
+
+        if (restrictLocalGeneration) {
+          const allocatorError = (data as { error?: string })?.error ?? error?.message;
+          throw new Error(allocatorError || '本番環境ではTRON/ADAのアドレスをローカル生成できません');
         }
       }
 

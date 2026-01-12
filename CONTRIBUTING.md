@@ -1,6 +1,6 @@
-# Contributing to Undefined
+# Contributing to Swappy
 
-Thank you for your interest in contributing to **Undefined**, a cryptocurrency exchange platform. This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to **Swappy**, a cryptocurrency exchange platform. This document provides guidelines and instructions for contributing to the project.
 
 ## Table of Contents
 
@@ -58,8 +58,8 @@ Thank you for your interest in contributing to **Undefined**, a cryptocurrency e
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/Sou0327/undefined-exchange.git
-   cd undefined-exchange
+   git clone https://github.com/Sou0327/swappy.git
+   cd swappy
    ```
 
 2. **Install dependencies**
@@ -312,4 +312,4 @@ If you have questions about contributing, feel free to:
 2. Ask in the project's communication channels.
 3. Review existing issues and pull requests.
 
-Thank you for contributing to Undefined!
+Thank you for contributing to Swappy!

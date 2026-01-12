@@ -287,7 +287,7 @@ describe('Multichain Wallet Utils', () => {
       const result = await generateMultichainAddress('test-user-id', 'trc', 'mainnet', 'TRX')
 
       expect(result).toMatchObject({
-        address: expect.stringMatching(/^T[A-Z0-9]{32}$/), // TRON アドレスの形式
+        address: expect.stringMatching(/^T[1-9A-HJ-NP-Za-km-z]{33}$/), // TRON アドレスの形式
         derivationPath: expect.stringMatching(/^m\/44'\/195'\/\d+'\/0\/\d+$/),
       })
     })
@@ -304,7 +304,7 @@ describe('Multichain Wallet Utils', () => {
       const result = await generateMultichainAddress('test-user-id', 'ada', 'mainnet', 'ADA')
 
       expect(result).toMatchObject({
-        address: expect.stringMatching(/^addr1[a-z0-9]+$/), // Cardano アドレスの形式（Shelley era）
+        address: expect.stringMatching(/^addr1[a-z0-9]{98,}$/), // Cardano アドレスの形式（Shelley era）
         derivationPath: expect.stringMatching(/^m\/1852'\/1815'\/\d+'\/0\/\d+$/),
       })
     })
