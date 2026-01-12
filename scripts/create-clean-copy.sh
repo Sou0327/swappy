@@ -313,7 +313,7 @@ create_clean_copy() {
         echo "  1. cd $dest"
         echo "  2. git init"
         echo "  3. git add ."
-        echo "  4. git commit -m 'Initial commit: Undefined Exchange v0.1.0-beta'"
+        echo "  4. git commit -m 'Initial commit: Swappy v0.1.0-beta'"
         echo "  5. git remote add origin https://github.com/YOUR_USERNAME/swappy.git"
         echo "  6. git push -u origin main"
     fi
@@ -323,7 +323,7 @@ create_clean_copy() {
 main() {
     echo ""
     echo "======================================"
-    echo "  Undefined Exchange - Clean Copy Tool"
+    echo "  Swappy - Clean Copy Tool"
     echo "======================================"
     echo ""
 

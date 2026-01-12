@@ -1,6 +1,6 @@
 # Swappy
 
-**Modern Multi-Chain Cryptocurrency Exchange Platform**
+**Self-hosted Multi-Chain Wallet Platform**
 
 [![CI](https://github.com/Sou0327/swappy/actions/workflows/ci.yml/badge.svg)](https://github.com/Sou0327/swappy/actions/workflows/ci.yml)
 [![Beta](https://img.shields.io/badge/status-beta-yellow.svg)](https://github.com/Sou0327/swappy)
@@ -9,7 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6.svg)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-3ecf8e.svg)](https://supabase.com/)
 
-> A white-label ready crypto exchange platform built with React, TypeScript, and Supabase
+> Your keys, your coins, your server. A privacy-focused, self-custodial wallet platform built with React, TypeScript, and Supabase.
 
 📖 [Documentation](docs/) · 🐛 [Report Bug](https://github.com/Sou0327/swappy/issues)
 
@@ -40,17 +40,17 @@ Try the demo at: **[https://swappy.pages.dev/](https://swappy.pages.dev/)**
 
 | User Type | Use Case |
 |-----------|----------|
-| **Exchange Operators** | Launch a multi-chain crypto exchange quickly |
-| **FinTech Teams** | Integrate deposit/withdrawal infrastructure |
-| **Startups** | Build crypto services without blockchain expertise |
-| **Developers** | Study modern exchange architecture patterns |
+| **Privacy-Conscious Users** | Full control over your keys and funds without third-party custody |
+| **Power Users** | Manage assets across 100+ chains from a single, self-hosted dashboard |
+| **Self-Hosters** | Run your own wallet infrastructure with complete data sovereignty |
+| **Developers** | Build on top of a modern, open-source wallet platform |
 
 ### Problems We Solve
 
-- ⏰ **Time-to-Market**: Building exchange infrastructure from scratch takes months → Deploy in days
-- 🔗 **Multi-Chain Complexity**: Managing multiple blockchains is complex → Unified API for all chains
-- 🎨 **Branding Flexibility**: Most solutions are not customizable → Full white-label support
-- 🛡️ **Security Baseline**: Security is expensive to get right → Built-in RLS, audit logging, role management
+- 🔐 **Third-Party Trust**: Trusting exchanges with your crypto → Self-custody with your own server
+- 🕵️ **Privacy Concerns**: Exchanges track your transactions → Your data stays on your server
+- 🔗 **Multi-Chain Complexity**: Managing wallets across chains is fragmented → Unified interface for 100+ chains
+- 🔍 **Auditability**: Closed-source wallets are black boxes → Fully open-source, verify every line of code
 
 ---
 
@@ -73,43 +73,24 @@ Try the demo at: **[https://swappy.pages.dev/](https://swappy.pages.dev/)**
 
 ## ⚖️ Legal & Regulatory Notice
 
-> **IMPORTANT: Operating a cryptocurrency exchange is a regulated activity in most jurisdictions.**
+> ### Personal Use vs. Commercial Service
 >
-> ### Before Using This Software
+> **Self-custody for personal use**: Using this software to manage your own cryptocurrency is generally not a regulated activity. You're simply managing your own assets.
 >
-> This software provides the complete infrastructure for operating a cryptocurrency exchange, including:
-> - User deposit address allocation and management
-> - Real-time deposit detection and processing
-> - Fund aggregation (sweep) functionality
-> - Trading and conversion features
-> - User asset custody
+> **Operating a service for others**: If you use this software to provide custodial services for other users (holding their funds), this becomes a regulated activity in most jurisdictions.
 >
-> **These activities are subject to financial regulations in most countries.**
->
-> ### Regulatory Requirements by Region
->
-> | Region | Regulation | Registration/License Required |
-> |--------|------------|-------------------------------|
-> | **Japan** | Payment Services Act (資金決済法) | Crypto-Asset Exchange Service Provider Registration (暗号資産交換業登録) |
-> | **USA** | FinCEN, State MTL | Money Services Business (MSB) Registration, State Money Transmitter Licenses |
-> | **EU** | MiCA Regulation | Crypto-Asset Service Provider (CASP) Authorization |
-> | **UK** | FCA | Crypto-Asset Registration |
-> | **Singapore** | Payment Services Act | Major Payment Institution License |
+> | Usage Type | Regulatory Status |
+> |------------|-------------------|
+> | **Personal wallet** (self-custody) | Generally unregulated |
+> | **Multi-user service** (custodial) | Typically requires licensing |
 >
 > ### Your Responsibilities
 >
-> 1. **Compliance**: You are solely responsible for ensuring compliance with all applicable laws and regulations in your jurisdiction before operating any service using this software.
+> 1. **Self-Custody**: When using for personal purposes, ensure you understand the risks of managing your own keys
+> 2. **Commercial Use**: If operating as a service for others, consult legal professionals regarding licensing requirements
+> 3. **No Legal Advice**: This notice does not constitute legal advice
 >
-> 2. **Legal Advice**: We strongly recommend consulting with legal professionals specializing in financial regulations before deploying this software.
->
-> 3. **No Legal Advice**: This notice and this software do not constitute legal advice. The authors and contributors are not responsible for any regulatory violations or legal consequences arising from the use of this software.
->
-> ### Distribution vs. Operation
->
-> - **Distributing this open-source software** does not require regulatory licenses.
-> - **Operating a service** using this software typically requires appropriate licenses.
->
-> **By using this software, you acknowledge that you have read and understood this notice and accept full responsibility for regulatory compliance.**
+> **By using this software, you acknowledge that you are responsible for understanding and complying with applicable laws in your jurisdiction.**
 
 ---
 
@@ -121,8 +102,8 @@ Try the demo at: **[https://swappy.pages.dev/](https://swappy.pages.dev/)**
 |:------:|---------|-------------|
 | ✅ | **Multi-Chain Support** | Ethereum, Bitcoin, XRP, TRON, Polygon, BNB Chain |
 | ✅ | **HD Wallet Architecture** | BIP-32/39/44 compliant key derivation |
-| ✅ | **White-Label Ready** | Full branding customization via config |
-| ✅ | **Admin Dashboard** | User/transaction/role management |
+| ✅ | **Self-Hostable** | Deploy on your own server with Docker or 1-click deploy |
+| ✅ | **Personal Dashboard** | Manage your wallets, transactions, and settings |
 | ✅ | **i18n Support** | English & Japanese (extensible) |
 | ✅ | **Demo Mode** | Try all features without registration |
 | 🔶 | **Deposit Detection** | Webhook integration in progress |
@@ -164,11 +145,12 @@ Try the demo at: **[https://swappy.pages.dev/](https://swappy.pages.dev/)**
 </details>
 
 <details>
-<summary>🎨 White-Label Ready</summary>
+<summary>🏠 Self-Hostable</summary>
 
-- Fully customizable branding via `branding.ts`
+- Deploy anywhere: Docker, VPS, or cloud platforms
 - Environment variable based configuration
-- No hardcoded values
+- 1-click deploy options (Cloudflare Pages, Vercel, Netlify)
+- Full control over your data and infrastructure
 
 </details>
 
@@ -287,15 +269,15 @@ supabase/
 Edit `src/config/branding.ts` or use environment variables:
 
 ```env
-VITE_APP_NAME="Your Exchange Name"
+VITE_APP_NAME="My Wallet"
 VITE_APP_TAGLINE="Your tagline here"
-VITE_APP_DOMAIN="yourexchange.com"
+VITE_APP_DOMAIN="mywallet.example.com"
 VITE_APP_TWITTER="your_twitter"
 ```
 
 ### Supported Chains
 
-Configure chains in the admin dashboard at `/admin/chain-configs`.
+Configure chains in the settings dashboard at `/admin/chain-configs`.
 
 ---
 
@@ -303,10 +285,10 @@ Configure chains in the admin dashboard at `/admin/chain-configs`.
 
 | Version | Status | Features |
 |---------|--------|----------|
-| v0.1.0-beta | ✅ Current | Basic trading, multi-chain deposits, admin dashboard |
+| v0.1.0-beta | ✅ Current | Multi-chain wallet management, deposits, personal dashboard |
 | v0.2.0 | 🔲 Planned | Complete deposit detection system |
 | v0.3.0 | 🔲 Planned | Automated withdrawal processing |
-| v0.4.0 | 🔲 Planned | Advanced trading (limit orders, charts) |
+| v0.4.0 | 🔲 Planned | Portfolio analytics and insights |
 | v1.0.0 | 🔲 Future | Production-ready release |
 
 ---

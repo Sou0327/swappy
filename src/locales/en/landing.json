@@ -1,9 +1,9 @@
 {
   "hero": {
-    "title": "Your Own Exchange,",
-    "titleHighlight": "Open Source",
-    "subtitle": "White-label ready. Fork it, customize it, deploy it.",
-    "subtitleSecond": "Production-ready cryptocurrency exchange platform.",
+    "title": "Your Keys, Your Coins,",
+    "titleHighlight": "Your Server",
+    "subtitle": "Self-hosted wallet platform. Privacy-focused. Open source.",
+    "subtitleSecond": "100+ chains supported. Your data stays on your server.",
     "tryDemo": "Try Demo",
     "viewOnGithub": "View on GitHub",
     "getStarted": "Get Started"
@@ -26,15 +26,15 @@
       "description": "BIP-32/39/44 compliant. Secure hierarchical key derivation."
     },
     "whiteLabel": {
-      "title": "Fully Customizable",
-      "description": "White-label ready. Brand it your way with environment variables."
+      "title": "Self-Hostable",
+      "description": "Deploy on your own server. Full control over your data and keys."
     }
   },
 
   "features": {
-    "title": "Built for",
-    "titleHighlight": "Developers",
-    "subtitle": "Everything you need to launch your own exchange",
+    "title": "Built for ",
+    "titleHighlight": "Privacy",
+    "subtitle": "Take control of your crypto with self-custody",
 
     "multiChain": {
       "title": "Multi-Chain Support",
@@ -45,8 +45,8 @@
       "description": "Industry-standard BIP-32/39/44 implementation. Secure hierarchical deterministic wallet generation."
     },
     "whiteLabel": {
-      "title": "White-Label Ready",
-      "description": "Customize branding through environment variables. Logo, colors, and platform name — all configurable."
+      "title": "Self-Hostable",
+      "description": "Deploy anywhere: your own server, VPS, or cloud. Your keys never leave your infrastructure."
     },
     "realtime": {
       "title": "Real-Time Detection",

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Play, Github, Layers, KeyRound, Palette } from "lucide-react";
+import { ArrowRight, Play, Github, Layers, KeyRound, Server } from "lucide-react";
 import { GITHUB_URL } from "@/config/branding";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -131,7 +131,7 @@ export const HeroSection = () => {
 
           <div className="group p-4 md:p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 animate-fade-in-up animation-delay-1000">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 md:mb-4 group-hover:bg-primary/20 transition-colors">
-              <Palette className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+              <Server className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>
             <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3">
               {t('featureCards.whiteLabel.title')}

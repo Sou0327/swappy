@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import {
   Layers,
   KeyRound,
-  Palette,
+  Server,
   Webhook,
   Shield,
   Globe,
@@ -13,7 +13,7 @@ import { GITHUB_URL } from "@/config/branding";
 const FEATURES = [
   { key: 'multiChain', icon: Layers, color: 'bg-blue-100 text-blue-600' },
   { key: 'hdWallet', icon: KeyRound, color: 'bg-amber-100 text-amber-600' },
-  { key: 'whiteLabel', icon: Palette, color: 'bg-purple-100 text-purple-600' },
+  { key: 'whiteLabel', icon: Server, color: 'bg-purple-100 text-purple-600' },
   { key: 'realtime', icon: Webhook, color: 'bg-green-100 text-green-600' },
   { key: 'security', icon: Shield, color: 'bg-red-100 text-red-600' },
   { key: 'i18n', icon: Globe, color: 'bg-cyan-100 text-cyan-600' },

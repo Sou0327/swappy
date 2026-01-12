@@ -3,7 +3,7 @@
   "private": false,
   "version": "0.1.0-beta",
   "license": "MIT",
-  "description": "Open-source multi-chain cryptocurrency exchange platform",
+  "description": "Self-hosted multi-chain wallet platform for privacy-conscious users",
   "type": "module",
   "packageManager": "npm@10.9.2",
   "scripts": {

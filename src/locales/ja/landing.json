@@ -1,9 +1,9 @@
 {
   "hero": {
-    "title": "オープンソースで始める、",
-    "titleHighlight": "あなただけの取引所",
-    "subtitle": "White-label対応。フォークして、カスタマイズして、デプロイ。",
-    "subtitleSecond": "本番環境対応の暗号通貨取引プラットフォーム。",
+    "title": "あなたの鍵、あなたのコイン、",
+    "titleHighlight": "あなたのサーバー",
+    "subtitle": "セルフホスト型ウォレット。プライバシー重視。完全オープンソース。",
+    "subtitleSecond": "100+チェーン対応。データは自分のサーバーに。",
     "tryDemo": "デモを試す",
     "viewOnGithub": "GitHubで見る",
     "getStarted": "今すぐ始める"
@@ -26,15 +26,15 @@
       "description": "BIP-32/39/44準拠。安全な階層的鍵導出を実現。"
     },
     "whiteLabel": {
-      "title": "完全カスタマイズ可能",
-      "description": "White-label対応。環境変数で自由にブランディング。"
+      "title": "セルフホスト対応",
+      "description": "自分のサーバーにデプロイ。データと鍵を完全にコントロール。"
     }
   },
 
   "features": {
-    "title": "開発者のための、",
+    "title": "プライバシーのための、",
     "titleHighlight": "本格プラットフォーム",
-    "subtitle": "独自の取引所を立ち上げるために必要なすべてを提供",
+    "subtitle": "セルフカストディで暗号資産を自分の手で管理",
 
     "multiChain": {
       "title": "マルチチェーン対応",
@@ -45,8 +45,8 @@
       "description": "業界標準のBIP-32/39/44実装。安全な階層的決定性ウォレット生成。"
     },
     "whiteLabel": {
-      "title": "White-label対応",
-      "description": "環境変数でブランディングをカスタマイズ。ロゴ、カラー、プラットフォーム名、すべて設定可能。"
+      "title": "セルフホスト対応",
+      "description": "自分のサーバー、VPS、クラウドなどどこでもデプロイ可能。鍵は自分のインフラから出ません。"
     },
     "realtime": {
       "title": "リアルタイム検出",

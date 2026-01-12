@@ -86,12 +86,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
   const sidebarItems = [
     { icon: LayoutDashboard, label: t('sidebar.dashboard'), path: "/dashboard" },
-    { icon: Megaphone, label: t('sidebar.announcements'), path: "/announcements" },
+    // Announcements, Transfer, Referral はセルフホスト型ウォレットには不要（ルートは残置）
     { icon: Wallet, label: t('sidebar.wallet'), path: "/wallet" },
-    { icon: Send, label: t('sidebar.transfer'), path: "/transfer" },
     // 稼ぐメニューは画面上から非表示（ルートは残置）
     { icon: ArrowLeftRight, label: t('sidebar.convert'), path: "/convert" },
-    { icon: Users, label: t('sidebar.referral'), path: "/referral" },
     {
       icon: Settings,
       label: t('sidebar.settings'),
@@ -101,9 +99,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       subItems: [
         { label: t('sidebar.myAccount'), path: "/my-account" },
         { label: t('sidebar.security'), path: "/security" },
-        { label: t('sidebar.kyc'), path: "/kyc" },
-        { label: t('sidebar.history'), path: "/history" },
-        { label: t('sidebar.support'), path: "/support" }
+        // KYC, Support はセルフホスト型ウォレットには不要（ルートは残置）
+        { label: t('sidebar.history'), path: "/history" }
       ]
     },
     // 管理者専用メニュー
@@ -282,14 +279,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               >
                 {t('topBar.trade')}
               </Link>
-              <Link
-                to="/transfer"
-                className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/transfer") ? "text-primary" : "text-gray-600"
-                  }`}
-              >
-                {t('topBar.transfer')}
-              </Link>
-              {/* 稼ぐは非表示 */}
+              {/* Transfer, 稼ぐ は非表示（セルフホスト型ウォレットには不要） */}
               <Link
                 to="/convert"
                 className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/convert") ? "text-primary" : "text-gray-600"
