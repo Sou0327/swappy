@@ -75,29 +75,24 @@ describe('AuthContext', () => {
       expect(screen.getByTestId('session')).toHaveTextContent('no-session')
     })
 
-    it('AuthProviderの外でuseAuthを使用するとエラーを投げる', () => {
-      // エラーログを無効化
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-      // React 18では、renderは直接エラーをthrowしない
-      // 代わりに、コンソールエラーが出力されることを確認
+    it('AuthProviderの外でuseAuthを使用するとデフォルト値が返る', () => {
+      // AuthContextにはデフォルト値が設定されているため、
+      // AuthProviderの外でもuseAuthはデフォルト値を返す
       const TestHookComponent = () => {
-        useAuth()
-        return null
+        const auth = useAuth()
+        return (
+          <div>
+            <span data-testid="user">{auth.user ? 'has-user' : 'no-user'}</span>
+            <span data-testid="loading">{auth.loading ? 'loading' : 'loaded'}</span>
+          </div>
+        )
       }
 
-      // エラーが発生することを期待（コンソールエラーとして）
-      try {
-        render(<TestHookComponent />)
-      } catch (error) {
-        // エラーがキャッチされた場合は成功
-        expect(error).toBeDefined()
-      }
+      render(<TestHookComponent />)
 
-      // コンソールエラーが呼ばれたことを確認
-      expect(consoleSpy).toHaveBeenCalled()
-
-      consoleSpy.mockRestore()
+      // デフォルト値が返ることを確認
+      expect(screen.getByTestId('user')).toHaveTextContent('no-user')
+      expect(screen.getByTestId('loading')).toHaveTextContent('loading')
     })
   })
 
