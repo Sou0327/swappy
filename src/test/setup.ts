@@ -121,12 +121,20 @@ vi.mock('react-router-dom', async () => {
 
 // AuthContextのモック - テストごとに個別に設定するため、グローバルモックは削除
 
-// ResizeObserverのモック（チャートコンポーネント用）
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}))
+// ResizeObserverのモック（チャートコンポーネント、@floating-ui/dom用）
+// @floating-ui/domがResizeObserverインスタンスを作成してobserve()を呼び出すため、
+// クラスとして正しく実装する必要がある
+class MockResizeObserver {
+  callback: ResizeObserverCallback;
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback;
+  }
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+}
+global.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+window.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
 
 // matchMediaのモック
 Object.defineProperty(window, 'matchMedia', {

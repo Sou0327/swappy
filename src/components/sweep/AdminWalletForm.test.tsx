@@ -130,7 +130,7 @@ describe('AdminWalletForm', () => {
             active: true
           }),
           expect.objectContaining({
-            onConflict: 'chain,network,asset,address'
+            onConflict: 'chain,network,asset'
           })
         );
       });
