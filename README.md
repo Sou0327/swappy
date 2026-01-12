@@ -1,8 +1,6 @@
-<div align="center">
-
 # Undefined
 
-### Modern Multi-Chain Cryptocurrency Exchange Platform
+**Modern Multi-Chain Cryptocurrency Exchange Platform**
 
 [![CI](https://github.com/Sou0327/undefined-exchange/actions/workflows/ci.yml/badge.svg)](https://github.com/Sou0327/undefined-exchange/actions/workflows/ci.yml)
 [![Beta](https://img.shields.io/badge/status-beta-yellow.svg)](https://github.com/Sou0327/undefined-exchange)
@@ -11,11 +9,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6.svg)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-3ecf8e.svg)](https://supabase.com/)
 
-**A white-label ready crypto exchange platform built with React, TypeScript, and Supabase**
+> A white-label ready crypto exchange platform built with React, TypeScript, and Supabase
 
-[Documentation](docs/) · [Report Bug](https://github.com/Sou0327/undefined-exchange/issues)
-
-</div>
+📖 [Documentation](docs/) · 🐛 [Report Bug](https://github.com/Sou0327/undefined-exchange/issues)
 
 ---
 
@@ -393,8 +389,4 @@ If you find this project useful, please consider:
 
 ---
 
-<div align="center">
-
 **Built with ❤️ by the Undefined Team**
-
-</div>
