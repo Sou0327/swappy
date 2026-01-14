@@ -4,7 +4,7 @@
 
 Swappyは日本語対応のマルチチェーン暗号通貨取引プラットフォームです。
 
-**🌐 [English README](README.md)** | **🔗 [Live Demo](https://swappy.pages.dev/)**
+**🌐 [English README](README.md)** | **🔗 [Live Demo](https://swappy.tokyo/)**
 
 ---
 

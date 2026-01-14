@@ -17,7 +17,7 @@
 
 ## 🌐 Live Demo
 
-Try the demo at: **[https://swappy.pages.dev/](https://swappy.pages.dev/)**
+Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 
 > 💡 Use the "Try Demo" button to explore all features without registration!
 
@@ -234,7 +234,7 @@ Open http://localhost:8080 🎉
 
 ## 📸 Screenshots
 
-> 📷 **See it in action!** Try the [Live Demo](https://swappy.pages.dev/) to explore the full UI.
+> 📷 **See it in action!** Try the [Live Demo](https://swappy.tokyo/) to explore the full UI.
 
 ---
 
