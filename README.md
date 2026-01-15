@@ -58,11 +58,26 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 > **This project is currently in BETA.** Core functionality is working, with some features under development:
 >
 > ✅ **Multi-Chain Wallet Management**: Generate and manage addresses across 6 blockchains
-> ✅ **Deposit Detection**: Real-time blockchain RPC scanning for instant deposit detection
+> 🔶 **Wallet Setup (BIP39)**: HD wallet creation with mnemonic phrase generation **- UNDER ACTIVE DEVELOPMENT**
+> 🔶 **Deposit Detection**: Real-time blockchain RPC scanning for instant deposit detection **- UNDER ACTIVE DEVELOPMENT**
 > ✅ **Withdrawal Processing**: Automatic transaction signing and broadcasting to blockchain
 > ✅ **Price Display**: Real-time crypto prices via CoinGecko API
 >
 > 🔶 **Webhook Integration**: Additional notification methods (email, SMS) in progress
+>
+> ### ⚠️ Important Notice - Features Under Adjustment
+>
+> **The following features are currently under active development and adjustment:**
+>
+> - **🔶 Wallet Setup (BIP39 HD Wallets)**: User-specific HD wallet creation with BIP39 mnemonic phrases
+>   - Security enhancements are being implemented
+>   - May undergo significant changes
+>   - Use with caution in production environments
+>
+> - **🔶 Deposit Detection**: Blockchain monitoring and automatic deposit processing
+>   - Currently being refined for better reliability
+>   - Some edge cases may still exist
+>   - Report any issues immediately
 >
 > **This is infrastructure software.** We recommend testing with small amounts first.
 > For production use, please conduct your own security audit.
@@ -104,7 +119,8 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 |:------:|---------|-------------|
 | ✅ | **Multi-Chain Support** | Ethereum, Bitcoin, XRP, TRON, Polygon, BNB Chain |
 | ✅ | **HD Wallet Architecture** | BIP-32/39/44 compliant key derivation |
-| ✅ | **Real-time Deposit Detection** | Blockchain RPC scanning for instant deposit detection |
+| 🔶 | **Wallet Setup (BIP39)** | User-specific HD wallet creation with mnemonic phrase **- Under Development** |
+| 🔶 | **Real-time Deposit Detection** | Blockchain RPC scanning for instant deposit detection **- Under Refinement** |
 | ✅ | **Automated Withdrawal Processing** | Automatic transaction signing and broadcasting |
 | ✅ | **Price Display** | Real-time crypto prices via CoinGecko API |
 | ✅ | **Self-Hostable** | Deploy on your own server with Docker or 1-click deploy |
@@ -116,6 +132,8 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 | 🔲 | **2FA Authentication** | Coming in future release |
 
 > **Legend**: ✅ Available | 🔶 In Progress | 🔲 Planned
+>
+> ⚠️ **Note**: Features marked with 🔶 are under active development. See [Beta Software Notice](#-beta-software-notice) above for details.
 
 ### Core Capabilities
 
