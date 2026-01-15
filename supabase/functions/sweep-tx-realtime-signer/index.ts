@@ -12,6 +12,12 @@
  *   - metadata: tx_generated_at, deposit_index等
  */
 
+declare const Deno: {
+  env: {
+    get(name: string): string | undefined;
+  };
+};
+
 import { ChainTxBuilderFactory } from '../_shared/chain-abstraction/factory.ts';
 import type { BuildTxParams } from '../_shared/chain-abstraction/types.ts';
 
@@ -100,7 +106,25 @@ export async function handleRequest(
         .select('*')
         .eq('chain', job.chain)
         .eq('network', job.network)
-        .single();
+        .eq('user_id', deposit.user_id)
+        .maybeSingle();
+
+      // ユーザー個別ルートがない場合は管理者ルートをフォールバック
+      if (!walletRoot && !walletRootError) {
+        const { data: adminRoot, error: adminRootError } = await client
+          .from('wallet_roots')
+          .select('*')
+          .eq('chain', job.chain)
+          .eq('network', job.network)
+          .is('user_id', null)
+          .single();
+        if (!adminRoot || adminRootError) {
+          return new Response(
+            JSON.stringify({ error: 'Wallet root not found' }),
+            { status: 404, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+      }
 
       if (walletRootError || !walletRoot) {
         return new Response(
@@ -181,8 +205,13 @@ export async function handleRequest(
 }
 
 // Supabase Edge Function エントリーポイント
+// @ts-expect-error Deno std module type resolution
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+// @ts-expect-error Supabase client type resolution
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// Deno.serveはSupabase Edge Functionでは不要（自動実行）
+// serve(handleRequest);
 
 serve(async (req) => {
   return await handleRequest(req);

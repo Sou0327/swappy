@@ -16,13 +16,14 @@ import NotFound from "./pages/NotFound";
 import MaintenancePage from "./pages/MaintenancePage";
 
 // 一般ページの遅延読み込み
-const Trade = lazy(() => import("./pages/Trade"));
+// const Trade = lazy(() => import("./pages/Trade")); // Coming Soon
 const Markets = lazy(() => import("./pages/Markets"));
 const Features = lazy(() => import("./pages/Features"));
 const About = lazy(() => import("./pages/About"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const WalletOverview = lazy(() => import("./pages/WalletOverview"));
-const Convert = lazy(() => import("./pages/Convert"));
+const WalletSetup = lazy(() => import("./pages/WalletSetup"));
+// Convert = lazy(() => import("./pages/Convert")); // Coming Soon
 const FinancialHistory = lazy(() => import("./pages/FinancialHistory"));
 const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -81,8 +82,24 @@ function App() {
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/auth/reset" element={<ResetPassword />} />
                 <Route path="/redirect" element={<AuthRedirect />} />
-                <Route path="/trade" element={<Trade />} />
+                <Route path="/wallet-setup" element={<WalletSetup />} />
+                <Route path="/trade" element={
+                  <div className="min-h-screen flex items-center justify-center bg-white">
+                    <div className="text-center space-y-4">
+                      <h1 className="text-4xl font-bold">Coming Soon</h1>
+                      <p className="text-gray-600">トレード機能は近日公開予定です</p>
+                    </div>
+                  </div>
+                } />
                 <Route path="/markets" element={<Markets />} />
+                <Route path="/convert" element={
+                  <div className="min-h-screen flex items-center justify-center bg-white">
+                    <div className="text-center space-y-4">
+                      <h1 className="text-4xl font-bold">Coming Soon</h1>
+                      <p className="text-gray-600">コンバート機能は近日公開予定です</p>
+                    </div>
+                  </div>
+                } />
                 <Route path="/features" element={<Features />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/dashboard" element={<Dashboard />} />
@@ -122,7 +139,7 @@ function App() {
                   </AdminRoute>
                 } />
                 <Route path="/wallet" element={<WalletOverview />} />
-                <Route path="/convert" element={<Convert />} />
+                {/* <Route path="/convert" element={<Convert />} /> Coming Soon */}
                 <Route path="/history" element={<FinancialHistory />} />
                 <Route path="/security" element={<SecuritySettings />} />
                 <Route path="/kyc" element={<KYC />} />

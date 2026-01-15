@@ -1,6 +1,6 @@
 # Swappy
 
-**Self-hosted Multi-Chain Wallet Platform**
+**Self-Hosted Multi-Chain Wallet Platform**
 
 [![CI](https://github.com/Sou0327/swappy/actions/workflows/ci.yml/badge.svg)](https://github.com/Sou0327/swappy/actions/workflows/ci.yml)
 [![Beta](https://img.shields.io/badge/status-beta-yellow.svg)](https://github.com/Sou0327/swappy)
@@ -9,7 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6.svg)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-3ecf8e.svg)](https://supabase.com/)
 
-> Your keys, your coins, your server. A privacy-focused, self-custodial wallet platform built with React, TypeScript, and Supabase.
+> Self-host your own wallet infrastructure. Manage multi-chain addresses, detect deposits, and process withdrawals with full control of your keys.
 
 📖 [Documentation](docs/) · 🐛 [Report Bug](https://github.com/Sou0327/swappy/issues)
 
@@ -27,9 +27,8 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 |---------|-------------|
 | 💰 **Dashboard** | Real-time portfolio overview with live market prices |
 | 📥 **Deposit Flow** | Generate deposit addresses for multiple chains |
-| 📤 **Withdrawal** | Experience the withdrawal request workflow |
-| 💱 **Trading** | Place market orders with real-time order book (simulated) |
-| 📊 **History** | View transaction and trading history |
+| 📤 **Withdrawal** | Experience withdrawal request workflow |
+| 📊 **History** | View transaction history |
 | ⚙️ **Settings** | Explore user preferences and profile management |
 
 ---
@@ -41,7 +40,7 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 | User Type | Use Case |
 |-----------|----------|
 | **Privacy-Conscious Users** | Full control over your keys and funds without third-party custody |
-| **Power Users** | Manage assets across 100+ chains from a single, self-hosted dashboard |
+| **Power Users** | Manage assets across Many chains from a single, self-hosted dashboard |
 | **Self-Hosters** | Run your own wallet infrastructure with complete data sovereignty |
 | **Developers** | Build on top of a modern, open-source wallet platform |
 
@@ -49,20 +48,23 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 
 - 🔐 **Third-Party Trust**: Trusting exchanges with your crypto → Self-custody with your own server
 - 🕵️ **Privacy Concerns**: Exchanges track your transactions → Your data stays on your server
-- 🔗 **Multi-Chain Complexity**: Managing wallets across chains is fragmented → Unified interface for 100+ chains
+- 🔗 **Multi-Chain Complexity**: Managing wallets across chains is fragmented → Unified interface for Many chains
 - 🔍 **Auditability**: Closed-source wallets are black boxes → Fully open-source, verify every line of code
 
 ---
 
 ## ⚠️ Beta Software Notice
 
-> **This project is currently in BETA.** The following features are incomplete or under active development:
+> **This project is currently in BETA.** Core functionality is working, with some features under development:
 >
-> - 🔶 **Deposit Detection**: Partially working (webhook integration in progress)
-> - 🔶 **Withdrawal Processing**: Manual intervention required
-> - 🔶 **Email Notifications**: Template-based, not fully automated
+> ✅ **Multi-Chain Wallet Management**: Generate and manage addresses across 6 blockchains
+> ✅ **Deposit Detection**: Real-time blockchain RPC scanning for instant deposit detection
+> ✅ **Withdrawal Processing**: Automatic transaction signing and broadcasting to blockchain
+> ✅ **Price Display**: Real-time crypto prices via CoinGecko API
 >
-> **This is a beta version.** We recommend using demo mode or testing with small amounts first.
+> 🔶 **Webhook Integration**: Additional notification methods (email, SMS) in progress
+>
+> **This is infrastructure software.** We recommend testing with small amounts first.
 > For production use, please conduct your own security audit.
 >
 > 📋 See [Beta Limitations & Roadmap](docs/08-beta-limitations.md) for full details.
@@ -102,12 +104,14 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 |:------:|---------|-------------|
 | ✅ | **Multi-Chain Support** | Ethereum, Bitcoin, XRP, TRON, Polygon, BNB Chain |
 | ✅ | **HD Wallet Architecture** | BIP-32/39/44 compliant key derivation |
+| ✅ | **Real-time Deposit Detection** | Blockchain RPC scanning for instant deposit detection |
+| ✅ | **Automated Withdrawal Processing** | Automatic transaction signing and broadcasting |
+| ✅ | **Price Display** | Real-time crypto prices via CoinGecko API |
 | ✅ | **Self-Hostable** | Deploy on your own server with Docker or 1-click deploy |
 | ✅ | **Personal Dashboard** | Manage your wallets, transactions, and settings |
 | ✅ | **i18n Support** | English & Japanese (extensible) |
 | ✅ | **Demo Mode** | Try all features without registration |
-| 🔶 | **Deposit Detection** | Webhook integration in progress |
-| 🔶 | **Withdrawal Processing** | Semi-automated (manual approval) |
+| 🔶 | **Webhook Integration** | Additional notification methods (email, SMS) in progress |
 | 🔲 | **Advanced Trading** | Limit orders, charts (planned) |
 | 🔲 | **2FA Authentication** | Coming in future release |
 

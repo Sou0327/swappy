@@ -1,0 +1,85 @@
+{
+  "step1": {
+    "title": "ウォレットの設定",
+    "description": "セキュアなHDウォレットを作成します",
+    "mnemonicLength": "ニーモニックの長さ",
+    "words12": "12語（推奨）",
+    "words24": "24語",
+    "passwordLabel": "パスワード",
+    "passwordPlaceholder": "6文字以上のパスワード",
+    "passwordStrength": {
+      "weak": "弱い",
+      "medium": "中程度",
+      "strong": "強い"
+    },
+    "passwordHint": "このパスワードはニーモニックの暗号化に使用されます",
+    "createWalletButton": "ウォレットを作成",
+    "securityNote": "セキュリティについて",
+    "securityPoint1": "ニーモニックはAES-256-GCMで暗号化されます",
+    "securityPoint2": "パスワードを忘れると回復できません",
+    "securityPoint3": "ニーモニックを安全な場所に保管してください"
+  },
+  "step2": {
+    "title": "ニーモニックの確認",
+    "description": "表示された単語の中から正しい順序で選択してください",
+    "displayTitle": "ニーモニックのバックアップ",
+    "displayDescription": "このニーモニックを安全にバックアップしてください",
+    "importantNote": "重要",
+    "backupWarning": "この画面は一度だけ表示されます。必ずニーモニックをバックアップしてください。",
+    "backedUpButton": "バックアップしました",
+    "selectedWords": "選択した単語（{{count}}/5）:",
+    "selectWords": "単語を選択:"
+  },
+  "step3": {
+    "title": "ニーモニックの確認",
+    "description": "空白の単語に入力してください"
+  },
+  "step4": {
+    "title": "バックアップの確認",
+    "description": "ニーモニックを安全に保管したことを確認してください",
+    "writtenOnPaper": "ニーモニックを紙に書き留めました",
+    "noScreenshotHint": "スクリーンショットは推奨しません",
+    "storedSafely": "安全な場所に保管しました",
+    "storageHint": "金庫や安全なデジタル保管場所など",
+    "warning": "警告",
+    "warningPoint1": "ニーモニックを紛失すると、ウォレットにアクセスできなくなります",
+    "warningPoint2": "絶対に他人と共有しないでください",
+    "warningPoint3": "パスワードを忘れると回復できません"
+  },
+  "step5": {
+    "title": "ウォレットの初期化",
+    "description": "全チェーンのアドレスを生成しています",
+    "generating": "生成中...",
+    "completed": "完了！",
+    "generatingEVM": "EVMアドレスを生成中...",
+    "generatingBTC": "Bitcoinアドレスを生成中...",
+    "generatingTRX": "Tronアドレスを生成中...",
+    "generatingXRP": "XRPアドレスを生成中...",
+    "allChainsCompleted": "全チェーンのアドレス生成が完了しました"
+  },
+  "step6": {
+    "title": "ウォレットの設定が完了しました！",
+    "description": "ダッシュボードに移動します..."
+  },
+  "common": {
+    "reset": "リセット",
+    "verify": "確認",
+    "verifying": "確認中...",
+    "next": "次へ"
+  },
+  "errors": {
+    "passwordTooShort": "パスワードが短すぎます",
+    "passwordMinLength": "6文字以上のパスワードを入力してください",
+    "generationFailed": "生成に失敗しました",
+    "verificationFailed": "確認失敗",
+    "incorrectWordOrder": "単語の順序が正しくありません",
+    "incorrectWords": "間違っている単語",
+    "tooFewWords": "単語が足りません",
+    "selectAtLeast3Words": "最低3つの単語を選択してください",
+    "verificationError": "検証エラー",
+    "confirmationRequired": "確認が必要です",
+    "checkAllBoxes": "すべてのチェックボックスにチェックしてください",
+    "initializationFailed": "初期化エラー",
+    "correct": "正解"
+  }
+}

@@ -67,6 +67,51 @@ export type Database = {
         }
         Relationships: []
       }
+      announcements: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          created_by: string | null
+          expire_at: string | null
+          id: string
+          importance: string
+          publish_at: string | null
+          published: boolean
+          target_user_role: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string
+          created_by?: string | null
+          expire_at?: string | null
+          id?: string
+          importance?: string
+          publish_at?: string | null
+          published?: boolean
+          target_user_role?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          expire_at?: string | null
+          id?: string
+          importance?: string
+          publish_at?: string | null
+          published?: boolean
+          target_user_role?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -76,7 +121,7 @@ export type Database = {
           entity_id: string | null
           entity_type: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           resource: string
           resource_id: string | null
@@ -91,7 +136,7 @@ export type Database = {
           entity_id?: string | null
           entity_type?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           resource?: string
           resource_id?: string | null
@@ -106,7 +151,7 @@ export type Database = {
           entity_id?: string | null
           entity_type?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           resource?: string
           resource_id?: string | null
@@ -188,7 +233,7 @@ export type Database = {
           },
         ]
       }
-      chain_configs: {
+      chain_configs_backup_20250107: {
         Row: {
           active: boolean | null
           asset: string
@@ -383,6 +428,56 @@ export type Database = {
         }
         Relationships: []
       }
+      deposit_address_requests: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          currency: string
+          deposit_address_id: string | null
+          error_message: string | null
+          expires_at: string | null
+          id: string
+          idempotency_key: string
+          network: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          currency: string
+          deposit_address_id?: string | null
+          error_message?: string | null
+          expires_at?: string | null
+          id?: string
+          idempotency_key: string
+          network: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          currency?: string
+          deposit_address_id?: string | null
+          error_message?: string | null
+          expires_at?: string | null
+          id?: string
+          idempotency_key?: string
+          network?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deposit_address_requests_deposit_address_id_fkey"
+            columns: ["deposit_address_id"]
+            isOneToOne: false
+            referencedRelation: "user_deposit_addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deposit_addresses: {
         Row: {
           active: boolean | null
@@ -542,6 +637,53 @@ export type Database = {
         }
         Relationships: []
       }
+      deposit_routes: {
+        Row: {
+          chain: string
+          created_at: string | null
+          destination_tag: number | null
+          id: string
+          is_active: boolean | null
+          master_address_id: string | null
+          network: string
+          routing_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chain: string
+          created_at?: string | null
+          destination_tag?: number | null
+          id?: string
+          is_active?: boolean | null
+          master_address_id?: string | null
+          network: string
+          routing_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chain?: string
+          created_at?: string | null
+          destination_tag?: number | null
+          id?: string
+          is_active?: boolean | null
+          master_address_id?: string | null
+          network?: string
+          routing_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deposit_routes_master_address_id_fkey"
+            columns: ["master_address_id"]
+            isOneToOne: false
+            referencedRelation: "xrp_master_addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deposit_transactions: {
         Row: {
           amount: number
@@ -700,7 +842,7 @@ export type Database = {
           failure_reason: string | null
           feature_name: string | null
           id: number
-          ip_address: unknown | null
+          ip_address: unknown
           session_duration_seconds: number | null
           session_ended_at: string | null
           session_id: string | null
@@ -716,7 +858,7 @@ export type Database = {
           failure_reason?: string | null
           feature_name?: string | null
           id?: number
-          ip_address?: unknown | null
+          ip_address?: unknown
           session_duration_seconds?: number | null
           session_ended_at?: string | null
           session_id?: string | null
@@ -732,7 +874,7 @@ export type Database = {
           failure_reason?: string | null
           feature_name?: string | null
           id?: number
-          ip_address?: unknown | null
+          ip_address?: unknown
           session_duration_seconds?: number | null
           session_ended_at?: string | null
           session_id?: string | null
@@ -823,6 +965,126 @@ export type Database = {
           test_data?: Json | null
           test_scenario?: string | null
           user_role?: string | null
+        }
+        Relationships: []
+      }
+      email_logs: {
+        Row: {
+          created_at: string
+          email_type: string
+          error_message: string | null
+          id: string
+          recipient_email: string
+          resend_message_id: string | null
+          sent_at: string | null
+          status: string
+          subject: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email_type: string
+          error_message?: string | null
+          id?: string
+          recipient_email: string
+          resend_message_id?: string | null
+          sent_at?: string | null
+          status: string
+          subject: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email_type?: string
+          error_message?: string | null
+          id?: string
+          recipient_email?: string
+          resend_message_id?: string | null
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      email_preferences: {
+        Row: {
+          created_at: string
+          kyc_emails: boolean
+          marketing_emails: boolean
+          referral_emails: boolean
+          security_alerts: boolean
+          transaction_emails: boolean
+          updated_at: string
+          user_id: string
+          welcome_emails: boolean
+        }
+        Insert: {
+          created_at?: string
+          kyc_emails?: boolean
+          marketing_emails?: boolean
+          referral_emails?: boolean
+          security_alerts?: boolean
+          transaction_emails?: boolean
+          updated_at?: string
+          user_id: string
+          welcome_emails?: boolean
+        }
+        Update: {
+          created_at?: string
+          kyc_emails?: boolean
+          marketing_emails?: boolean
+          referral_emails?: boolean
+          security_alerts?: boolean
+          transaction_emails?: boolean
+          updated_at?: string
+          user_id?: string
+          welcome_emails?: boolean
+        }
+        Relationships: []
+      }
+      email_queue: {
+        Row: {
+          created_at: string
+          email_type: string
+          error_message: string | null
+          id: string
+          max_retries: number
+          processed_at: string | null
+          recipient_email: string
+          retry_count: number
+          scheduled_at: string
+          status: string
+          template_data: Json
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email_type: string
+          error_message?: string | null
+          id?: string
+          max_retries?: number
+          processed_at?: string | null
+          recipient_email: string
+          retry_count?: number
+          scheduled_at?: string
+          status?: string
+          template_data?: Json
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email_type?: string
+          error_message?: string | null
+          id?: string
+          max_retries?: number
+          processed_at?: string | null
+          recipient_email?: string
+          retry_count?: number
+          scheduled_at?: string
+          status?: string
+          template_data?: Json
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -1071,10 +1333,14 @@ export type Database = {
           created_by: string
           description: string | null
           encrypted_mnemonic: string
+          encryption_context: Json | null
           id: string
+          key_version: number
           mnemonic_iv: string
+          password_hash: string | null
           salt: string
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           active?: boolean | null
@@ -1083,10 +1349,14 @@ export type Database = {
           created_by: string
           description?: string | null
           encrypted_mnemonic: string
+          encryption_context?: Json | null
           id?: string
+          key_version?: number
           mnemonic_iv: string
+          password_hash?: string | null
           salt: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           active?: boolean | null
@@ -1095,15 +1365,127 @@ export type Database = {
           created_by?: string
           description?: string | null
           encrypted_mnemonic?: string
+          encryption_context?: Json | null
           id?: string
+          key_version?: number
           mnemonic_iv?: string
+          password_hash?: string | null
           salt?: string
           updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      notification_send_history: {
+        Row: {
+          category: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          is_broadcast: boolean
+          message: string
+          notification_type: string
+          notifications_failed: number
+          notifications_sent: number
+          sent_by: string | null
+          status: string
+          target_role: string | null
+          target_user_ids: Json | null
+          template_key: string | null
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          is_broadcast?: boolean
+          message: string
+          notification_type: string
+          notifications_failed?: number
+          notifications_sent?: number
+          sent_by?: string | null
+          status?: string
+          target_role?: string | null
+          target_user_ids?: Json | null
+          template_key?: string | null
+          title: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          is_broadcast?: boolean
+          message?: string
+          notification_type?: string
+          notifications_failed?: number
+          notifications_sent?: number
+          sent_by?: string | null
+          status?: string
+          target_role?: string | null
+          target_user_ids?: Json | null
+          template_key?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_send_history_template_key_fkey"
+            columns: ["template_key"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["template_key"]
+          },
+        ]
+      }
+      notification_templates: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          manual_send_allowed: boolean
+          message_template: string
+          name: string
+          notification_type: string
+          template_key: string
+          title_template: string
+          updated_at: string
+          variables: Json | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          manual_send_allowed?: boolean
+          message_template: string
+          name: string
+          notification_type: string
+          template_key: string
+          title_template: string
+          updated_at?: string
+          variables?: Json | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          manual_send_allowed?: boolean
+          message_template?: string
+          name?: string
+          notification_type?: string
+          template_key?: string
+          title_template?: string
+          updated_at?: string
+          variables?: Json | null
         }
         Relationships: []
       }
       notifications: {
         Row: {
+          category: string | null
           created_at: string | null
           id: string
           message: string
@@ -1114,6 +1496,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          category?: string | null
           created_at?: string | null
           id?: string
           message: string
@@ -1124,6 +1507,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          category?: string | null
           created_at?: string | null
           id?: string
           message?: string
@@ -1218,10 +1602,13 @@ export type Database = {
           last_name: string | null
           last_name_kana: string | null
           phishing_code: string | null
+          phone_number: string | null
           postal_code: string | null
           prefecture: string | null
+          referral_code_used: string | null
           updated_at: string
           user_handle: string | null
+          wallet_setup_completed: boolean | null
         }
         Insert: {
           address?: string | null
@@ -1246,10 +1633,13 @@ export type Database = {
           last_name?: string | null
           last_name_kana?: string | null
           phishing_code?: string | null
+          phone_number?: string | null
           postal_code?: string | null
           prefecture?: string | null
+          referral_code_used?: string | null
           updated_at?: string
           user_handle?: string | null
+          wallet_setup_completed?: boolean | null
         }
         Update: {
           address?: string | null
@@ -1274,62 +1664,72 @@ export type Database = {
           last_name?: string | null
           last_name_kana?: string | null
           phishing_code?: string | null
+          phone_number?: string | null
           postal_code?: string | null
           prefecture?: string | null
+          referral_code_used?: string | null
           updated_at?: string
           user_handle?: string | null
+          wallet_setup_completed?: boolean | null
         }
         Relationships: []
       }
       referral_codes: {
         Row: {
           code: string
-          created_at: string
+          created_at: string | null
           id: string
-          is_active: boolean
+          is_active: boolean | null
           user_id: string
         }
         Insert: {
           code: string
-          created_at?: string
+          created_at?: string | null
           id?: string
-          is_active?: boolean
+          is_active?: boolean | null
           user_id: string
         }
         Update: {
           code?: string
-          created_at?: string
+          created_at?: string | null
           id?: string
-          is_active?: boolean
+          is_active?: boolean | null
           user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "referral_codes_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_codes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "v_user_kyc_status"
+            referencedColumns: ["user_id"]
           },
         ]
       }
       referrals: {
         Row: {
-          created_at: string
+          created_at: string | null
           id: string
           referee_id: string
           referral_code_id: string
           referrer_id: string
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           id?: string
           referee_id: string
           referral_code_id: string
           referrer_id: string
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           id?: string
           referee_id?: string
           referral_code_id?: string
@@ -1344,6 +1744,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "referrals_referee_id_fkey"
+            columns: ["referee_id"]
+            isOneToOne: true
+            referencedRelation: "v_user_kyc_status"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "referrals_referral_code_id_fkey"
             columns: ["referral_code_id"]
             isOneToOne: false
@@ -1356,6 +1763,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "v_user_kyc_status"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -1469,57 +1883,150 @@ export type Database = {
         }
         Relationships: []
       }
+      supported_tokens: {
+        Row: {
+          active: boolean
+          asset: string
+          chain: string
+          chain_specific_config: Json | null
+          contract_address: string | null
+          convert_enabled: boolean
+          created_at: string
+          decimals: number
+          deposit_enabled: boolean
+          destination_tag_required: boolean
+          display_order: number
+          explorer_url: string | null
+          icon_url: string | null
+          id: string
+          min_confirmations: number | null
+          min_deposit: number | null
+          min_withdraw: number | null
+          name: string
+          network: string
+          symbol: string
+          updated_at: string
+          withdraw_enabled: boolean
+          withdraw_fee: number | null
+        }
+        Insert: {
+          active?: boolean
+          asset: string
+          chain: string
+          chain_specific_config?: Json | null
+          contract_address?: string | null
+          convert_enabled?: boolean
+          created_at?: string
+          decimals: number
+          deposit_enabled?: boolean
+          destination_tag_required?: boolean
+          display_order?: number
+          explorer_url?: string | null
+          icon_url?: string | null
+          id?: string
+          min_confirmations?: number | null
+          min_deposit?: number | null
+          min_withdraw?: number | null
+          name: string
+          network: string
+          symbol: string
+          updated_at?: string
+          withdraw_enabled?: boolean
+          withdraw_fee?: number | null
+        }
+        Update: {
+          active?: boolean
+          asset?: string
+          chain?: string
+          chain_specific_config?: Json | null
+          contract_address?: string | null
+          convert_enabled?: boolean
+          created_at?: string
+          decimals?: number
+          deposit_enabled?: boolean
+          destination_tag_required?: boolean
+          display_order?: number
+          explorer_url?: string | null
+          icon_url?: string | null
+          id?: string
+          min_confirmations?: number | null
+          min_deposit?: number | null
+          min_withdraw?: number | null
+          name?: string
+          network?: string
+          symbol?: string
+          updated_at?: string
+          withdraw_enabled?: boolean
+          withdraw_fee?: number | null
+        }
+        Relationships: []
+      }
       sweep_jobs: {
         Row: {
           asset: string
+          broadcasted_at: string | null
           chain: string
           created_at: string
           currency: string
           deposit_id: string | null
+          deposit_index: number | null
           error_message: string | null
           from_address: string
           id: string
           network: string
           planned_amount: number
+          signed_at: string | null
+          signed_by: string | null
           signed_tx: string | null
           status: string
           to_address: string
+          tx_generated_at: string | null
           tx_hash: string | null
           unsigned_tx: Json | null
           updated_at: string
         }
         Insert: {
           asset: string
+          broadcasted_at?: string | null
           chain: string
           created_at?: string
           currency: string
           deposit_id?: string | null
+          deposit_index?: number | null
           error_message?: string | null
           from_address: string
           id?: string
           network: string
           planned_amount: number
+          signed_at?: string | null
+          signed_by?: string | null
           signed_tx?: string | null
           status?: string
           to_address: string
+          tx_generated_at?: string | null
           tx_hash?: string | null
           unsigned_tx?: Json | null
           updated_at?: string
         }
         Update: {
           asset?: string
+          broadcasted_at?: string | null
           chain?: string
           created_at?: string
           currency?: string
           deposit_id?: string | null
+          deposit_index?: number | null
           error_message?: string | null
           from_address?: string
           id?: string
           network?: string
           planned_amount?: number
+          signed_at?: string | null
+          signed_by?: string | null
           signed_tx?: string | null
           status?: string
           to_address?: string
+          tx_generated_at?: string | null
           tx_hash?: string | null
           unsigned_tx?: Json | null
           updated_at?: string
@@ -1632,6 +2139,7 @@ export type Database = {
       user_deposit_addresses: {
         Row: {
           address: string
+          address_version: number
           created_at: string | null
           currency: string
           derivation_path: string | null
@@ -1639,11 +2147,14 @@ export type Database = {
           is_active: boolean | null
           network: string
           private_key_encrypted: string | null
+          role: number | null
+          stake_address: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           address: string
+          address_version?: number
           created_at?: string | null
           currency: string
           derivation_path?: string | null
@@ -1651,11 +2162,14 @@ export type Database = {
           is_active?: boolean | null
           network: string
           private_key_encrypted?: string | null
+          role?: number | null
+          stake_address?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           address?: string
+          address_version?: number
           created_at?: string | null
           currency?: string
           derivation_path?: string | null
@@ -1663,6 +2177,8 @@ export type Database = {
           is_active?: boolean | null
           network?: string
           private_key_encrypted?: string | null
+          role?: number | null
+          stake_address?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -1748,13 +2264,18 @@ export type Database = {
           created_at: string
           derivation_path: string | null
           derivation_template: string
+          encryption_context: Json | null
+          external_chain_xpub: string | null
           id: string
+          key_version: number
           last_verified_at: string | null
           legacy_data: boolean | null
           master_key_id: string | null
           network: string
           next_index: number
+          stake_chain_xpub: string | null
           updated_at: string
+          user_id: string | null
           verified: boolean | null
           xpub: string
         }
@@ -1768,13 +2289,18 @@ export type Database = {
           created_at?: string
           derivation_path?: string | null
           derivation_template?: string
+          encryption_context?: Json | null
+          external_chain_xpub?: string | null
           id?: string
+          key_version?: number
           last_verified_at?: string | null
           legacy_data?: boolean | null
           master_key_id?: string | null
           network: string
           next_index?: number
+          stake_chain_xpub?: string | null
           updated_at?: string
+          user_id?: string | null
           verified?: boolean | null
           xpub: string
         }
@@ -1788,13 +2314,18 @@ export type Database = {
           created_at?: string
           derivation_path?: string | null
           derivation_template?: string
+          encryption_context?: Json | null
+          external_chain_xpub?: string | null
           id?: string
+          key_version?: number
           last_verified_at?: string | null
           legacy_data?: boolean | null
           master_key_id?: string | null
           network?: string
           next_index?: number
+          stake_chain_xpub?: string | null
           updated_at?: string
+          user_id?: string | null
           verified?: boolean | null
           xpub?: string
         }
@@ -1940,6 +2471,57 @@ export type Database = {
         }
         Relationships: []
       }
+      xrp_master_addresses: {
+        Row: {
+          address: string
+          created_at: string | null
+          description: string | null
+          encrypted_private_key: string
+          id: string
+          is_active: boolean | null
+          is_hot_wallet: boolean | null
+          key_version: number
+          max_tag: number
+          network: string
+          next_tag: number
+          private_key_iv: string
+          salt: string
+          updated_at: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string | null
+          description?: string | null
+          encrypted_private_key: string
+          id?: string
+          is_active?: boolean | null
+          is_hot_wallet?: boolean | null
+          key_version?: number
+          max_tag?: number
+          network: string
+          next_tag?: number
+          private_key_iv: string
+          salt: string
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string | null
+          description?: string | null
+          encrypted_private_key?: string
+          id?: string
+          is_active?: boolean | null
+          is_hot_wallet?: boolean | null
+          key_version?: number
+          max_tag?: number
+          network?: string
+          next_tag?: number
+          private_key_iv?: string
+          salt?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       active_chain_configs: {
@@ -1981,6 +2563,63 @@ export type Database = {
           min_deposit?: number | null
           network?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      chain_configs: {
+        Row: {
+          active: boolean | null
+          asset: string | null
+          chain: string | null
+          config: Json | null
+          created_at: string | null
+          deposit_enabled: boolean | null
+          id: string | null
+          min_confirmations: number | null
+          min_deposit: number | null
+          network: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          asset?: string | null
+          chain?: string | null
+          config?: never
+          created_at?: string | null
+          deposit_enabled?: boolean | null
+          id?: string | null
+          min_confirmations?: number | null
+          min_deposit?: number | null
+          network?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          asset?: string | null
+          chain?: string | null
+          config?: never
+          created_at?: string | null
+          deposit_enabled?: boolean | null
+          id?: string | null
+          min_confirmations?: number | null
+          min_deposit?: number | null
+          network?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      token_usage_summary: {
+        Row: {
+          active: boolean | null
+          asset: string | null
+          chain: string | null
+          id: string | null
+          name: string | null
+          network: string | null
+          symbol: string | null
+          total_balance: number | null
+          total_locked_balance: number | null
+          user_count: number | null
         }
         Relationships: []
       }
@@ -2065,12 +2704,12 @@ export type Database = {
           taker_fee_rate: number
         }[]
       }
-      add_currency_to_all_users: {
-        Args:
-          | { p_currency: string }
-          | { p_currency: string; p_initial_balance?: number }
-        Returns: number
-      }
+      add_currency_to_all_users:
+        | { Args: { p_currency: string }; Returns: number }
+        | {
+            Args: { p_currency: string; p_initial_balance?: number }
+            Returns: number
+          }
       add_user_asset: {
         Args: {
           p_currency: string
@@ -2078,6 +2717,38 @@ export type Database = {
           p_user_id: string
         }
         Returns: boolean
+      }
+      allocate_address_with_idempotency: {
+        Args: {
+          p_currency: string
+          p_idempotency_key: string
+          p_network: string
+          p_user_id: string
+        }
+        Returns: {
+          deposit_address_id: string
+          message: string
+          request_id: string
+          status: string
+          success: boolean
+        }[]
+      }
+      allocate_next_address_index: {
+        Args: { p_wallet_root_id: string }
+        Returns: number
+      }
+      allocate_next_destination_tag: {
+        Args: { p_master_address_id: string }
+        Returns: number
+      }
+      approve_deposit_and_credit_balance: {
+        Args: {
+          p_amount: number
+          p_currency: string
+          p_deposit_id: string
+          p_user_id: string
+        }
+        Returns: undefined
       }
       calculate_conversion_fee: {
         Args: {
@@ -2091,12 +2762,24 @@ export type Database = {
           net_amount: number
         }[]
       }
-      cancel_all_orders: {
-        Args: { p_market?: string }
-        Returns: number
+      cancel_all_orders: { Args: { p_market?: string }; Returns: number }
+      cancel_order: { Args: { p_order_id: string }; Returns: undefined }
+      check_address_allocation_rate_limit: {
+        Args: { p_currency: string; p_network: string; p_user_id: string }
+        Returns: {
+          allowed: boolean
+          reason: string
+          retry_after_seconds: number
+        }[]
       }
-      cancel_order: {
-        Args: { p_order_id: string }
+      cleanup_expired_address_requests: { Args: never; Returns: number }
+      complete_address_request: {
+        Args: {
+          p_deposit_address_id?: string
+          p_error_message?: string
+          p_request_id: string
+          p_success?: boolean
+        }
         Returns: undefined
       }
       execute_conversion: {
@@ -2123,13 +2806,16 @@ export type Database = {
       }
       execute_market_order: {
         Args: {
+          p_limit_order_id?: string
           p_market: string
-          p_side: string
-          p_qty: number
           p_price: number
+          p_qty: number
+          p_side: string
+          p_user_id: string
         }
         Returns: string
       }
+      generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_user_handle: {
         Args: { p_base_name?: string; p_user_id?: string }
         Returns: string
@@ -2145,6 +2831,25 @@ export type Database = {
           xpub: string
         }[]
       }
+      get_active_xrp_master_address: {
+        Args: { p_network?: string }
+        Returns: {
+          address: string
+          id: string
+          max_tag: number
+          network: string
+          next_tag: number
+        }[]
+      }
+      get_cardano_address_stats: {
+        Args: never
+        Returns: {
+          address_version: number
+          count: number
+          percentage: number
+          role: number
+        }[]
+      }
       get_conversion_fee_info: {
         Args: { p_from_currency?: string; p_to_currency?: string }
         Returns: {
@@ -2156,7 +2861,7 @@ export type Database = {
         }[]
       }
       get_dev_auth_status: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           daily_limit: number
           feature_name: string
@@ -2165,25 +2870,51 @@ export type Database = {
           usage_today: number
         }[]
       }
-      get_my_trades: {
-        Args:
-          | {
+      get_encryption_iterations: {
+        Args: { p_key_version: number }
+        Returns: number
+      }
+      get_encryption_version_stats: {
+        Args: never
+        Returns: {
+          count: number
+          iterations: number
+          key_version: number
+          percentage: number
+        }[]
+      }
+      get_my_trades:
+        | {
+            Args: {
               p_from?: string
               p_limit?: number
               p_offset?: number
               p_to?: string
             }
-          | { p_limit?: number }
-        Returns: {
-          created_at: string
-          id: string
-          market: string
-          price: number
-          qty: number
-          role: string
-          side: string
-        }[]
-      }
+            Returns: {
+              created_at: string
+              id: string
+              maker_fee: number
+              market: string
+              price: number
+              qty: number
+              role: string
+              side: string
+              taker_fee: number
+            }[]
+          }
+        | {
+            Args: { p_limit?: number }
+            Returns: {
+              created_at: string
+              id: string
+              market: string
+              price: number
+              qty: number
+              role: string
+              side: string
+            }[]
+          }
       get_orderbook_levels: {
         Args: { p_limit?: number; p_market: string; p_side: string }
         Returns: {
@@ -2191,22 +2922,45 @@ export type Database = {
           price: number
         }[]
       }
-      get_user_conversion_history: {
-        Args: { p_limit?: number; p_user_id: string } | { p_user_id: string }
-        Returns: {
-          created_at: string
-          exchange_rate: number
-          from_amount: number
-          from_currency: string
-          id: string
-          status: string
-          to_amount: number
-          to_currency: string
-        }[]
-      }
+      get_standard_config_keys: { Args: never; Returns: string[] }
+      get_user_conversion_history:
+        | {
+            Args: { p_user_id: string }
+            Returns: {
+              created_at: string
+              from_amount: number
+              from_currency: string
+              id: string
+              to_amount: number
+              to_currency: string
+            }[]
+          }
+        | {
+            Args: { p_limit?: number; p_user_id: string }
+            Returns: {
+              created_at: string
+              exchange_rate: number
+              from_amount: number
+              from_currency: string
+              id: string
+              status: string
+              to_amount: number
+              to_currency: string
+            }[]
+          }
       get_user_kyc_status: {
         Args: { target_user_id: string }
         Returns: Database["public"]["Enums"]["kyc_status"]
+      }
+      get_xrp_routing_stats: {
+        Args: never
+        Returns: {
+          available_tags: number
+          master_address: string
+          network: string
+          total_tags_allocated: number
+          utilization_percentage: number
+        }[]
       }
       has_role: {
         Args: {
@@ -2215,21 +2969,16 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_kyc_verified: {
-        Args: { target_user_id: string }
-        Returns: boolean
+      is_kyc_verified: { Args: { target_user_id: string }; Returns: boolean }
+      kyc_required: { Args: never; Returns: boolean }
+      map_network_name: {
+        Args: { p_chain: string; p_network: string }
+        Returns: string
       }
-      kyc_required: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      mark_all_notifications_as_read: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      mark_all_notifications_as_read: { Args: never; Returns: undefined }
       mark_notification_as_read: {
         Args: { notification_id: string }
-        Returns: boolean
+        Returns: undefined
       }
       place_limit_order: {
         Args: {
@@ -2242,6 +2991,20 @@ export type Database = {
         }
         Returns: string
       }
+      queue_email: {
+        Args: {
+          p_email_type: string
+          p_recipient_email: string
+          p_scheduled_at?: string
+          p_template_data?: Json
+          p_user_id: string
+        }
+        Returns: string
+      }
+      replace_template_variables: {
+        Args: { template_text: string; variables: Json }
+        Returns: string
+      }
       request_withdrawal: {
         Args: {
           p_amount: number
@@ -2252,10 +3015,7 @@ export type Database = {
         }
         Returns: string
       }
-      requesting_user_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      requesting_user_id: { Args: never; Returns: string }
       search_public_profiles: {
         Args: { p_query: string }
         Returns: {
@@ -2281,22 +3041,31 @@ export type Database = {
       }
       update_personal_profile: {
         Args: {
-          p_address: string | null
-          p_birth_date: string | null
-          p_building: string | null
-          p_city: string | null
-          p_first_name: string | null
-          p_first_name_kana: string | null
-          p_last_name: string | null
-          p_last_name_kana: string | null
-          p_postal_code: string | null
-          p_prefecture: string | null
+          p_address: string
+          p_birth_date: string
+          p_building: string
+          p_city: string
+          p_first_name: string
+          p_first_name_kana: string
+          p_last_name: string
+          p_last_name_kana: string
+          p_phone_number: string
+          p_postal_code: string
+          p_prefecture: string
         }
+        Returns: undefined
+      }
+      update_user_balance_atomic: {
+        Args: { p_amount: number; p_currency: string; p_user_id: string }
         Returns: undefined
       }
       upsert_user_asset: {
         Args: { p_amount: number; p_currency: string; p_user_id: string }
         Returns: undefined
+      }
+      validate_cardano_base_address: {
+        Args: { p_address: string; p_network: string }
+        Returns: boolean
       }
     }
     Enums: {
@@ -2437,3 +3206,4 @@ export const Constants = {
     },
   },
 } as const
+

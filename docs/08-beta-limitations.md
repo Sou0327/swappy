@@ -1,6 +1,35 @@
 # Beta Limitations and Development Roadmap
 
-This document explains the current Beta version limitations and future development plans.
+This document explains current Beta version limitations and future development plans.
+
+## ✅ Core Functionality (Working)
+
+### 1. Self-Custody Wallet Management
+- ✅ Generate HD wallet addresses across 6 blockchains (BTC, ETH, XRP, TRX, ADA, ERC-20)
+- ✅ BIP-32/39/44 compliant key derivation
+- ✅ Secure key management with encrypted wallet roots (client-side only)
+- ✅ Role-based access control (Admin/User)
+- ✅ **Self-custody architecture**: Users sign transactions in-browser, server never has access to private keys
+
+### 2. Real-time Deposit Detection
+- ✅ Blockchain RPC scanning for instant deposit detection
+- ✅ Support for Ethereum (ETH + ERC-20), Bitcoin, XRP, TRON, Cardano
+- ✅ Automatic confirmation tracking (pending → confirmed)
+- ✅ Database recording of all deposits
+- ✅ Separate `chain_progress` tracking for ETH and ERC20 tokens
+
+### 3. Withdrawal Flow (Client-Side)
+- ✅ Users construct and sign transactions in-browser
+- ✅ Transaction broadcasting via browser RPC or wallet extension
+- ✅ Server validates and records withdrawals (no signing)
+- ✅ Fee estimation and optimization (client-side)
+- ✅ **No hot wallet on server**: Users maintain full control
+
+### 4. Price Display
+- ✅ Real-time crypto prices via CoinGecko API
+- ✅ Multi-asset price tracking (BTC, ETH, USDT, USDC, XRP, TRX, ADA)
+- ✅ USD/JPY rate calculation
+- ✅ Cached price data to respect rate limits
 
 ## 📋 Beta Limitations
 
@@ -15,22 +44,19 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 ```
 
+### 2. Webhook Integration
+
+#### Notification Methods 🔶 In Progress
+- Email notifications: Template system implemented, automation in progress
+- SMS notifications: Planned
+- Push notifications: Planned
+
 ## 🔄 Features Under Development
 
-### 1. Routing Structure
-
-#### Earn Page Structure
-Current implementation:
-- `/earn` → Staking landing page
-- `/earn-overview` → Product overview
-- `/earn-history` → History
-
-### 2. Data Sources
-
-#### Gradual Migration to Real Data
-- Some features fetch from the actual database
-- Trading screen price data is being gradually migrated to real data
-- APY data will be transitioned to market-linked data
+### 1. Additional Notification Channels
+- Email template optimization
+- SMS integration for withdrawal confirmations
+- Push notification support for mobile devices
 
 ## 🎨 Planned UX Improvements
 

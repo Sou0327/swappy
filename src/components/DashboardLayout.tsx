@@ -272,6 +272,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               >
                 {t('topBar.markets')}
               </Link>
+              {/* Trade and Convert Coming Soon */}
               <Link
                 to="/trade"
                 className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/trade") ? "text-primary" : "text-gray-600"
@@ -279,7 +280,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               >
                 {t('topBar.trade')}
               </Link>
-              {/* Transfer, 稼ぐ は非表示（セルフホスト型ウォレットには不要） */}
+              {/* Convert is Coming Soon - still shows link but redirects to coming soon page */}
               <Link
                 to="/convert"
                 className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/convert") ? "text-primary" : "text-gray-600"

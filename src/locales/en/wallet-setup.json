@@ -1,0 +1,85 @@
+{
+  "step1": {
+    "title": "Wallet Setup",
+    "description": "Create a secure HD wallet",
+    "mnemonicLength": "Mnemonic Length",
+    "words12": "12 Words (Recommended)",
+    "words24": "24 Words",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Password (at least 6 characters)",
+    "passwordStrength": {
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong"
+    },
+    "passwordHint": "This password is used to encrypt your mnemonic",
+    "createWalletButton": "Create Wallet",
+    "securityNote": "Security Information",
+    "securityPoint1": "Mnemonic is encrypted with AES-256-GCM",
+    "securityPoint2": "You cannot recover if you forget your password",
+    "securityPoint3": "Store your mnemonic in a safe place"
+  },
+  "step2": {
+    "title": "Verify Mnemonic",
+    "description": "Select words in correct order from the displayed words",
+    "displayTitle": "Backup Mnemonic",
+    "displayDescription": "Please backup your mnemonic securely",
+    "importantNote": "Important",
+    "backupWarning": "This screen will only be displayed once. Make sure to backup your mnemonic.",
+    "backedUpButton": "I have backed it up",
+    "selectedWords": "Selected words ({{count}}/5):",
+    "selectWords": "Select words:"
+  },
+  "step3": {
+    "title": "Verify Mnemonic",
+    "description": "Please fill in the blank words"
+  },
+  "step4": {
+    "title": "Confirm Backup",
+    "description": "Confirm that you have securely stored your mnemonic",
+    "writtenOnPaper": "I have written mnemonic on paper",
+    "noScreenshotHint": "Screenshots are not recommended",
+    "storedSafely": "I have stored it in a safe place",
+    "storageHint": "e.g., a safe or secure digital storage",
+    "warning": "Warning",
+    "warningPoint1": "You will not be able to access your wallet if you lose your mnemonic",
+    "warningPoint2": "Never share it with anyone else",
+    "warningPoint3": "You cannot recover if you forget your password"
+  },
+  "step5": {
+    "title": "Initialize Wallet",
+    "description": "Generating addresses for all chains",
+    "generating": "Generating...",
+    "completed": "Completed!",
+    "generatingEVM": "Generating EVM addresses...",
+    "generatingBTC": "Generating Bitcoin addresses...",
+    "generatingTRX": "Generating Tron addresses...",
+    "generatingXRP": "Generating XRP addresses...",
+    "allChainsCompleted": "Address generation completed for all chains"
+  },
+  "step6": {
+    "title": "Wallet Setup Completed!",
+    "description": "Redirecting to dashboard..."
+  },
+  "common": {
+    "reset": "Reset",
+    "verify": "Verify",
+    "verifying": "Verifying...",
+    "next": "Next"
+  },
+  "errors": {
+    "passwordTooShort": "Password is too short",
+    "passwordMinLength": "Please enter a password with at least 6 characters",
+    "generationFailed": "Generation failed",
+    "verificationFailed": "Verification failed",
+    "incorrectWordOrder": "The order of words is incorrect",
+    "incorrectWords": "Incorrect words",
+    "tooFewWords": "Not enough words",
+    "selectAtLeast3Words": "Please select at least 3 words",
+    "verificationError": "Verification error",
+    "confirmationRequired": "Confirmation required",
+    "checkAllBoxes": "Please check all checkboxes",
+    "initializationFailed": "Initialization error",
+    "correct": "correct"
+  }
+}

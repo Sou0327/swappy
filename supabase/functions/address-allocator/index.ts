@@ -351,52 +351,29 @@ async function allocateEvmAddress(
     .maybeSingle();
   if (existing?.address) return existing;
 
-  // HDウォレット対応: 新システム優先でwallet_rootsから取得
-  console.log('[address-allocator] Querying wallet_roots with params:', { chain: 'evm', network, asset });
+  // HDウォレット対応: ユーザー個別xpubを取得（新システムのみ）
+  // 注意: wallet_rootsは (user_id, chain, network) で一意 - assetフィルタは不要
+  console.log('[address-allocator] Querying wallet_roots with params:', { chain: 'evm', network, userId });
 
-  // 1. 新システム（auto_generated=true）を優先検索
-  const { data: newRoot, error: newRootError } = await svc
+  const { data: root, error: rootError } = await svc
     .from('wallet_roots')
     .select('*')
     .eq('chain', 'evm')
     .eq('network', network)
-    .eq('asset', asset)
     .eq('active', true)
     .eq('auto_generated', true)
+    .eq('user_id', userId)
     .order('created_at', { ascending: true })
     .maybeSingle();
 
-  let root = newRoot;
-  let rootError = newRootError;
-
-  // 2. 新システムにない場合はレガシーシステム（legacy_data=true）を検索
-  if (!newRoot && !newRootError) {
-    console.log('[address-allocator] New system not found, falling back to legacy system');
-
-    const { data: legacyRoot, error: legacyRootError } = await svc
-      .from('wallet_roots')
-      .select('*')
-      .eq('chain', 'evm')
-      .eq('network', network)
-      .eq('asset', asset)
-      .eq('active', true)
-      .eq('legacy_data', true)
-      .order('created_at', { ascending: true })
-      .maybeSingle();
-
-    root = legacyRoot;
-    rootError = legacyRootError;
-  }
-
-  console.log('[address-allocator] Final query result:', {
+  console.log('[address-allocator] Query result:', {
     root: root ? {
       id: root.id,
-      auto_generated: root.auto_generated,
-      legacy_data: root.legacy_data,
       chain: root.chain,
       network: root.network,
       asset: root.asset,
-      system_type: root.auto_generated ? 'HDWallet' : 'Legacy'
+      derivation_path: root.derivation_path,
+      derivation_template: root.derivation_template
     } : null,
     rootError
   });
@@ -407,8 +384,8 @@ async function allocateEvmAddress(
   }
 
   if (!root?.xpub) {
-    console.error('[address-allocator] No wallet root found for:', { chain: 'evm', network, asset });
-    throw new Error('wallet_rootsにEVMのxpubが設定されていません');
+    console.error('[address-allocator] No wallet root found for:', { chain: 'evm', network, asset, userId });
+    throw new Error('wallet_rootsにEVMのxpubが設定されていません。ウォレットを作成してください。');
   }
 
   // 原子的にnext_indexを取得・インクリメント（競合制御）
@@ -436,6 +413,9 @@ async function allocateEvmAddress(
 
   const address = evmAddressFromPubkey(derived.publicKey);
 
+  // BIP44: m/44'/60'/0'/0/{index}
+  const derivationPath = `${root.derivation_path || "m/44'/60'/0'"}/0/${nextIndex}`;
+
   // deposit_addresses にUPSERT（ユーザー権限下）
   const { data: inserted, error: upsertErr } = await userScoped
     .from('deposit_addresses')
@@ -445,7 +425,7 @@ async function allocateEvmAddress(
       network,
       asset,
       address,
-      derivation_path: `m/.../${childPath}`,
+      derivation_path: derivationPath,
       address_index: nextIndex,
       xpub: root.xpub,
       active: true,
@@ -586,7 +566,7 @@ async function allocateBtcAddress(
   userId: string,
   network: 'mainnet' | 'testnet'
 ) {
-  // 既存再利用
+  // BIP84 Native SegWit: m/84'/0'/0'/0/{index} -> bech32 (bc1...)
   const { data: existing } = await userScoped
     .from('deposit_addresses')
     .select('id, address, derivation_path, address_index, xpub')
@@ -598,51 +578,29 @@ async function allocateBtcAddress(
     .maybeSingle();
   if (existing?.address) return existing;
 
-  // HDウォレット対応: 新システム優先でwallet_rootsから取得
-  console.log('[address-allocator] BTC: Querying wallet_roots with params:', { chain: 'btc', network, asset: 'BTC' });
+  // HDウォレット対応: ユーザー個別xpubを取得（BIP84）
+  // 注意: wallet_rootsは (user_id, chain, network) で一意 - assetフィルタは不要
+  console.log('[address-allocator] BTC: Querying wallet_roots with params:', { chain: 'btc', network, userId });
 
-  // 1. 新システム（auto_generated=true）を優先検索
-  const { data: newRoot, error: newRootError } = await svc
+  const { data: root, error: rootError } = await svc
     .from('wallet_roots')
     .select('*')
     .eq('chain', 'btc')
     .eq('network', network)
-    .eq('asset', 'BTC')
     .eq('active', true)
     .eq('auto_generated', true)
+    .eq('user_id', userId)
     .order('created_at', { ascending: true })
     .maybeSingle();
 
-  let root = newRoot;
-
-  // 2. 新システムにない場合はレガシーシステム（legacy_data=true）を検索
-  if (!newRoot && !newRootError) {
-    console.log('[address-allocator] BTC: New system not found, falling back to legacy system');
-
-    const { data: legacyRoot } = await svc
-      .from('wallet_roots')
-      .select('*')
-      .eq('chain', 'btc')
-      .eq('network', network)
-      .eq('asset', 'BTC')
-      .eq('active', true)
-      .eq('legacy_data', true)
-      .order('created_at', { ascending: true })
-      .maybeSingle();
-
-    root = legacyRoot;
-  }
-
-  console.log('[address-allocator] BTC: Final query result:', {
-    root: root ? {
-      id: root.id,
-      auto_generated: root.auto_generated,
-      legacy_data: root.legacy_data,
-      system_type: root.auto_generated ? 'HDWallet' : 'Legacy'
-    } : null
+  console.log('[address-allocator] BTC: Query result:', {
+    root: root ? { id: root.id, derivation_path: root.derivation_path } : null,
+    error: rootError?.message
   });
 
-  if (!root?.xpub) throw new Error('wallet_rootsにBTCのxpubが設定されていません');
+  if (!root?.xpub) {
+    throw new Error('wallet_rootsにBTCのxpubが設定されていません。ウォレットを作成してください。');
+  }
 
   // 原子的にnext_indexを取得・インクリメント（競合制御）
   const { data: nextIndexData, error: rpcError } = await svc
@@ -656,7 +614,7 @@ async function allocateBtcAddress(
   const nextIndex = nextIndexData as number;
   const childPath = (root.derivation_template as string || '0/{index}').replace('{index}', String(nextIndex));
 
-  // xpubから非ハードンで導出
+  // xpubから非ハードンで導出 (BIP84: m/84'/0'/0'/0/{index})
   const hd = HDKey.fromExtendedKey(root.xpub);
   // 相対導出（xpub基準）: '0/{index}' を段階的に
   const parts = childPath.split('/').map((p) => parseInt(p, 10));
@@ -669,6 +627,9 @@ async function allocateBtcAddress(
 
   const address = await btcBech32AddressFromPubkey(derived.publicKey, network);
 
+  // BIP84: m/84'/0'/0'/0/{index}
+  const derivationPath = `${root.derivation_path || "m/84'/0'/0'"}/0/${nextIndex}`;
+
   const { data: inserted, error } = await userScoped
     .from('deposit_addresses')
     .upsert({
@@ -677,7 +638,7 @@ async function allocateBtcAddress(
       network,
       asset: 'BTC',
       address,
-      derivation_path: `m/.../${childPath}`,
+      derivation_path: derivationPath,
       address_index: nextIndex,
       xpub: root.xpub,
       active: true,
@@ -711,85 +672,32 @@ async function allocateTrcAddress(
     return existing;
   }
 
-  const { data: root } = await svc
+  // HDウォレット対応: ユーザー個別xpubを取得（新システムのみ）
+  // 注意: wallet_rootsは (user_id, chain, network) で一意 - assetフィルタは不要
+  console.log('[allocateTrcAddress] Querying wallet_roots with params:', { chain: 'trc', network, userId });
+
+  const { data: root, error: rootError } = await svc
     .from('wallet_roots')
-    .select('id, xpub, next_index, derivation_template, derivation_path, legacy_data')
+    .select('id, xpub, next_index, derivation_template, derivation_path')
     .eq('chain', 'trc')
     .eq('network', network)
-    .eq('asset', asset)
     .eq('auto_generated', true)
+    .eq('user_id', userId)
     .eq('active', true)
     .maybeSingle();
 
-  let usableRoot = root;
+  console.log('[allocateTrcAddress] Query result:', {
+    root: root ? { id: root.id } : null,
+    error: rootError?.message
+  });
 
-  if (!usableRoot?.xpub) {
-    const { data: legacyRoot } = await svc
-      .from('wallet_roots')
-      .select('id, xpub, next_index, derivation_template, derivation_path, legacy_data')
-      .eq('chain', 'trc')
-      .eq('network', network)
-      .eq('asset', asset)
-      .eq('legacy_data', true)
-      .eq('active', true)
-      .maybeSingle();
-
-    if (!legacyRoot?.xpub) {
-      throw new Error('wallet_rootsにTronのアドレスが設定されていません');
-    }
-
-    usableRoot = legacyRoot;
+  if (!root?.xpub) {
+    throw new Error('wallet_rootsにTronのxpubが設定されていません。ウォレットを作成してください。');
   }
 
-  // Legacy data対応: legacy_data=trueの場合はxpubが実アドレス文字列
-  if (usableRoot.legacy_data) {
-    console.log('[allocateTrcAddress] Using legacy address (not generating new)');
-
-    // Legacy: xpubは実アドレス文字列（例: "TXxxx..."）
-    const legacyAddress = usableRoot.xpub;
-
-    // 既存のdeposit_addressesレコードがあればそれを返す
-    const { data: existingLegacy } = await userScoped
-      .from('deposit_addresses')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('chain', 'trc')
-      .eq('network', network)
-      .eq('asset', asset)
-      .eq('active', true)
-      .maybeSingle();
-
-    if (existingLegacy) {
-      console.log('[allocateTrcAddress] Returning existing legacy address:', existingLegacy.address);
-      return existingLegacy;
-    }
-
-    // Legacyアドレスをdeposit_addressesに保存して返す
-    const { data: insertedLegacy, error: legacyError } = await userScoped
-      .from('deposit_addresses')
-      .upsert({
-        user_id: userId,
-        chain: 'trc',
-        network,
-        asset,
-        address: legacyAddress,
-        derivation_path: usableRoot.derivation_path || "m/44'/195'/0'/0/0",
-        address_index: 0,
-        xpub: legacyAddress, // Legacyの場合はxpub = address
-        active: true,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id,chain,network,asset' })
-      .select('*')
-      .maybeSingle();
-
-    if (legacyError) throw legacyError;
-    return insertedLegacy;
-  }
-
-  // 通常処理（legacy_data=falseの場合）: xpubから新規アドレス導出
   // 原子的にnext_indexを取得・インクリメント（競合制御）
   const { data: nextIndexData, error: rpcError } = await svc
-    .rpc('allocate_next_address_index', { p_wallet_root_id: usableRoot.id });
+    .rpc('allocate_next_address_index', { p_wallet_root_id: root.id });
 
   if (rpcError) {
     console.error('[allocateTrcAddress] Failed to allocate address index:', rpcError);
@@ -797,10 +705,10 @@ async function allocateTrcAddress(
   }
 
   const nextIndex = nextIndexData as number;
-  const template = (usableRoot.derivation_template as string) || '0/{index}';
+  const template = (root.derivation_template as string) || '0/{index}';
   const childPath = template.replace('{index}', String(nextIndex));
 
-  const hdNode = HDKey.fromExtendedKey(usableRoot.xpub);
+  const hdNode = HDKey.fromExtendedKey(root.xpub);
   const segments = childPath.split('/').map((segment) => parseInt(segment, 10));
 
   let derivedNode: HDKey | null = hdNode;
@@ -816,7 +724,7 @@ async function allocateTrcAddress(
   }
 
   const address = await trcAddressFromPubkey(derivedNode.publicKey, network);
-  const derivationPath = `${usableRoot.derivation_path || "m/44'/195'/0'"}/${childPath}`;
+  const derivationPath = `${root.derivation_path || "m/44'/195'/0'"}/${childPath}`;
   const addressIndex = nextIndex;
 
   const { data: inserted, error } = await userScoped
@@ -829,7 +737,7 @@ async function allocateTrcAddress(
       address,
       derivation_path: derivationPath,
       address_index: addressIndex,
-      xpub: usableRoot.xpub,
+      xpub: root.xpub,
       active: true,
       updated_at: new Date().toISOString()
     }, { onConflict: 'user_id,chain,network,asset' })
@@ -982,88 +890,32 @@ async function allocateAdaAddress(
     return existing;
   }
 
-  // P0-⑤: CIP-1852 role-based derivation用にchain xpubsを取得
-  const { data: root } = await svc
+  // HDウォレット対応: ユーザー個別xpubを取得（新システムのみ）
+  // 注意: wallet_rootsは (user_id, chain, network) で一意 - assetフィルタは不要
+  console.log('[allocateAdaAddress] Querying wallet_roots with params:', { chain: 'ada', network: 'mainnet', userId });
+
+  const { data: root, error: rootError } = await svc
     .from('wallet_roots')
-    .select('id, xpub, external_chain_xpub, stake_chain_xpub, next_index, derivation_template, derivation_path, legacy_data')
+    .select('id, xpub, external_chain_xpub, stake_chain_xpub, next_index, derivation_template, derivation_path')
     .eq('chain', 'ada')
     .eq('network', 'mainnet')
-    .eq('asset', 'ADA')
     .eq('auto_generated', true)
+    .eq('user_id', userId)
     .eq('active', true)
     .maybeSingle();
 
-  let usableRoot = root;
+  console.log('[allocateAdaAddress] Query result:', {
+    root: root ? { id: root.id, hasExternalChain: !!root.external_chain_xpub, hasStakeChain: !!root.stake_chain_xpub } : null,
+    error: rootError?.message
+  });
 
-  if (!usableRoot?.xpub) {
-    const { data: legacyRoot } = await svc
-      .from('wallet_roots')
-      .select('id, xpub, external_chain_xpub, stake_chain_xpub, next_index, derivation_template, derivation_path, legacy_data')
-      .eq('chain', 'ada')
-      .eq('network', 'mainnet')
-      .eq('asset', 'ADA')
-      .eq('legacy_data', true)
-      .eq('active', true)
-      .maybeSingle();
-
-    if (!legacyRoot?.xpub) {
-      throw new Error('wallet_rootsにCardanoのアカウント情報が設定されていません');
-    }
-
-    usableRoot = legacyRoot;
+  if (!root?.xpub) {
+    throw new Error('wallet_rootsにCardanoのアカウント情報が設定されていません。ウォレットを作成してください。');
   }
 
-  // Legacy data対応: legacy_data=trueの場合はxpubが実アドレス文字列
-  if (usableRoot.legacy_data) {
-    console.log('[allocateAdaAddress] Using legacy address (not generating new)');
-
-    // Legacy: xpubは実アドレス文字列（例: "addr1xxx..."）
-    const legacyAddress = usableRoot.xpub;
-
-    // 既存のdeposit_addressesレコードがあればそれを返す
-    const { data: existingLegacy } = await userScoped
-      .from('deposit_addresses')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('chain', 'ada')
-      .eq('network', 'mainnet')
-      .eq('asset', 'ADA')
-      .eq('active', true)
-      .maybeSingle();
-
-    if (existingLegacy) {
-      console.log('[allocateAdaAddress] Returning existing legacy address:', existingLegacy.address);
-      return existingLegacy;
-    }
-
-    // Legacyアドレスをdeposit_addressesに保存して返す
-    const { data: insertedLegacy, error: legacyError } = await userScoped
-      .from('deposit_addresses')
-      .upsert({
-        user_id: userId,
-        chain: 'ada',
-        network: 'mainnet',
-        asset: 'ADA',
-        address: legacyAddress,
-        derivation_path: usableRoot.derivation_path || "m/1852'/1815'/0'/0/0",
-        address_index: 0,
-        xpub: legacyAddress, // Legacyの場合はxpub = address
-        role: null, // Legacyはrole概念なし
-        address_version: 1, // Legacy版
-        active: true,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id,chain,network,asset' })
-      .select('*')
-      .maybeSingle();
-
-    if (legacyError) throw legacyError;
-    return insertedLegacy;
-  }
-
-  // 通常処理（legacy_data=falseの場合）: xpubから新規アドレス導出
   // 原子的にnext_indexを取得・インクリメント（競合制御）
   const { data: nextIndexData, error: rpcError } = await svc
-    .rpc('allocate_next_address_index', { p_wallet_root_id: usableRoot.id });
+    .rpc('allocate_next_address_index', { p_wallet_root_id: root.id });
 
   if (rpcError) {
     console.error('[allocateAdaAddress] Failed to allocate address index:', rpcError);
@@ -1092,16 +944,16 @@ async function allocateAdaAddress(
 
   try {
     // P0-⑤: Chain xpubsが存在する場合はrole-based derivation (address_version=2)
-    if (usableRoot.external_chain_xpub && usableRoot.stake_chain_xpub) {
+    if (root.external_chain_xpub && root.stake_chain_xpub) {
       console.log('[allocateAdaAddress] Using CIP-1852 role-based derivation (address_version=2)');
 
       // External chain (role=0) からpayment key導出
-      externalChainPubKey = CardanoWasm.Bip32PublicKey.from_bech32(usableRoot.external_chain_xpub);
+      externalChainPubKey = CardanoWasm.Bip32PublicKey.from_bech32(root.external_chain_xpub);
       paymentPubKey = externalChainPubKey.derive(nextIndex);
       paymentKey = paymentPubKey.to_raw_key();
 
       // Stake chain (role=2) からstake key導出（固定index 0）
-      stakeChainPubKey = CardanoWasm.Bip32PublicKey.from_bech32(usableRoot.stake_chain_xpub);
+      stakeChainPubKey = CardanoWasm.Bip32PublicKey.from_bech32(root.stake_chain_xpub);
       stakePubKey = stakeChainPubKey.derive(0);
       stakeKey = stakePubKey.to_raw_key();
 
@@ -1118,13 +970,13 @@ async function allocateAdaAddress(
       stakeAddress = rewardAddress.to_address().to_bech32('stake');
 
       // CIP-1852準拠の導出パス: m/1852'/1815'/0'/0/{index} (external), m/1852'/1815'/0'/2/0 (stake)
-      derivationPath = `${usableRoot.derivation_path || "m/1852'/1815'/0'"}/0/${nextIndex}`;
+      derivationPath = `${root.derivation_path || "m/1852'/1815'/0'"}/0/${nextIndex}`;
 
     } else {
       // Legacy: account xpubから直接導出 (address_version=1)
       console.log('[allocateAdaAddress] Using legacy derivation (address_version=1)');
 
-      const accountPublicKey = CardanoWasm.Bip32PublicKey.from_bech32(usableRoot.xpub);
+      const accountPublicKey = CardanoWasm.Bip32PublicKey.from_bech32(root.xpub);
       const externalChain = accountPublicKey.derive(0);
       const stakeChain = accountPublicKey.derive(2);
 
@@ -1141,9 +993,9 @@ async function allocateAdaAddress(
 
       address = baseAddress.to_address().to_bech32('addr');
 
-      const template = (usableRoot.derivation_template as string) || '0/{index}';
+      const template = (root.derivation_template as string) || '0/{index}';
       const childPath = template.replace('{index}', String(nextIndex));
-      derivationPath = `${usableRoot.derivation_path || "m/1852'/1815'/0'"}/${childPath}`;
+      derivationPath = `${root.derivation_path || "m/1852'/1815'/0'"}/${childPath}`;
 
       // Legacy導出のクリーンアップ
       externalChain?.free();
@@ -1169,8 +1021,8 @@ async function allocateAdaAddress(
   }
 
   // P0-⑤: address_version=2, role=0 (external) で保存
-  const addressVersion = (usableRoot.external_chain_xpub && usableRoot.stake_chain_xpub) ? 2 : 1;
-  const role = (usableRoot.external_chain_xpub && usableRoot.stake_chain_xpub) ? 0 : null;
+  const addressVersion = (root.external_chain_xpub && root.stake_chain_xpub) ? 2 : 1;
+  const role = (root.external_chain_xpub && root.stake_chain_xpub) ? 0 : null;
 
   const { data: inserted, error } = await userScoped
     .from('deposit_addresses')
@@ -1182,7 +1034,7 @@ async function allocateAdaAddress(
       address,
       derivation_path: derivationPath,
       address_index: addressIndex,
-      xpub: usableRoot.xpub,
+      xpub: root.xpub,
       role: role, // P0-⑤: 0=external (受信用)
       address_version: addressVersion, // P0-⑤: 2=CIP-1852, 1=legacy
       stake_address: stakeAddress, // P0-⑤: Stake address（reward address）

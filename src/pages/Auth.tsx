@@ -216,9 +216,9 @@ const Auth = () => {
           : t('toast.checkEmail'),
       });
 
-      // If email confirmation is disabled, redirect immediately
+      // 新規登録後、ウォレットセットアップへ遷移
       if (data.user && data.session) {
-        window.location.href = "/redirect";
+        window.location.href = "/wallet-setup";
       }
 
     } catch (error: unknown) {

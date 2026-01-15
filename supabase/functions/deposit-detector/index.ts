@@ -45,7 +45,7 @@ interface XRPTransaction {
   TransactionType: string;
   Destination: string;
   DestinationTag?: number;
-  Amount: string;
+  Amount: string | { value: string; currency: string };
   Account: string;
 }
 
@@ -160,13 +160,14 @@ export async function detectEthereumDeposits(
   console.log(`[${new Date().toISOString()}] Detecting Ethereum deposits on ${network}`);
 
   try {
-    // アクティブなEthereumアドレスを取得
+    // アクティブなEthereumアドレスを取得（ETHのみ）
     const { data: addresses, error } = await supabaseClient
       .from('deposit_addresses')
       .select('*')
       // Phase 2 schema: EVM系は chain='evm' で保存
       .eq('chain', 'evm')
       .eq('network', network)
+      .eq('asset', 'ETH')
       .eq('active', true);
 
     if (error) {
@@ -281,17 +282,11 @@ export async function detectErc20Deposits(
       const addrInfo = toMap.get(to) as DepositAddress | undefined;
       if (!addrInfo) continue; // undefinedチェックを追加
       
-      const amount = Number(BigInt(log.data) / BigInt(10 ** decimals));
-
-      // 既存処理済みチェック
-      const { data: existing } = await supabaseClient
-        .from('deposit_transactions')
-        .select('id')
-        .eq('transaction_hash', log.transactionHash as string)
-        .eq('to_address', addrInfo.address)
-        .maybeSingle();
-      if (existing) continue;
-
+      // ERC20金額 - 最小単位で精度維持
+      const amountWei = BigInt(log.data || '0x0');
+      const amountDecimal = amountWei.toString();
+      const amountDisplay = Number(amountWei) / Math.pow(10, decimals);
+      
       // 確認数
       const [txRes, tipRes] = await Promise.all([
         fetch(rpc, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 3, method: 'eth_getTransactionReceipt', params: [log.transactionHash] }) }),
@@ -301,9 +296,50 @@ export async function detectErc20Deposits(
       const tipData = await tipRes.json();
       const blockNumber = parseInt(txData.result?.blockNumber || '0x0', 16);
       const tip = parseInt(tipData.result, 16);
-      const confirmations = blockNumber > 0 ? (tip - blockNumber + 1) : 0;
       const required = CHAIN_CONFIGS.ethereum.minConfirmations;
-      const isConfirmed = confirmations >= required;
+      
+      const { data: existing } = await supabaseClient
+        .from('deposit_transactions')
+        .select('id, status, confirmations, required_confirmations, amount')
+        .eq('transaction_hash', log.transactionHash as string)
+        .eq('to_address', addrInfo.address)
+        .maybeSingle();
+      
+      if (existing) {
+        // 既存のpendingトランザクションの場合、確認数を更新
+        if (existing.status === 'pending') {
+          const confirmations = blockNumber > 0 ? (tip - blockNumber + 1) : 0;
+          const isConfirmed = confirmations >= required;
+          
+          await supabaseClient.from('deposit_transactions').update({
+            confirmations,
+            status: isConfirmed ? 'confirmed' : 'pending',
+            confirmed_at: isConfirmed ? new Date().toISOString() : null
+          }).eq('id', existing.id);
+          
+          if (isConfirmed) {
+            await updateUserBalance(addrInfo.user_id, token, amountDisplay, supabaseClient);
+          }
+          
+          await upsertDepositRow({
+            user_id: addrInfo.user_id,
+            amountDisplay: amountDisplay, // 表示単位を渡す
+            currency: token,
+            chain: 'evm',
+            network,
+            asset: token,
+            status: isConfirmed ? 'confirmed' : 'pending',
+            transaction_hash: log.transactionHash as string,
+            wallet_address: addrInfo.address,
+            confirmations_required: required,
+            confirmations_observed: confirmations
+          }, supabaseClient);
+        }
+        continue;
+      }
+
+      const confirmations = blockNumber > 0 ? (tip - blockNumber + 1) : 0;
+      const isConfirmed = confirmations >= CHAIN_CONFIGS.ethereum.minConfirmations;
 
       await supabaseClient.from('deposit_transactions').insert({
         user_id: addrInfo.user_id,
@@ -315,7 +351,7 @@ export async function detectErc20Deposits(
         block_number: blockNumber,
         from_address: '0x' + (log.topics?.[1]?.slice(26) || ''),
         to_address: addrInfo.address,
-        amount: amount.toString(),
+        amount: amountDecimal, // 最小単位（wei）で保存
         confirmations,
         required_confirmations: required,
         status: isConfirmed ? 'confirmed' : 'pending',
@@ -324,12 +360,12 @@ export async function detectErc20Deposits(
       });
 
       if (isConfirmed) {
-        await updateUserBalance(addrInfo.user_id, token, amount, supabaseClient);
+        await updateUserBalance(addrInfo.user_id, token, amountDisplay, supabaseClient);
       }
 
       await upsertDepositRow({
         user_id: addrInfo.user_id,
-        amount,
+        amountDisplay: amountDisplay, // 表示単位を渡す
         currency: token,
         chain: 'evm',
         network,
@@ -421,23 +457,135 @@ export async function processEthereumTransaction(
   try {
     const txHash = log.transactionHash as string;
 
-    // 既に処理済みかチェック
+    // 既に処理済みかチェック（ロックなしで即returnしないように）
     const { data: existingTx } = await supabaseClient
       .from('deposit_transactions')
-      .select('id')
+      .select('id, status')
       .eq('transaction_hash', txHash)
       .eq('to_address', addressInfo.address)
       .single();
 
-    if (existingTx) {
+      if (existingTx) {
+      // 既存のpendingトランザクションの場合、確認数を更新
+      if (existingTx.status === 'pending') {
+        const rpc = rpcUrl ?? (network === 'ethereum' ? ETHEREUM_RPC_URL! : ETHEREUM_SEPOLIA_RPC_URL!);
+        if (!rpc) {
+          console.log(`No RPC URL configured for Ethereum ${network}`);
+          return;
+        }
+        
+        // receiptを取得してstatusを確認
+        const receiptResponse = await fetch(rpc, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_getTransactionReceipt',
+            params: [txHash],
+            id: 3
+          })
+        });
+        const receiptData = await receiptResponse.json();
+        const receipt = receiptData.result;
+        
+        // receiptが存在しないか失敗している場合はスキップ
+        if (!receipt || receipt.status === '0x0') {
+          console.log(`Transaction ${txHash} failed or not confirmed yet`);
+          return;
+        }
+        
+        // receiptが存在しない場合は更新しない
+        if (!receipt) {
+          return;
+        }
+        
+        const latestBlockResponse = await fetch(rpc, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_blockNumber',
+            params: [],
+            id: 4
+          })
+        });
+        const latestBlockData = await latestBlockResponse.json();
+        const latestBlockNumber = parseInt(latestBlockData.result, 16);
+        
+        // chain_progressを更新してから確認数を計算（重複検知防止）
+        // assetごとに分離（ETHとERC20を別々に管理）
+        // ETHトランザクションの場合はasset='ETH'で固定
+        await setChainProgress('evm', network, 'ETH', latestBlockNumber);
+        
+        const txBlockNumber = parseInt(receipt.blockNumber, 16);
+        const confirmations = latestBlockNumber - txBlockNumber + 1;
+        const isConfirmed = confirmations >= CHAIN_CONFIGS.ethereum.minConfirmations;
+
+        // 金額を再取得（receiptではなくtransactionから）
+        const txResponse = await fetch(rpc, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_getTransactionByHash',
+            params: [txHash],
+            id: 5
+          })
+        });
+        const txData = await txResponse.json();
+        const transaction = txData.result;
+        
+        if (!transaction) {
+          return;
+        }
+        
+        // 金額を計算（Wei to ETH）- 最小単位で精度維持
+        const amountWei = BigInt(transaction.value || '0x0');
+        const amountDecimal = amountWei.toString(); // 最小単位（wei）で保存
+        const amountDisplay = Number(amountWei) / Math.pow(10, 18); // 表示用のみ
+
+        // 確認数を更新
+        await supabaseClient
+          .from('deposit_transactions')
+          .update({
+            confirmations,
+            status: isConfirmed ? 'confirmed' : 'pending',
+            confirmed_at: isConfirmed ? new Date().toISOString() : null
+          })
+          .eq('id', existingTx.id);
+
+        if (isConfirmed) {
+          await updateUserBalance(addressInfo.user_id, 'ETH', amountDisplay, supabaseClient);
+        }
+
+        // depositsテーブルも更新（履歴/リアルタイム通知反映）
+        await upsertDepositRow({
+          user_id: addressInfo.user_id,
+          amountDisplay: amountDisplay, // 表示単位を渡す
+          currency: 'ETH',
+          chain: 'evm',
+          network,
+          asset: 'ETH',
+          status: isConfirmed ? 'confirmed' : 'pending',
+          transaction_hash: txHash,
+          wallet_address: addressInfo.address,
+          confirmations_required: CHAIN_CONFIGS.ethereum.minConfirmations,
+          confirmations_observed: confirmations
+        }, supabaseClient);
+      }
+      
       console.log(`Transaction ${txHash} already processed`);
       return;
     }
 
     // トランザクション詳細を取得
-    const rpc = rpcUrl ?? (network === 'ethereum' ? ETHEREUM_RPC_URL : ETHEREUM_SEPOLIA_RPC_URL);
+    const rpc = rpcUrl ?? (network === 'ethereum' ? ETHEREUM_RPC_URL! : ETHEREUM_SEPOLIA_RPC_URL!);
+    if (!rpc) {
+      console.log(`No RPC URL configured for Ethereum ${network}`);
+      return;
+    }
 
-    const txResponse = await fetch(rpc!, {
+    const txResponse = await fetch(rpc, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -455,20 +603,41 @@ export async function processEthereumTransaction(
       console.log(`Transaction ${txHash} not found`);
       return;
     }
+
+    // receiptを取得してstatusを確認
+    const receiptResponse = await fetch(rpc, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'eth_getTransactionReceipt',
+        params: [txHash],
+        id: 5
+      })
+    });
+    const receiptData = await receiptResponse.json();
+    const receipt = receiptData.result;
+
+    // receiptが存在しないか失敗している場合はスキップ
+    if (!receipt || receipt.status === '0x0') {
+      console.log(`Transaction ${txHash} failed or not confirmed yet`);
+      return;
+    }
     
-    // 金額を計算（Wei to ETH）
-    const amountWei = parseInt(transaction.value, 16);
-    const amountEth = amountWei / Math.pow(10, 18);
-    
+    // 金額を計算（Wei to ETH）- 最小単位で精度維持
+    const amountWei = BigInt(transaction.value || '0x0');
+    const amountDecimal = amountWei.toString(); // 最小単位（wei）で保存
+    const amountDisplay = Number(amountWei) / Math.pow(10, 18); // 表示用のみ
+
     // 最小入金額チェック
     // 最小入金額: ETH 0.01〜0.05（下限を適用）
-    if (amountEth < 0.01) {
-      console.log(`Amount ${amountEth} ETH too small, skipping`);
+    if (amountDisplay < 0.01) {
+      console.log(`Amount ${amountDisplay} ETH too small, skipping`);
       return;
     }
     
     // 確認数を取得
-    const latestBlockResponse = await fetch(rpc!, {
+    const latestBlockResponse = await fetch(rpc, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -498,7 +667,7 @@ export async function processEthereumTransaction(
         block_hash: transaction.blockHash,
         from_address: transaction.from,
         to_address: transaction.to,
-        amount: amountEth.toString(),
+        amount: amountDecimal,
         confirmations: confirmations,
         required_confirmations: CHAIN_CONFIGS.ethereum.minConfirmations,
         status: confirmations >= CHAIN_CONFIGS.ethereum.minConfirmations ? 'confirmed' : 'pending',
@@ -509,17 +678,17 @@ export async function processEthereumTransaction(
     if (error) {
       console.error(`Error inserting transaction ${txHash}:`, error);
     } else {
-      console.log(`Successfully recorded deposit: ${amountEth} ETH from ${transaction.from} to ${transaction.to}`);
+      console.log(`Successfully recorded deposit: ${amountDisplay} ETH from ${transaction.from} to ${transaction.to}`);
       
       // 確認済みの場合、ユーザーの残高を更新
       if (confirmations >= CHAIN_CONFIGS.ethereum.minConfirmations) {
-        await updateUserBalance(addressInfo.user_id, 'ETH', amountEth);
+        await updateUserBalance(addressInfo.user_id, 'ETH', amountDisplay);
       }
 
       // deposits テーブルに pending/confirmed を反映
       await upsertDepositRow({
         user_id: addressInfo.user_id,
-        amount: amountEth,
+        amountDisplay: amountDisplay,
         currency: 'ETH',
         chain: 'evm',
         network,
@@ -602,12 +771,60 @@ async function processBitcoinTransaction(
     // 既に処理済みかチェック
     const { data: existingTx } = await supabaseClient
       .from('deposit_transactions')
-      .select('id')
+      .select('id, status, confirmations, required_confirmations, amount')
       .eq('transaction_hash', tx.txid)
       .eq('to_address', addressInfo.address)
       .single();
     
     if (existingTx) {
+      // 既存のpendingトランザクションの場合、確認数を更新してconfirmedへ進める
+      if (existingTx.status === 'pending') {
+        let confirmations = 0;
+        let isConfirmed = false;
+        // 既存のamountを保持（未確定時に0で上書きしない）
+        const depositAmount = existingTx.amount || 0;
+        try {
+          const tipUrl = tipUrlOverride ?? (network === 'mainnet' ? 'https://blockstream.info/api/blocks/tip/height' : 'https://blockstream.info/testnet/api/blocks/tip/height');
+          const tipText = await (await fetch(tipUrl)).text();
+          const tipHeight = parseInt(tipText, 10) || 0;
+          const txHeight = tx.status?.block_height || 0;
+          confirmations = (tx.status?.confirmed && txHeight > 0) ? (tipHeight - txHeight + 1) : 0;
+          isConfirmed = confirmations >= CHAIN_CONFIGS.bitcoin.minConfirmations;
+
+          // 確認済みの場合、残高を更新（amountは既存値を使用）
+          if (isConfirmed) {
+            // amountは既存値を使用（既に計算済み）
+            await updateUserBalance(addressInfo.user_id, 'BTC', depositAmount, supabaseClient);
+          }
+        } catch {
+          // ブロックチェーンAPIエラーを無視
+        }
+
+        // deposit_transactionsを更新
+        await supabaseClient
+          .from('deposit_transactions')
+          .update({
+            confirmations,
+            status: isConfirmed ? 'confirmed' : 'pending',
+            confirmed_at: isConfirmed ? new Date().toISOString() : null
+          })
+          .eq('id', existingTx.id);
+
+        // depositsテーブルも更新
+        await upsertDepositRow({
+          user_id: addressInfo.user_id,
+          amountDisplay: depositAmount,
+          currency: 'BTC',
+          chain: 'btc',
+          network,
+          asset: 'BTC',
+          status: isConfirmed ? 'confirmed' : 'pending',
+          transaction_hash: tx.txid,
+          wallet_address: addressInfo.address,
+          confirmations_required: existingTx.required_confirmations,
+          confirmations_observed: confirmations || 0
+        }, supabaseClient);
+      }
       return;
     }
     
@@ -672,7 +889,7 @@ async function processBitcoinTransaction(
 
       await upsertDepositRow({
         user_id: addressInfo.user_id,
-        amount: depositAmount,
+        amountDisplay: depositAmount,
         currency: 'BTC',
         chain: 'btc',
         network,
@@ -774,7 +991,8 @@ async function processXRPTransaction(
     }
 
     const destinationTag = tx.DestinationTag;
-    if (!destinationTag) {
+    // DestinationTag=0 も有効な値として扱う
+    if (destinationTag === undefined || destinationTag === null) {
       console.log(`No destination tag in transaction ${txHash}, skipping`);
       return;
     }
@@ -798,17 +1016,35 @@ async function processXRPTransaction(
     // 既に処理済みかチェック
     const { data: existingTx } = await supabaseClient
       .from('deposit_transactions')
-      .select('id')
-      .eq('transaction_hash', txHash)
-      .eq('destination_tag', destinationTag.toString())
-      .maybeSingle();
+      .select('id, status')
+      .eq('transaction_hash', tx.hash)
+      .eq('to_address', addressInfo.address)
+      .single();
     
     if (existingTx) {
+      // XRPトランザクションは即確定のため、更新不要
       return;
     }
     
     // 金額を計算（drops to XRP）
-    const amountDrops = parseInt(tx.Amount, 10);
+    // Amountは文字列形式かオブジェクト形式（issued currency）
+    let amountDrops = 0;
+    let currency = 'XRP'; // デフォルトはネイティブXRP
+    
+    if (typeof tx.Amount === 'string') {
+      amountDrops = parseInt(tx.Amount, 10);
+      // ネイティブXRP
+    } else if (typeof tx.Amount === 'object' && tx.Amount.value) {
+      amountDrops = parseInt(tx.Amount.value, 10);
+      // issued currencyの場合、currencyを抽出
+      if (tx.Amount.currency) {
+        currency = tx.Amount.currency;
+        console.log(`XRP issued currency detected: ${currency}`);
+        // issued currencyは未サポートとしてスキップ
+        console.log(`Skipping unsupported XRP issued currency: ${currency}`);
+        return;
+      }
+    }
     const amountXRP = amountDrops / 1000000;
     
     // 最小入金額: XRP 20〜50（下限を適用）
@@ -847,7 +1083,7 @@ async function processXRPTransaction(
 
       await upsertDepositRow({
         user_id: addressInfo.user_id,
-        amount: amountXRP,
+        amountDisplay: amountXRP,
         currency: 'XRP',
         chain: 'xrp',
         network,
@@ -865,56 +1101,21 @@ async function processXRPTransaction(
   }
 }
 
-// ユーザー残高の更新
-async function updateUserBalance(userId: string, asset: string, amount: number, supabaseClient = supabase) {
+// ユーザー残高の更新（atomic）
+async function updateUserBalance(userId: string, asset: string, amountDisplay: number, supabaseClient = supabase) {
   try {
-    // 既存の残高を取得
-    const { data: existingBalance, error: fetchError } = await supabaseClient
-      .from('user_assets')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('currency', asset)
-      .single();
+    // PostgreSQLのatomic functionを使用してrace conditionを回避
+    const { error } = await supabaseClient.rpc('update_user_balance_atomic', {
+      p_user_id: userId,
+      p_currency: asset,
+      p_amount: amountDisplay.toString() // 表示単位（Number）を文字列で渡す
+    });
     
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      console.error('Error fetching user balance:', fetchError);
-      return;
-    }
-    
-    if (existingBalance) {
-      // 既存の残高を更新
-      const newBalance = parseFloat(existingBalance.balance) + amount;
-      const { error: updateError } = await supabaseClient
-        .from('user_assets')
-        .update({ 
-          balance: newBalance.toString(),
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', userId)
-        .eq('currency', asset);
-      
-      if (updateError) {
-        console.error('Error updating user balance:', updateError);
-      } else {
-        console.log(`Updated ${asset} balance for user ${userId}: ${newBalance}`);
-      }
+    if (error) {
+      console.error('Error updating user balance:', error);
     } else {
-      // 新しい残高レコードを作成
-      const { error: insertError } = await supabaseClient
-        .from('user_assets')
-        .insert({
-          user_id: userId,
-          currency: asset,
-          balance: amount.toString()
-        });
-      
-      if (insertError) {
-        console.error('Error creating user balance:', insertError);
-      } else {
-        console.log(`Created new ${asset} balance for user ${userId}: ${amount}`);
-      }
+      console.log(`Successfully updated ${asset} balance for user ${userId} by ${amountDisplay}`);
     }
-    
   } catch (error) {
     console.error('Error in updateUserBalance:', error);
   }
@@ -923,7 +1124,7 @@ async function updateUserBalance(userId: string, asset: string, amount: number, 
 // depositsテーブルへ pending/confirmed を反映（既存Txは更新）
 async function upsertDepositRow(params: {
   user_id: string;
-  amount: number;
+  amountDisplay: number; // 表示単位パラメータを追加
   currency: string;
   chain?: string;
   network?: string;
@@ -952,6 +1153,7 @@ async function upsertDepositRow(params: {
           chain: params.chain ?? null,
           network: params.network ?? null,
           asset: params.asset ?? params.currency,
+          amount: params.amountDisplay, // 表示単位を保存
           confirmed_at: params.status === 'confirmed' ? new Date().toISOString() : null
         })
         .eq('id', existing.id);
@@ -960,7 +1162,7 @@ async function upsertDepositRow(params: {
         .from('deposits')
         .insert({
           user_id: params.user_id,
-          amount: params.amount,
+          amount: params.amountDisplay, // 表示単位を保存
           currency: params.currency,
           chain: params.chain ?? null,
           network: params.network ?? null,
@@ -1156,7 +1358,7 @@ export async function detectTronDeposits(
 
             await upsertDepositRow({
               user_id: addr.user_id,
-              amount: amount,
+              amountDisplay: amount,
               currency: 'USDT',
               chain: 'trc',
               network,
@@ -1233,7 +1435,7 @@ export async function detectTronDeposits(
 
             await upsertDepositRow({
               user_id: addr.user_id,
-              amount: amount,
+              amountDisplay: amount,
               currency: 'TRX',
               chain: 'trc',
               network,
@@ -1354,7 +1556,7 @@ export async function detectAdaDeposits(
 
           await upsertDepositRow({
             user_id: addr.user_id,
-            amount: amount,
+            amountDisplay: amount,
             currency: 'ADA',
             chain: 'ada',
             network,
@@ -1364,7 +1566,7 @@ export async function detectAdaDeposits(
             wallet_address: addr.address,
             confirmations_required: CHAIN_CONFIGS.cardano.minConfirmations,
             confirmations_observed: confirmations
-          }, supabaseClient);
+          });
         }
       } catch (e) {
         console.error('ADA scan error:', e);

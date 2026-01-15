@@ -7,6 +7,7 @@ import enCommon from '@/locales/en/common.json';
 import enNavigation from '@/locales/en/navigation.json';
 import enDashboard from '@/locales/en/dashboard.json';
 import enWallet from '@/locales/en/wallet.json';
+import enWalletSetup from '@/locales/en/wallet-setup.json';
 import enTrade from '@/locales/en/trade.json';
 import enMessages from '@/locales/en/messages.json';
 import enAuth from '@/locales/en/auth.json';
@@ -28,6 +29,7 @@ import jaCommon from '@/locales/ja/common.json';
 import jaNavigation from '@/locales/ja/navigation.json';
 import jaDashboard from '@/locales/ja/dashboard.json';
 import jaWallet from '@/locales/ja/wallet.json';
+import jaWalletSetup from '@/locales/ja/wallet-setup.json';
 import jaTrade from '@/locales/ja/trade.json';
 import jaMessages from '@/locales/ja/messages.json';
 import jaAuth from '@/locales/ja/auth.json';
@@ -56,6 +58,7 @@ const resources = {
     navigation: enNavigation,
     dashboard: enDashboard,
     wallet: enWallet,
+    'wallet-setup': enWalletSetup,
     trade: enTrade,
     messages: enMessages,
     auth: enAuth,
@@ -78,6 +81,7 @@ const resources = {
     navigation: jaNavigation,
     dashboard: jaDashboard,
     wallet: jaWallet,
+    'wallet-setup': jaWalletSetup,
     trade: jaTrade,
     messages: jaMessages,
     auth: jaAuth,
@@ -112,7 +116,7 @@ i18n
     // デフォルト名前空間
     defaultNS: 'common',
     // 名前空間のリスト
-    ns: ['common', 'navigation', 'dashboard', 'wallet', 'trade', 'messages', 'auth', 'account', 'earn', 'markets', 'convert', 'transfer', 'referral', 'support', 'history', 'kyc', 'security', 'announcements', 'demo', 'landing'],
+    ns: ['common', 'navigation', 'dashboard', 'wallet', 'wallet-setup', 'trade', 'messages', 'auth', 'account', 'earn', 'markets', 'convert', 'transfer', 'referral', 'support', 'history', 'kyc', 'security', 'announcements', 'demo', 'landing'],
     // 言語検出の設定
     detection: {
       // 検出順序: localStorage → navigator → デフォルト

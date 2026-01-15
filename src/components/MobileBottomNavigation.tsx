@@ -2,7 +2,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   TrendingUp,
-  ArrowLeftRight,
   Wallet,
   Bell,
   User
@@ -20,10 +19,10 @@ const MobileBottomNavigation = () => {
   const location = useLocation();
   const { unreadCount } = useNotifications();
 
+  // Trade and Convert are Coming Soon, removed from mobile navigation
   const navItems: NavItem[] = [
     { icon: LayoutDashboard, label: "ホーム", path: "/dashboard" },
     { icon: TrendingUp, label: "マーケット", path: "/markets" },
-    { icon: ArrowLeftRight, label: "取引", path: "/trade" },
     { icon: Wallet, label: "ウォレット", path: "/wallet" },
     { icon: Bell, label: "通知", path: "/notifications" },
     { icon: User, label: "設定", path: "/my-account" }
