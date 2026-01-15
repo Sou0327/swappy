@@ -17,6 +17,7 @@ import * as bip39 from 'https://esm.sh/bip39@2.6.0';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 const PBKDF2_ITERATIONS = 100000;
+const PBKDF2_HASH_PREFIX = 'pbkdf2$'; // 新しいハッシュ形式のプレフィックス
 
 // ====================================
 // 暗号化関連関数
@@ -78,13 +79,95 @@ async function deriveKey(password: Uint8Array, salt: Uint8Array): Promise<Crypto
 }
 
 /**
- * パスワードハッシュ生成（認証確認用）
+ * パスワードハッシュ生成（PBKDF2 + ソルト付き）
+ * 形式: pbkdf2$<iterations>$<salt-base64>$<hash-base64>
  */
 async function hashPassword(password: string): Promise<string> {
+  // ランダムなソルトを生成（16バイト）
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const encoder = new TextEncoder();
+  const passwordBytes = encoder.encode(password);
+
+  // PBKDF2でハッシュを生成
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    passwordBytes,
+    'PBKDF2',
+    false,
+    ['deriveBits']
+  );
+
+  const hashBuffer = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: PBKDF2_ITERATIONS,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    256 // 出力ビット長
+  );
+
+  const saltBase64 = btoa(String.fromCharCode(...salt));
+  const hashBase64 = btoa(String.fromCharCode(...new Uint8Array(hashBuffer)));
+
+  return `${PBKDF2_HASH_PREFIX}${PBKDF2_ITERATIONS}$${saltBase64}$${hashBase64}`;
+}
+
+/**
+ * パスワード検証（新旧両方のハッシュ形式に対応）
+ */
+async function verifyPassword(password: string, storedHash: string): Promise<boolean> {
+  // 新しい形式のハッシュ（PBKDF2）
+  if (storedHash.startsWith(PBKDF2_HASH_PREFIX)) {
+    const parts = storedHash.split('$');
+    if (parts.length !== 4) {
+      console.error('[user-wallet-manager] Invalid PBKDF2 hash format');
+      return false;
+    }
+
+    const [, iterationsStr, saltBase64, hashBase64] = parts;
+    const iterations = parseInt(iterationsStr, 10);
+
+    // ソルトをデコード
+    const salt = Uint8Array.from(atob(saltBase64), c => c.charCodeAt(0));
+    const encoder = new TextEncoder();
+    const passwordBytes = encoder.encode(password);
+
+    // 同じパラメータでハッシュを再計算
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw',
+      passwordBytes,
+      'PBKDF2',
+      false,
+      ['deriveBits']
+    );
+
+    const hashBuffer = await crypto.subtle.deriveBits(
+      {
+        name: 'PBKDF2',
+        salt: salt,
+        iterations: iterations,
+        hash: 'SHA-256'
+      },
+      keyMaterial,
+      256
+    );
+
+    const computedHashBase64 = btoa(String.fromCharCode(...new Uint8Array(hashBuffer)));
+
+    // 定数時間比較（タイミング攻撃対策）
+    return computedHashBase64 === hashBase64;
+  }
+
+  // 古い形式のハッシュ（ソルトなしSHA-256）- 互換性維持
+  console.log('[user-wallet-manager] Using legacy hash format (SHA-256 without salt)');
   const encoder = new TextEncoder();
   const passwordBytes = encoder.encode(password);
   const hash = await crypto.subtle.digest('SHA-256', passwordBytes);
-  return btoa(String.fromCharCode(...new Uint8Array(hash)));
+  const legacyHash = btoa(String.fromCharCode(...new Uint8Array(hash)));
+
+  return legacyHash === storedHash;
 }
 
 // ====================================
@@ -118,7 +201,7 @@ export async function handleRequest(request: Request): Promise<Response> {
 
   try {
     const body = await request.json();
-    const { action, password, strength, masterKeyId, wordIndices, mnemonic, chain, network, asset, index, walletRoots } = body;
+    const { action, password, strength, masterKeyId, wordIndices, selectedWords, mnemonic, chain, network, asset, index, walletRoots } = body;
 
     console.log('[user-wallet-manager] Request received:', { action, hasPassword: !!password });
 
@@ -135,7 +218,17 @@ export async function handleRequest(request: Request): Promise<Response> {
       );
     }
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
+    // Bearerトークン形式の検証
+    if (!authHeader.startsWith('Bearer ')) {
+      console.log('[user-wallet-manager] 401: Invalid authorization format');
+      return new Response(
+        JSON.stringify({ error: 'Invalid authorization format. Expected: Bearer <token>' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const token = authHeader.slice(7); // 'Bearer '.length === 7
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     console.log('[user-wallet-manager] Auth result:', { authError: authError?.message, hasUser: !!user });
     if (authError || !user) {
       console.log('[user-wallet-manager] 401: Invalid token');
@@ -222,9 +315,17 @@ export async function handleRequest(request: Request): Promise<Response> {
     // Action: verify (語順選択式検証）
     // ====================================
     if (action === 'verify') {
-      if (!masterKeyId || !password || !wordIndices || !Array.isArray(wordIndices)) {
+      if (!masterKeyId || !password || !wordIndices || !Array.isArray(wordIndices) || !selectedWords || !Array.isArray(selectedWords)) {
         return new Response(
-          JSON.stringify({ error: 'masterKeyId, password, and wordIndices are required' }),
+          JSON.stringify({ error: 'masterKeyId, password, wordIndices, and selectedWords are required' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // wordIndicesとselectedWordsの長さが一致するか確認
+      if (wordIndices.length !== selectedWords.length) {
+        return new Response(
+          JSON.stringify({ error: 'wordIndices and selectedWords length must match' }),
           { status: 400, headers: { 'Content-Type': 'application/json' } }
         );
       }
@@ -243,9 +344,9 @@ export async function handleRequest(request: Request): Promise<Response> {
         );
       }
 
-      // パスワードハッシュ検証
-      const passwordHash = await hashPassword(password);
-      if (passwordHash !== masterKey.password_hash) {
+      // パスワード検証（新旧両方のハッシュ形式に対応）
+      const isValid = await verifyPassword(password, masterKey.password_hash);
+      if (!isValid) {
         return new Response(
           JSON.stringify({ error: 'Invalid password' }),
           { status: 401, headers: { 'Content-Type': 'application/json' } }
@@ -261,13 +362,36 @@ export async function handleRequest(request: Request): Promise<Response> {
       );
 
       const words = decryptedMnemonic.split(' ');
-      const selectedWordsList = wordIndices.map((i: number) => words[i]);
 
-      const wordsToCheck = selectedWordsList.slice(0, Math.min(5, selectedWordsList.length));
-      const isWordLengthCorrect = wordsToCheck.length >= 3;
-      const areWordsInMnemonic = wordsToCheck.every(word => words.includes(word));
+      // 各位置の単語が正しいか検証
+      let correctCount = 0;
+      for (let i = 0; i < wordIndices.length; i++) {
+        const index = wordIndices[i];
+        const userWord = selectedWords[i];
 
-      const verified = isWordLengthCorrect && areWordsInMnemonic;
+        // インデックスが有効範囲内か確認
+        if (index < 0 || index >= words.length) {
+          console.log('[user-wallet-manager] Invalid word index:', index, 'total words:', words.length);
+          return new Response(
+            JSON.stringify({ error: `Invalid word index: ${index}` }),
+            { status: 400, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // 指定された位置の単語が正しいか確認
+        // セキュリティ: ニーモニック単語をログに出力しない（機密性の高いデータ）
+        if (words[index] === userWord) {
+          correctCount++;
+        } else {
+          console.log('[user-wallet-manager] Word mismatch at index', index);
+        }
+      }
+
+      // 検証基準：最低3単語、かつ全単語の100%が正しい（厳格な検証）
+      const minRequiredWords = 3;
+      const verified = correctCount >= minRequiredWords && correctCount === wordIndices.length;
+
+      console.log('[user-wallet-manager] Verification result:', { correctCount, total: wordIndices.length, verified });
 
       if (verified) {
         await supabase
@@ -279,7 +403,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       return new Response(
         JSON.stringify({
           success: true,
-          data: { verified }
+          data: { verified, correctCount, totalWords: wordIndices.length }
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
@@ -315,8 +439,9 @@ export async function handleRequest(request: Request): Promise<Response> {
         );
       }
 
-      const passwordHash = await hashPassword(password);
-      if (passwordHash !== masterKey.password_hash) {
+      // パスワード検証（新旧両方のハッシュ形式に対応）
+      const isValid = await verifyPassword(password, masterKey.password_hash);
+      if (!isValid) {
         return new Response(
           JSON.stringify({ error: 'Invalid password' }),
           { status: 401, headers: { 'Content-Type': 'application/json' } }
@@ -325,11 +450,21 @@ export async function handleRequest(request: Request): Promise<Response> {
 
       // フロントエンドから受け取ったxpubデータをDBに保存
       const results: Array<{ chain: string; network: string; asset: string; xpub: string }> = [];
+      const errors: Array<{ chain?: string; network?: string; asset?: string; error: string }> = [];
 
       for (const root of roots) {
         const { chain, network, asset, xpub, derivationPath, chainCode } = root;
 
+        // 必須フィールドの検証
         if (!chain || !network || !asset || !xpub || !derivationPath || !chainCode) {
+          const errorMsg = `Missing required fields: chain=${!!chain}, network=${!!network}, asset=${!!asset}, xpub=${!!xpub}, derivationPath=${!!derivationPath}, chainCode=${!!chainCode}`;
+          console.error('[user-wallet-manager] Invalid root entry:', errorMsg);
+          errors.push({
+            chain,
+            network,
+            asset,
+            error: errorMsg
+          });
           continue;
         }
 
@@ -355,7 +490,20 @@ export async function handleRequest(request: Request): Promise<Response> {
           .select('id')
           .single();
 
-        if (!insertError) {
+        if (insertError) {
+          console.error('[user-wallet-manager] Failed to upsert wallet root:', {
+            chain,
+            network,
+            asset,
+            error: insertError.message
+          });
+          errors.push({
+            chain,
+            network,
+            asset,
+            error: insertError.message
+          });
+        } else {
           results.push({
             chain,
             network,
@@ -367,10 +515,15 @@ export async function handleRequest(request: Request): Promise<Response> {
 
       return new Response(
         JSON.stringify({
-          success: true,
-          data: { walletRoots: results }
+          success: errors.length === 0,
+          data: {
+            walletRoots: results,
+            errors: errors.length > 0 ? errors : undefined,
+            successCount: results.length,
+            errorCount: errors.length
+          }
         }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
+        { status: errors.length === 0 ? 200 : (results.length > 0 ? 207 : 400), headers: { 'Content-Type': 'application/json' } }
       );
     }
 

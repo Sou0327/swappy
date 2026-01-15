@@ -1030,11 +1030,16 @@ async function processXRPTransaction(
     // Amountは文字列形式かオブジェクト形式（issued currency）
     let amountDrops = 0;
     let currency = 'XRP'; // デフォルトはネイティブXRP
-    
+
     if (typeof tx.Amount === 'string') {
       amountDrops = parseInt(tx.Amount, 10);
       // ネイティブXRP
     } else if (typeof tx.Amount === 'object' && tx.Amount.value) {
+      // 注意: issued currencyのvalueは小数を含む可能性があります
+      // parseIntではなくparseFloatを使用するべきですが、issued currencyは
+      // 現在スキップされているため実害はありません。
+      // 将来issued currencyをサポートする場合は、parseFloatと適切な
+      // スケール変換を実装してください。
       amountDrops = parseInt(tx.Amount.value, 10);
       // issued currencyの場合、currencyを抽出
       if (tx.Amount.currency) {
