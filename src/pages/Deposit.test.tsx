@@ -458,30 +458,31 @@ describe('Deposit コンポーネント', () => {
         renderDeposit();
 
         expect(screen.getByRole('heading', { name: /^入金$/i })).toBeInTheDocument();
-        // 制限メッセージが表示される
-        const restrictionElements = screen.getAllByText(/入金機能の一時停止/i);
+        // 制限メッセージが表示される（SERVICE_RESTRICTIONS.getRestrictionMessage()）
+        const restrictionElements = screen.getAllByText(/現在準備中です/i);
         expect(restrictionElements.length).toBeGreaterThan(0);
       });
 
       it('制限メッセージが表示される', () => {
         renderDeposit();
 
-        const restrictionElements = screen.getAllByText(/入金機能の一時停止/i);
-        expect(restrictionElements.length).toBeGreaterThan(0);
-        expect(screen.getByText(/システムメンテナンス中/i)).toBeInTheDocument();
+        // SERVICE_RESTRICTIONS.getRestrictionMessage() からのメッセージ
+        expect(screen.getByText(/現在準備中です/i)).toBeInTheDocument();
+        expect(screen.getByText(/この機能は現在開発中のため/i)).toBeInTheDocument();
       });
 
-      it('制限メッセージに資産保管の記述がある', () => {
+      it('制限メッセージに準備中の機能一覧が含まれる', () => {
         renderDeposit();
 
-        expect(screen.getByText(/既存資産/i)).toBeInTheDocument();
-        expect(screen.getByText(/安全に保護/i)).toBeInTheDocument();
+        // SERVICE_RESTRICTIONS.getRestrictionMessage() からのメッセージ
+        expect(screen.getByText(/準備中の機能/i)).toBeInTheDocument();
       });
 
-      it('制限メッセージに問い合わせ先が含まれる', () => {
+      it('制限メッセージに利用可能機能が含まれる', () => {
         renderDeposit();
 
-        expect(screen.getByText(/サポートまでお問い合わせ/i)).toBeInTheDocument();
+        expect(screen.getByText(/ご利用いただける機能/i)).toBeInTheDocument();
+        expect(screen.getByText(/アカウント作成/i)).toBeInTheDocument();
       });
 
       it('既存の入金履歴は閲覧可能', async () => {
