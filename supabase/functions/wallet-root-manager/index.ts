@@ -545,23 +545,19 @@ function getChainAssetConfig(): Array<{
   asset: string;
 }> {
   return [
-    // Ethereum
+    // Ethereum（ETH/USDT/USDC等の全ERC20トークンはこのアドレスを共有）
     { chainKey: 'evm/ethereum', chain: 'evm', network: 'ethereum', asset: 'ETH' },
-    { chainKey: 'evm/ethereum', chain: 'evm', network: 'ethereum', asset: 'USDT' },
 
     // Ethereum Testnet (Sepolia)
     { chainKey: 'evm/sepolia', chain: 'evm', network: 'sepolia', asset: 'ETH' },
-    { chainKey: 'evm/sepolia', chain: 'evm', network: 'sepolia', asset: 'USDT' },
 
     // Bitcoin
     { chainKey: 'btc/mainnet', chain: 'btc', network: 'mainnet', asset: 'BTC' },
     { chainKey: 'btc/testnet', chain: 'btc', network: 'testnet', asset: 'BTC' },
 
-    // Tron
+    // Tron（TRX/TRC20-USDT等の全TRC20トークンはこのアドレスを共有）
     { chainKey: 'trc/mainnet', chain: 'trc', network: 'mainnet', asset: 'TRX' },
-    { chainKey: 'trc/mainnet', chain: 'trc', network: 'mainnet', asset: 'USDT' },
     { chainKey: 'trc/nile', chain: 'trc', network: 'nile', asset: 'TRX' },
-    { chainKey: 'trc/nile', chain: 'trc', network: 'nile', asset: 'USDT' },
 
     // XRP
     { chainKey: 'xrp/mainnet', chain: 'xrp', network: 'mainnet', asset: 'XRP' },
@@ -577,8 +573,9 @@ function getChainAssetConfig(): Array<{
 
 async function initializeWalletRoots(
   masterKeyId: string,
-  chains?: ChainKey[],
-  force: boolean = false
+  userId?: string,
+  force?: boolean,
+  chains?: string[]
 ): Promise<WalletRootData[]> {
   const serviceClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -607,20 +604,20 @@ async function initializeWalletRoots(
 
   for (const config of targetConfigs) {
     try {
-      // 既存データチェック
+      // 既存データチェック（新しい一意制約: user_id + chain + network）
       if (!force) {
         const { data: existing } = await serviceClient
           .from('wallet_roots')
           .select('id')
           .eq('chain', config.chain)
           .eq('network', config.network)
-          .eq('asset', config.asset)
+          .eq('user_id', userId)
           .eq('auto_generated', true)
           .eq('active', true)
           .maybeSingle();
 
         if (existing) {
-          console.log(`[wallet-root-manager] Skipping existing: ${config.chain}/${config.network}/${config.asset}`);
+          console.log(`[wallet-root-manager] Skipping existing: ${config.chain}/${config.network} for user ${userId}`);
           continue;
         }
       }
@@ -661,6 +658,7 @@ async function initializeWalletRoots(
           external_chain_xpub: externalChainXpub, // P0-⑤: Cardano chain xpubs
           stake_chain_xpub: stakeChainXpub,       // P0-⑤: Cardano chain xpubs
           master_key_id: masterKeyId,
+          user_id: userId || null, // ユーザーIDを設定（管理者はNULL）
           auto_generated: true,
           legacy_data: false,
           verified: true,
@@ -669,7 +667,7 @@ async function initializeWalletRoots(
           next_index: 0,
           derivation_template: '0/{index}'
         }, {
-          onConflict: 'chain,network,asset,xpub'
+          onConflict: userId ? 'user_id,chain,network' : 'master_key_id,chain,network'
         })
         .select('*')
         .single();
@@ -919,16 +917,17 @@ async function testCardanoAddressGeneration(
 // Admin権限チェック（簡略版）
 // ====================================
 
-async function checkAdminPermission(authHeader: string): Promise<string> {
-  // サービスロールキーでクライアントを作成
+async function checkAdminPermission(authHeader: string): Promise<string | null> {
+  // サービスロールキーでクライレントを作成
   const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   const jwt = authHeader.replace('Bearer ', '');
 
   // Edge Function間内部通信の場合（Service Role Key認証）
+  // 管理者用ルートは user_id=NULL で作成
   if (jwt === SUPABASE_SERVICE_ROLE_KEY) {
-    console.log('[checkAdminPermission] Internal Edge Function authentication verified');
-    return 'system'; // システム内部用の特別なユーザーID
+    console.log('[checkAdminPermission] Internal Edge Function authentication verified (user_id=NULL for admin roots)');
+    return null;
   }
 
   // JWTトークンからユーザー情報を取得
@@ -1036,10 +1035,10 @@ function getCorsHeaders(origin?: string | null): Record<string, string> {
   console.log('[wallet-root-manager] Request started');
   console.log('[wallet-root-manager] Action:', body.action);
 
-  let userId: string = 'system';
+  let userId: string | null = null;
 
   if (body.action === 'test') {
-    console.log('[wallet-root-manager] Test action - skipping all authentication');
+    console.log('[wallet-root-manager] Test action - skipping all authentication (user_id=null for admin roots)');
   } else {
     try {
       // 認証チェック（testアクション以外）
@@ -1073,10 +1072,18 @@ function getCorsHeaders(origin?: string | null): Record<string, string> {
         if (!body.masterKeyId) {
           throw new Error('masterKeyId is required for initialize action');
         }
+        // isSystemRootフラグがtrueの場合はuserIdをnullに上書き（システム用ルート）
+        // システム用ルートは集権型管理（user_id=NULL）で、緊急時やテスト用途のみ使用
+        const effectiveUserId = body.isSystemRoot ? null : userId;
+        console.log('[wallet-root-manager] Initialize with user_id:', effectiveUserId, '(isSystemRoot:', body.isSystemRoot, ')');
+        if (body.isSystemRoot) {
+          console.log('[wallet-root-manager] ⚠️ Creating system root (user_id=NULL) - developer/emergency use only');
+        }
         result = await initializeWalletRoots(
           body.masterKeyId,
-          body.chains,
-          body.force || false
+          effectiveUserId,
+          body.force || false,
+          body.chains
         );
         break;
       }

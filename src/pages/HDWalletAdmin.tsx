@@ -5,6 +5,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Checkbox } from '../components/ui/checkbox';
 import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
@@ -116,6 +117,7 @@ export default function HDWalletAdmin() {
   const [showMnemonic, setShowMnemonic] = useState(false);
   const [verificationMnemonic, setVerificationMnemonic] = useState('');
   const [selectedMasterKeyId, setSelectedMasterKeyId] = useState<string | null>(null);
+  const [isSystemRoot, setIsSystemRoot] = useState(false); // システム用ルートフラグ
 
   // ニーモニック確認機能用のstate
   const [viewMnemonicDialogOpen, setViewMnemonicDialogOpen] = useState(false);
@@ -153,8 +155,8 @@ export default function HDWalletAdmin() {
 
   // Initialize Wallet Roots Mutation
   const initializeWalletRootsMutation = useMutation({
-    mutationFn: ({ masterKeyId, force }: { masterKeyId: string; force?: boolean }) =>
-      callWalletRootManager('initialize', { masterKeyId, force }),
+    mutationFn: ({ masterKeyId, force, isSystemRoot }: { masterKeyId: string; force?: boolean; isSystemRoot?: boolean }) =>
+      callWalletRootManager('initialize', { masterKeyId, force, isSystemRoot }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['walletRoots'] });
       toast.success('wallet_rootsの初期化が完了しました');
@@ -523,12 +525,31 @@ export default function HDWalletAdmin() {
                   アクティブなマスターキーから全チェーンのxpubを自動生成します
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-3 md:p-6 pt-0">
+              <CardContent className="p-3 md:p-6 pt-0 space-y-4">
+                <div className="flex items-center space-x-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950">
+                  <Checkbox
+                    id="system-root"
+                    checked={isSystemRoot}
+                    onCheckedChange={(checked) => setIsSystemRoot(checked === true)}
+                  />
+                  <div className="flex-1 space-y-1">
+                    <label
+                      htmlFor="system-root"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                    >
+                      システム用ルートとして作成（開発者用）
+                    </label>
+                    <p className="text-xs text-muted-foreground">
+                      user_id=NULL の集中管理ルートを作成します。緊急時やテスト用途のみ使用してください。
+                    </p>
+                  </div>
+                </div>
                 <Button
                   onClick={() => {
                     if (activeMasterKey) {
                       initializeWalletRootsMutation.mutate({
-                        masterKeyId: activeMasterKey.id
+                        masterKeyId: activeMasterKey.id,
+                        isSystemRoot
                       });
                     }
                   }}

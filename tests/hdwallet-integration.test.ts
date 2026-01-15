@@ -244,11 +244,13 @@ describe.skipIf(SKIP_INTEGRATION_TESTS)('Layer 2: Wallet Root Manager', () => {
     expect(Array.isArray(result.data)).toBe(true);
     expect(result.data.length).toBeGreaterThan(0);
 
-    // 各チェーンのxpubが生成されていることを確認
+    // 各チェーンのxpubが生成されていることを確認（1チェーン=1ルート設計）
     const chainAssets = result.data.map((wr: { chain: string; network: string; asset: string }) => `${wr.chain}/${wr.network}/${wr.asset}`);
-    expect(chainAssets).toContain('evm/ethereum/ETH');
-    expect(chainAssets).toContain('evm/ethereum/USDT');
+    expect(chainAssets).toContain('evm/ethereum/ETH'); // EVMチェーンはETH/USDT/USDC等でアドレスを共有
     expect(chainAssets).toContain('btc/mainnet/BTC');
+    expect(chainAssets).toContain('trc/mainnet/TRX'); // TRCチェーンはTRX/TRC20-USDT等でアドレスを共有
+    expect(chainAssets).toContain('xrp/mainnet/XRP');
+    expect(chainAssets).toContain('ada/mainnet/ADA');
   });
 
   it('should generate valid xpubs for each chain', async () => {
