@@ -60,7 +60,7 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 > ✅ **Multi-Chain Wallet Management**: Generate and manage addresses across 6 blockchains
 > 🔶 **Wallet Setup (BIP39)**: HD wallet creation with mnemonic phrase generation **- UNDER ACTIVE DEVELOPMENT**
 > 🔶 **Deposit Detection**: Real-time blockchain RPC scanning for instant deposit detection **- UNDER ACTIVE DEVELOPMENT**
-> ✅ **Withdrawal Processing**: Automatic transaction signing and broadcasting to blockchain
+> 🔶 **Withdrawal Processing**: Automatic transaction signing and broadcasting to blockchain **- UNDER ACTIVE DEVELOPMENT**
 > ✅ **Price Display**: Real-time crypto prices via CoinGecko API
 >
 > 🔶 **Webhook Integration**: Additional notification methods (email, SMS) in progress
@@ -78,6 +78,11 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 >   - Currently being refined for better reliability
 >   - Some edge cases may still exist
 >   - Report any issues immediately
+>
+> - **🔶 Withdrawal Processing**: Automatic transaction signing and blockchain broadcasting
+>   - Currently under active development and testing
+>   - Security and reliability improvements in progress
+>   - Use with extreme caution in production environments
 >
 > **This is infrastructure software.** We recommend testing with small amounts first.
 > For production use, please conduct your own security audit.
@@ -121,7 +126,7 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 | ✅ | **HD Wallet Architecture** | BIP-32/39/44 compliant key derivation |
 | 🔶 | **Wallet Setup (BIP39)** | User-specific HD wallet creation with mnemonic phrase **- Under Development** |
 | 🔶 | **Real-time Deposit Detection** | Blockchain RPC scanning for instant deposit detection **- Under Refinement** |
-| ✅ | **Automated Withdrawal Processing** | Automatic transaction signing and broadcasting |
+| 🔶 | **Automated Withdrawal Processing** | Automatic transaction signing and broadcasting **- Under Development** |
 | ✅ | **Price Display** | Real-time crypto prices via CoinGecko API |
 | ✅ | **Self-Hostable** | Deploy on your own server with Docker or 1-click deploy |
 | ✅ | **Personal Dashboard** | Manage your wallets, transactions, and settings |
