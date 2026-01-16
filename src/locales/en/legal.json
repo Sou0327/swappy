@@ -1,0 +1,302 @@
+{
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last Updated: December 15, 2024",
+    "sections": {
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "{{platformName}} Exchange (hereinafter referred to as \"we\" or \"our company\") respects the privacy of our users and strives to protect personal information. This Privacy Policy explains the types of information collected when using our services, how it is used, and how it is protected."
+      },
+      "collectedInfo": {
+        "title": "2. Information We Collect",
+        "personalInfo": {
+          "title": "Personal Information",
+          "items": [
+            "Name, email address, phone number",
+            "Document information for identity verification",
+            "Transaction history and account balance information",
+            "Wallet addresses and transaction data"
+          ]
+        },
+        "technicalInfo": {
+          "title": "Technical Information",
+          "items": [
+            "IP address, browser type, device information",
+            "Login information and session data",
+            "Information collected through cookies and similar technologies"
+          ]
+        }
+      },
+      "purpose": {
+        "title": "3. Purpose of Information Use",
+        "items": [
+          "Account creation, management, and identity verification",
+          "Execution, settlement, and recording of transactions",
+          "Fulfillment of legal obligations and compliance assurance",
+          "Prevention, detection, and investigation of fraudulent activities",
+          "Provision of customer support",
+          "Service improvement and development of new features"
+        ]
+      },
+      "sharing": {
+        "title": "4. Information Sharing",
+        "intro": "We will not disclose your personal information to third parties except in the following cases:",
+        "items": [
+          "When disclosure is required by law",
+          "When you have provided consent",
+          "When disclosure is necessary for service provision to outsourcing partners",
+          "In the event of corporate restructuring such as mergers or acquisitions"
+        ]
+      },
+      "security": {
+        "title": "5. Security",
+        "content": "We implement industry-standard security measures to protect your personal information. This includes encryption technology, access controls, and regular security audits."
+      },
+      "rights": {
+        "title": "6. Your Rights",
+        "intro": "You have the following rights:",
+        "items": [
+          "Right to request disclosure, correction, or deletion of personal information",
+          "Right to request cessation of personal information use",
+          "Right to data portability",
+          "Right to opt-out of marketing emails"
+        ]
+      },
+      "cookies": {
+        "title": "7. About Cookies",
+        "content": "Our website uses cookies to improve user experience and analyze services. You can disable cookies in your browser settings, but some features may be limited."
+      },
+      "changes": {
+        "title": "8. Changes to Policy",
+        "content": "This Privacy Policy may be updated due to changes in laws or service improvements. If there are important changes, we will notify you through website announcements or email."
+      },
+      "contact": {
+        "title": "9. Contact Us",
+        "content": "If you have any questions or comments about this Privacy Policy, please contact us."
+      }
+    }
+  },
+  "termsOfService": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last Updated: December 15, 2024",
+    "sections": {
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "These Terms of Service (hereinafter referred to as \"these Terms\") define the conditions for using the cryptocurrency trading services (hereinafter referred to as \"the Services\") provided by {{platformName}} Exchange (hereinafter referred to as \"we\" or \"our company\"). Please read these Terms carefully and agree to them before using the Services."
+      },
+      "serviceDescription": {
+        "title": "2. Service Description",
+        "intro": "The Services provide the following functions:",
+        "items": [
+          "Trading and transactions of cryptocurrency",
+          "Cryptocurrency storage through wallet functionality",
+          "Cryptocurrency deposits and withdrawals",
+          "Management and viewing of transaction history",
+          "Other related services determined by our company"
+        ]
+      },
+      "accountRegistration": {
+        "title": "3. Account Registration",
+        "eligibility": {
+          "title": "3.1 Eligibility",
+          "items": [
+            "Individuals or corporations 18 years of age or older",
+            "Persons residing in Japan",
+            "Persons who can submit identity verification documents",
+            "Persons who meet the conditions determined by our company"
+          ]
+        },
+        "information": {
+          "title": "3.2 Registration Information",
+          "content": "Users must register accurate and up-to-date information and update it promptly when changes occur. If false information is registered, your account may be suspended."
+        }
+      },
+      "tradingRules": {
+        "title": "4. Trading Regulations",
+        "fees": {
+          "title": "4.1 Trading Fees",
+          "content": "Fees determined by our company apply to each transaction. Fees may be changed without prior notice."
+        },
+        "limits": {
+          "title": "4.2 Trading Limits",
+          "items": [
+            "Setting daily trading limits",
+            "Limits based on identity verification levels",
+            "Trading suspension during system maintenance",
+            "Emergency suspension during market anomalies"
+          ]
+        }
+      },
+      "prohibitedActions": {
+        "title": "5. Prohibited Actions",
+        "intro": "Users must not engage in the following actions:",
+        "items": [
+          "Money laundering or other money laundering activities",
+          "Unauthorized access or attacks on systems",
+          "Providing false information or impersonating others",
+          "Actions that infringe on third-party rights",
+          "Actions that violate public order and morals",
+          "Actions that violate laws and regulations",
+          "Other actions deemed inappropriate by our company"
+        ]
+      },
+      "security": {
+        "title": "6. Security",
+        "userResponsibility": {
+          "title": "6.1 User Responsibilities",
+          "items": [
+            "Proper password management",
+            "Setting up two-factor authentication",
+            "Regular password changes",
+            "Immediate reporting of suspected unauthorized access"
+          ]
+        },
+        "companyEffort": {
+          "title": "6.2 Our Efforts",
+          "content": "We implement industry-leading security measures to protect your assets and information."
+        }
+      },
+      "disclaimer": {
+        "title": "7. Disclaimer",
+        "intro": "We are not responsible for the following:",
+        "items": [
+          "Losses due to cryptocurrency price fluctuations",
+          "Damages caused by user operational errors",
+          "Hacking or phishing by third parties",
+          "Damages caused by communication or system failures",
+          "Damages caused by force majeure such as natural disasters"
+        ]
+      },
+      "serviceChanges": {
+        "title": "8. Service Changes and Suspension",
+        "content": "We may change or suspend the content of the Services with prior notice. However, in emergencies, we may suspend without prior notice."
+      },
+      "termsChanges": {
+        "title": "9. Changes to Terms",
+        "content": "These Terms may be changed due to changes in laws or service improvements. Changed Terms become effective upon publication on the website."
+      },
+      "governingLaw": {
+        "title": "10. Governing Law and Jurisdiction",
+        "content": "These Terms shall be governed by Japanese law, and any disputes regarding these Terms shall be subject to the exclusive jurisdiction of the Tokyo District Court as the court of first instance."
+      },
+      "contact": {
+        "title": "11. Contact Us",
+        "content": "If you have any questions about these Terms, please contact us."
+      }
+    }
+  },
+  "riskDisclosure": {
+    "title": "Risk Disclosure",
+    "subtitle": "Risks of Cryptocurrency Trading",
+    "warnings": {
+      "important": "Important Warning",
+      "content": "Cryptocurrency trading involves high risk. Be sure to understand the risks before investing, and we recommend trading only with funds you can afford to lose."
+    },
+    "sections": {
+      "priceVolatility": {
+        "title": "1. Price Volatility Risk",
+        "content": "Cryptocurrency prices are extremely volatile and can fluctuate significantly in short periods.",
+        "specificRisks": {
+          "title": "Specific Risks",
+          "items": [
+            "Possibility of price fluctuations of 50% or more in a single day",
+            "Possibility of investment principal falling significantly",
+            "Rapid price changes due to market illiquidity",
+            "Sudden price changes due to external factors (regulations, news, etc.)"
+          ]
+        }
+      },
+      "liquidity": {
+        "title": "2. Liquidity Risk",
+        "content": "Depending on market conditions, you may not be able to buy or sell at your desired price or time.",
+        "items": [
+          "Difficulty trading cryptocurrencies with low trading volume",
+          "Trading suspension during market turmoil",
+          "Orders not executing or executing at less favorable prices than expected"
+        ]
+      },
+      "technical": {
+        "title": "3. Technical Risks",
+        "content": "Since cryptocurrencies are based on new technology, technical problems may occur.",
+        "platform": {
+          "title": "Platform Risks",
+          "items": [
+            "Trading suspension due to system failures",
+            "Inability to access due to server downtime",
+            "Feature limitations during maintenance"
+          ]
+        },
+        "blockchain": {
+          "title": "Blockchain Risks",
+          "items": [
+            "Network forks",
+            "Delays or failures in transfers",
+            "Smart contract bugs"
+          ]
+        }
+      },
+      "security": {
+        "title": "4. Security Risks",
+        "content": "Due to the nature of digital assets, security risks exist.",
+        "hacking": {
+          "title": "Hacking and Theft Risk",
+          "content": "Theft of assets due to unauthorized access to exchanges or personal wallets"
+        },
+        "phishing": {
+          "title": "Phishing Scams",
+          "content": "Theft of credentials through fake websites and emails"
+        },
+        "keyLoss": {
+          "title": "Private Key Loss",
+          "content": "Permanent inability to access assets due to loss of private keys"
+        }
+      },
+      "regulatory": {
+        "title": "5. Regulatory Risk",
+        "content": "Changes in cryptocurrency regulations by governments may affect trading.",
+        "items": [
+          "Changes in legal status or trading restrictions/bans",
+          "Increased tax burden due to tax changes",
+          "Revocation of business licenses or business suspension of exchanges",
+          "Strengthening of international remittance regulations"
+        ]
+      },
+      "operational": {
+        "title": "6. Operational Risk",
+        "content": "There are also risks related to the exchange operating company.",
+        "items": [
+          "Bankruptcy or business suspension of the operating company",
+          "Loss of customer assets due to inadequate management systems",
+          "Misappropriation of assets due to internal fraud",
+          "Business improvement orders by regulatory authorities"
+        ]
+      },
+      "mitigation": {
+        "title": "7. Recommendations for Risk Mitigation",
+        "safeTrading": {
+          "title": "For Safe Trading",
+          "investment": [
+            "Invest with surplus funds",
+            "Diversify investments",
+            "Regular information gathering",
+            "Avoid emotional trading"
+          ],
+          "security": [
+            "Set strong passwords",
+            "Utilize two-factor authentication",
+            "Regular security checks",
+            "Access from official websites only"
+          ]
+        }
+      },
+      "disclaimer": {
+        "title": "8. Disclaimer",
+        "content": "This Risk Disclosure explains major risks related to cryptocurrency trading, but does not cover all risks. Investment decisions are your own responsibility."
+      },
+      "contact": {
+        "title": "9. Contact Us",
+        "content": "If you have any questions or concerns about risks, please feel free to contact us."
+      }
+    }
+  }
+}

@@ -31,8 +31,6 @@ export const Header = () => {
     // Trade is only shown in demo mode
     ...(isDemoMode ? [{ to: "/trade", label: t('header.trade') }] : []),
     ...(singleMarketId ? [] : [{ to: "/markets", label: t('header.markets') }]),
-    { to: "/features", label: t('header.features') },
-    { to: "/about", label: t('header.about') },
   ];
 
   // ホーム画面ではナビゲーションアイテムを空に

@@ -18,8 +18,6 @@ import MaintenancePage from "./pages/MaintenancePage";
 // 一般ページの遅延読み込み
 const Trade = lazy(() => import("./pages/Trade"));
 const Markets = lazy(() => import("./pages/Markets"));
-const Features = lazy(() => import("./pages/Features"));
-const About = lazy(() => import("./pages/About"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const WalletOverview = lazy(() => import("./pages/WalletOverview"));
 const WalletSetup = lazy(() => import("./pages/WalletSetup"));
@@ -86,8 +84,6 @@ function App() {
                 <Route path="/trade" element={<Trade />} />
                 <Route path="/markets" element={<Markets />} />
                 <Route path="/convert" element={<Convert />} />
-                <Route path="/features" element={<Features />} />
-                <Route path="/about" element={<About />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/admin" element={
                   <AdminRoute>

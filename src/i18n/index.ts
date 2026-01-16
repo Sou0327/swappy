@@ -24,6 +24,7 @@ import enSecurity from '@/locales/en/security.json';
 import enAnnouncements from '@/locales/en/announcements.json';
 import enDemo from '@/locales/en/demo.json';
 import enLanding from '@/locales/en/landing.json';
+import enLegal from '@/locales/en/legal.json';
 
 import jaCommon from '@/locales/ja/common.json';
 import jaNavigation from '@/locales/ja/navigation.json';
@@ -46,6 +47,7 @@ import jaSecurity from '@/locales/ja/security.json';
 import jaAnnouncements from '@/locales/ja/announcements.json';
 import jaDemo from '@/locales/ja/demo.json';
 import jaLanding from '@/locales/ja/landing.json';
+import jaLegal from '@/locales/ja/legal.json';
 
 // サポート言語
 export const supportedLanguages = ['en', 'ja'] as const;
@@ -75,6 +77,7 @@ const resources = {
     announcements: enAnnouncements,
     demo: enDemo,
     landing: enLanding,
+    legal: enLegal,
   },
   ja: {
     common: jaCommon,
@@ -98,6 +101,7 @@ const resources = {
     announcements: jaAnnouncements,
     demo: jaDemo,
     landing: jaLanding,
+    legal: jaLegal,
   },
 };
 
@@ -116,7 +120,7 @@ i18n
     // デフォルト名前空間
     defaultNS: 'common',
     // 名前空間のリスト
-    ns: ['common', 'navigation', 'dashboard', 'wallet', 'wallet-setup', 'trade', 'messages', 'auth', 'account', 'earn', 'markets', 'convert', 'transfer', 'referral', 'support', 'history', 'kyc', 'security', 'announcements', 'demo', 'landing'],
+    ns: ['common', 'navigation', 'dashboard', 'wallet', 'wallet-setup', 'trade', 'messages', 'auth', 'account', 'earn', 'markets', 'convert', 'transfer', 'referral', 'support', 'history', 'kyc', 'security', 'announcements', 'demo', 'landing', 'legal'],
     // 言語検出の設定
     detection: {
       // 検出順序: localStorage → navigator → デフォルト

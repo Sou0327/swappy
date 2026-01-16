@@ -13,7 +13,13 @@ const AuthRedirect = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    if (loading || roleLoading || !user) return;
+    if (loading || roleLoading) return;
+
+    // 未認証ユーザーは /auth にリダイレクト
+    if (!user) {
+      navigate('/auth', { replace: true });
+      return;
+    }
 
     // ユーザープロファイル取得
     if (!userProfile) {

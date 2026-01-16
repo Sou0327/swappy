@@ -339,14 +339,15 @@ async function allocateEvmAddress(
   network: 'ethereum' | 'sepolia',
   asset: 'ETH' | 'USDT'
 ) {
-  // 既存アドレスの再利用
+  // 既存アドレスの再利用（EVM系はチェーン単位でアドレス共有）
+  // 注意: assetフィルタを削除 - ETH/USDTなどで同じアドレスを再利用
+  // 理由: EVMでは1つのアドレスで全アセットを管理できる
   const { data: existing } = await userScoped
     .from('deposit_addresses')
     .select('id, address, derivation_path, address_index, xpub, destination_tag')
     .eq('user_id', userId)
     .eq('chain', 'evm')
     .eq('network', network)
-    .eq('asset', asset)
     .eq('active', true)
     .maybeSingle();
   if (existing?.address) return existing;
@@ -657,13 +658,15 @@ async function allocateTrcAddress(
   network: 'mainnet' | 'nile',
   asset: 'TRX' | 'USDT'
 ) {
+  // 既存アドレスの再利用（TRC系もチェーン単位でアドレス共有）
+  // 注意: assetフィルタを削除 - TRX/USDTなどで同じアドレスを再利用
+  // 理由: TRONでも1つのアドレスで全アセットを管理できる
   const { data: existing } = await userScoped
     .from('deposit_addresses')
     .select('id, address, derivation_path, address_index, xpub')
     .eq('user_id', userId)
     .eq('chain', 'trc')
     .eq('network', network)
-    .eq('asset', asset)
     .eq('active', true)
     .maybeSingle();
 
