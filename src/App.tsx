@@ -16,14 +16,14 @@ import NotFound from "./pages/NotFound";
 import MaintenancePage from "./pages/MaintenancePage";
 
 // 一般ページの遅延読み込み
-// const Trade = lazy(() => import("./pages/Trade")); // Coming Soon
+const Trade = lazy(() => import("./pages/Trade"));
 const Markets = lazy(() => import("./pages/Markets"));
 const Features = lazy(() => import("./pages/Features"));
 const About = lazy(() => import("./pages/About"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const WalletOverview = lazy(() => import("./pages/WalletOverview"));
 const WalletSetup = lazy(() => import("./pages/WalletSetup"));
-// Convert = lazy(() => import("./pages/Convert")); // Coming Soon
+const Convert = lazy(() => import("./pages/Convert"));
 const FinancialHistory = lazy(() => import("./pages/FinancialHistory"));
 const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -83,23 +83,9 @@ function App() {
                 <Route path="/auth/reset" element={<ResetPassword />} />
                 <Route path="/redirect" element={<AuthRedirect />} />
                 <Route path="/wallet-setup" element={<WalletSetup />} />
-                <Route path="/trade" element={
-                  <div className="min-h-screen flex items-center justify-center bg-white">
-                    <div className="text-center space-y-4">
-                      <h1 className="text-4xl font-bold">Coming Soon</h1>
-                      <p className="text-gray-600">トレード機能は近日公開予定です</p>
-                    </div>
-                  </div>
-                } />
+                <Route path="/trade" element={<Trade />} />
                 <Route path="/markets" element={<Markets />} />
-                <Route path="/convert" element={
-                  <div className="min-h-screen flex items-center justify-center bg-white">
-                    <div className="text-center space-y-4">
-                      <h1 className="text-4xl font-bold">Coming Soon</h1>
-                      <p className="text-gray-600">コンバート機能は近日公開予定です</p>
-                    </div>
-                  </div>
-                } />
+                <Route path="/convert" element={<Convert />} />
                 <Route path="/features" element={<Features />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/dashboard" element={<Dashboard />} />

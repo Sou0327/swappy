@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Users,
   Target,
@@ -14,32 +16,8 @@ import {
 import { PLATFORM_NAME } from "@/config/branding";
 
 const About = () => {
-  const team = [
-    {
-      name: "サラ・チェン",
-      role: "CEO & 共同創設者",
-      bio: "元ゴールドマンサックス副社長、従来の金融と暗号通貨で15年以上の経験",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b1e8?w=400&h=400&fit=crop&crop=face"
-    },
-    {
-      name: "マーカス・ロドリゲス",
-      role: "CTO & 共同創設者", 
-      bio: "元Google上級エンジニア、10年以上の経験を持つブロックチェーン専門家",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
-    },
-    {
-      name: "エレナ・ボルコフ",
-      role: "セキュリティ責任者",
-      bio: "一流金融機関出身のサイバーセキュリティ専門家",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face"
-    },
-    {
-      name: "デビッド・キム",
-      role: "プロダクト責任者",
-      bio: "Apple及びフィンテックスタートアップでの経験を持つプロダクトリーダー",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face"
-    }
-  ];
+  const navigate = useNavigate();
+  const { isDemoMode } = useAuth();
 
   const milestones = [
     { year: "2019", event: `暗号通貨のベテランによって${PLATFORM_NAME}設立`, icon: <Users className="h-5 w-5" /> },
@@ -204,35 +182,6 @@ const About = () => {
           </div>
         </div>
 
-        {/* Team */}
-        <div className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold mb-4">リーダーシップチーム</h2>
-            <p className="text-muted-foreground">
-              {PLATFORM_NAME}を前進させる経験豊富な専門家たちをご紹介します
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <Card key={index} className="trading-card text-center">
-                <CardContent className="p-6">
-                  <div className="w-20 h-20 rounded-full bg-muted mx-auto mb-4 overflow-hidden">
-                    <img 
-                      src={member.image} 
-                      alt={member.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <h3 className="font-semibold text-base mb-1">{member.name}</h3>
-                  <Badge variant="secondary" className="mb-3">{member.role}</Badge>
-                  <p className="text-sm text-muted-foreground">{member.bio}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
         {/* CTA */}
         <div className="text-center p-8 rounded-2xl bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30">
           <h3 className="text-2xl font-bold mb-4">私たちの使命に参加</h3>
@@ -240,10 +189,10 @@ const About = () => {
             暗号通貨革命の一部となり、金融の未来を形作る手助けをしてください
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="hero-button">
+            <Button size="lg" className="hero-button" onClick={() => navigate(isDemoMode ? "/" : "/auth")}>
               今日から取引開始
             </Button>
-            <Button size="lg" variant="secondary">
+            <Button size="lg" variant="secondary" onClick={() => navigate("/about")}>
               キャリアを探索
             </Button>
           </div>

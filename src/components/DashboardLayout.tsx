@@ -88,8 +88,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     { icon: LayoutDashboard, label: t('sidebar.dashboard'), path: "/dashboard" },
     // Announcements, Transfer, Referral はセルフホスト型ウォレットには不要（ルートは残置）
     { icon: Wallet, label: t('sidebar.wallet'), path: "/wallet" },
+    // Convert is only shown in demo mode (ルートは残置)
+    ...(isDemoMode ? [{ icon: ArrowLeftRight, label: t('sidebar.convert'), path: "/convert" }] : []),
     // 稼ぐメニューは画面上から非表示（ルートは残置）
-    { icon: ArrowLeftRight, label: t('sidebar.convert'), path: "/convert" },
     {
       icon: Settings,
       label: t('sidebar.settings'),
@@ -272,22 +273,25 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               >
                 {t('topBar.markets')}
               </Link>
-              {/* Trade and Convert Coming Soon */}
-              <Link
-                to="/trade"
-                className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/trade") ? "text-primary" : "text-gray-600"
-                  }`}
-              >
-                {t('topBar.trade')}
-              </Link>
-              {/* Convert is Coming Soon - still shows link but redirects to coming soon page */}
-              <Link
-                to="/convert"
-                className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/convert") ? "text-primary" : "text-gray-600"
-                  }`}
-              >
-                {t('topBar.convert')}
-              </Link>
+              {/* Trade and Convert are only shown in demo mode */}
+              {isDemoMode && (
+                <>
+                  <Link
+                    to="/trade"
+                    className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/trade") ? "text-primary" : "text-gray-600"
+                      }`}
+                  >
+                    {t('topBar.trade')}
+                  </Link>
+                  <Link
+                    to="/convert"
+                    className={`px-2 xl:px-3 py-2 text-sm font-medium hover:text-primary transition-colors ${isActive("/convert") ? "text-primary" : "text-gray-600"
+                      }`}
+                  >
+                    {t('topBar.convert')}
+                  </Link>
+                </>
+              )}
               {userRole === 'admin' && (
                 <Link
                   to="/admin"

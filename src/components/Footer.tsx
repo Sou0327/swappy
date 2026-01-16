@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { PLATFORM_NAME } from "@/config/branding";
+import { PLATFORM_NAME, GITHUB_URL } from "@/config/branding";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Footer = () => {
   const { t } = useTranslation();
+  const { isDemoMode } = useAuth();
 
   return (
     <footer className="border-t border-gray-200 bg-gray-50">
@@ -23,9 +25,9 @@ export const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-gray-900">{t('footer.products')}</h4>
             <div className="space-y-2">
-              <a href="#" className="block text-gray-600 hover:text-gray-900 transition-colors">
+              <Link to="/markets" className="block text-gray-600 hover:text-gray-900 transition-colors">
                 {t('footer.spotTrading')}
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -33,9 +35,20 @@ export const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-gray-900">{t('footer.support')}</h4>
             <div className="space-y-2">
-              <a href="#" className="block text-gray-600 hover:text-gray-900 transition-colors">
-                {t('footer.contact')}
-              </a>
+              {isDemoMode ? (
+                <a
+                  href={`${GITHUB_URL}/issues`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  {t('footer.contact')}
+                </a>
+              ) : (
+                <Link to="/support" className="block text-gray-600 hover:text-gray-900 transition-colors">
+                  {t('footer.contact')}
+                </Link>
+              )}
             </div>
           </div>
 

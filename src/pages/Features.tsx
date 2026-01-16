@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Shield, 
   Zap, 
@@ -17,6 +19,9 @@ import {
 } from "lucide-react";
 
 const Features = () => {
+  const navigate = useNavigate();
+  const { isDemoMode } = useAuth();
+
   const features = [
     {
       icon: <Shield className="h-5 w-5 text-primary" />,
@@ -218,10 +223,10 @@ const Features = () => {
             数百万人のユーザーに参加して、最も先進的な暗号通貨プラットフォームで取引を始めましょう
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="hero-button">
+            <Button size="lg" className="hero-button" onClick={() => navigate(isDemoMode ? "/" : "/auth")}>
               今すぐ取引開始
             </Button>
-            <Button size="lg" variant="secondary">
+            <Button size="lg" variant="secondary" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               デモを見る
             </Button>
           </div>
