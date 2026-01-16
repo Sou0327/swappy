@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Bitcoin** (BTC with native SegWit)
 - **XRP** (Ripple with destination tag support)
 - **TRON** (TRX + TRC-20 tokens)
-- **Polygon** and **BNB Chain** (via EVM compatibility)
+- **Cardano** (ADA)
 
 #### HD Wallet Architecture
 - Hierarchical Deterministic wallets following BIP-32/39/44 standards

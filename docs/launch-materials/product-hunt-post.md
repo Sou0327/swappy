@@ -28,7 +28,7 @@ We're launching Swappy, an open-source cryptocurrency exchange platform that mak
 - Bitcoin (BTC)
 - XRP (Ripple)
 - TRON (TRX + TRC-20)
-- Polygon & BNB Chain
+- Cardano (ADA)
 
 **🔐 HD Wallet Architecture**
 Single master key generates unlimited addresses. No more managing individual private keys.

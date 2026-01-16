@@ -24,7 +24,7 @@ I've been working on Swappy, an open-source cryptocurrency exchange platform. It
 GitHub: https://github.com/Sou0327/swappy
 
 Key features:
-- Multi-chain: ETH, BTC, XRP, TRON, Polygon, BNB
+- Multi-chain: ETH, BTC, XRP, TRON, ADA
 - HD Wallet: BIP-32/39/44 compliant, single master key for unlimited addresses
 - White-label: Full branding customization via env vars
 - Modern stack: React 18, TypeScript 5, Supabase, Tailwind

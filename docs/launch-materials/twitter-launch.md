@@ -16,7 +16,7 @@ Built with:
 🗄️ Supabase
 🎨 Tailwind + shadcn/ui
 
-Supporting: ETH, BTC, XRP, TRON, Polygon, BNB
+Supporting: ETH, BTC, XRP, TRON, ADA
 
 100% open source (MIT) 👇
 

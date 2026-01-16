@@ -57,7 +57,7 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 
 > **This project is currently in BETA.** Core functionality is working, with some features under development:
 >
-> ✅ **Multi-Chain Wallet Management**: Generate and manage addresses across 6 blockchains
+> ✅ **Multi-Chain Wallet Management**: Generate and manage addresses across 5 blockchains
 > 🔶 **Wallet Setup (BIP39)**: HD wallet creation with mnemonic phrase generation **- UNDER ACTIVE DEVELOPMENT**
 > 🔶 **Deposit Detection**: Real-time blockchain RPC scanning for instant deposit detection **- UNDER ACTIVE DEVELOPMENT**
 > 🔶 **Withdrawal Processing**: Automatic transaction signing and broadcasting to blockchain **- UNDER ACTIVE DEVELOPMENT**
@@ -122,7 +122,7 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 
 | Status | Feature | Description |
 |:------:|---------|-------------|
-| ✅ | **Multi-Chain Support** | Ethereum, Bitcoin, XRP, TRON, Polygon, BNB Chain |
+| ✅ | **Multi-Chain Support** | Ethereum, Bitcoin, XRP, TRON, Cardano |
 | ✅ | **HD Wallet Architecture** | BIP-32/39/44 compliant key derivation |
 | 🔶 | **Wallet Setup (BIP39)** | User-specific HD wallet creation with mnemonic phrase **- Under Development** |
 | 🔶 | **Real-time Deposit Detection** | Blockchain RPC scanning for instant deposit detection **- Under Refinement** |
@@ -149,7 +149,7 @@ Try the demo at: **[https://swappy.tokyo/](https://swappy.tokyo/)**
 - **Bitcoin** (BTC)
 - **XRP** (Ripple)
 - **TRON** (TRX + TRC-20 tokens)
-- **Polygon**, **BNB Chain** (via EVM compatibility)
+- **Cardano** (ADA)
 
 </details>
 

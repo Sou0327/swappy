@@ -5,7 +5,7 @@ This document explains current Beta version limitations and future development p
 ## ✅ Core Functionality (Working)
 
 ### 1. Self-Custody Wallet Management
-- ✅ Generate HD wallet addresses across 6 blockchains (BTC, ETH, XRP, TRX, ADA, ERC-20)
+- ✅ Generate HD wallet addresses across 5 blockchains (BTC, ETH, XRP, TRX, ADA)
 - ✅ BIP-32/39/44 compliant key derivation
 - ✅ Secure key management with encrypted wallet roots (client-side only)
 - ✅ Role-based access control (Admin/User)
