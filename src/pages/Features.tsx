@@ -226,8 +226,8 @@ const Features = () => {
             <Button size="lg" className="hero-button" onClick={() => navigate(isDemoMode ? "/" : "/auth")}>
               今すぐ取引開始
             </Button>
-            <Button size="lg" variant="secondary" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              デモを見る
+            <Button size="lg" variant="secondary" onClick={() => navigate("/markets")}>
+              マーケットを見る
             </Button>
           </div>
         </div>

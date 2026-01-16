@@ -192,8 +192,8 @@ const About = () => {
             <Button size="lg" className="hero-button" onClick={() => navigate(isDemoMode ? "/" : "/auth")}>
               今日から取引開始
             </Button>
-            <Button size="lg" variant="secondary" onClick={() => navigate("/about")}>
-              キャリアを探索
+            <Button size="lg" variant="secondary" onClick={() => navigate("/markets")}>
+              マーケットを見る
             </Button>
           </div>
         </div>
