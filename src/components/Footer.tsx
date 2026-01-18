@@ -113,6 +113,25 @@ export const Footer = () => {
             <p className="text-gray-500 text-sm">
               © 2025 {PLATFORM_NAME} Exchange. {t('footer.copyright')}
             </p>
+            {/* Orynth Featured Badge */}
+            <a
+              href="https://orynth.dev/projects/swappy-9949"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-opacity hover:opacity-80"
+            >
+              <img
+                src="https://orynth.dev/api/badge/swappy-9949?theme=light&style=default"
+                alt="Featured on Orynth"
+                width={260}
+                height={80}
+                loading="lazy"
+                className="h-auto"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </a>
           </div>
         </div>
       </div>
