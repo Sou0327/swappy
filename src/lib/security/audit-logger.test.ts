@@ -14,19 +14,6 @@ import {
   type SensitiveOperation
 } from './audit-logger'
 
-// crypto のモック（Vitest 4 では default エクスポートが必須）
-vi.mock('crypto', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('crypto')>()
-  return {
-    default: actual,
-    ...actual,
-    createHmac: vi.fn(() => ({
-      update: vi.fn().mockReturnThis(),
-      digest: vi.fn(() => 'mocked-hmac-hash-123456')
-    }))
-  }
-})
-
 // FinancialEncryption のモック
 vi.mock('./encryption', () => ({
   FinancialEncryption: {
