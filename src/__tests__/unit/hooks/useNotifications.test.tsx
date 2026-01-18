@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { renderHook, act, waitFor } from '@testing-library/react'
+import { renderHook, act, waitFor, cleanup } from '@testing-library/react'
 import { useNotifications, createDepositNotification, createSystemNotification } from '@/hooks/useNotifications'
 import type { NotificationData } from '@/hooks/useNotifications'
 
@@ -12,19 +12,56 @@ describe('useNotifications', () => {
   // モックストレージ
   let mockStorage: { [key: string]: string } = {}
 
-  // モックNotification
-  interface MockNotificationInstance {
+  // Vitest 4対応: Audio クラスモック
+  class MockAudio {
+    src: string
+    preload: string = ''
+    volume: number = 0
+    currentTime: number = 0
+
+    constructor(src?: string) {
+      this.src = src || ''
+    }
+
+    play = vi.fn().mockResolvedValue(undefined)
+    pause = vi.fn()
+    addEventListener = vi.fn()
+    removeEventListener = vi.fn()
+  }
+
+  // Vitest 4対応: Notification クラスモック
+  // 各インスタンスのイベントハンドラとコンストラクタ引数を追跡
+  let lastNotificationInstance: {
+    title: string
+    options: NotificationOptions | undefined
     close: ReturnType<typeof vi.fn>
     onclick: ((event: Event) => void) | null
     onclose: (() => void) | null
     onerror: ((event: Event) => void) | null
-  }
+  } | null = null
 
-  let mockNotificationInstance: MockNotificationInstance
-  let mockNotificationConstructor: {
-    (title: string, options?: NotificationOptions): MockNotificationInstance
-    requestPermission: ReturnType<typeof vi.fn>
-    permission: NotificationPermission
+  // コンストラクタ呼び出しを追跡
+  const notificationConstructorCalls: Array<{ title: string; options?: NotificationOptions }> = []
+
+  class MockNotification {
+    static permission: NotificationPermission = 'default'
+    static requestPermission = vi.fn(async () => 'granted' as NotificationPermission)
+
+    title: string
+    options: NotificationOptions | undefined
+    close = vi.fn()
+    onclick: ((event: Event) => void) | null = null
+    onclose: (() => void) | null = null
+    onerror: ((event: Event) => void) | null = null
+
+    constructor(title: string, options?: NotificationOptions) {
+      this.title = title
+      this.options = options
+      // コンストラクタ呼び出しを記録
+      notificationConstructorCalls.push({ title, options })
+      // 最新のインスタンスを追跡
+      lastNotificationInstance = this
+    }
   }
 
   beforeEach(() => {
@@ -50,37 +87,20 @@ describe('useNotifications', () => {
       configurable: true
     })
 
-    // Notification APIモック
-    mockNotificationInstance = {
-      close: vi.fn(),
-      onclick: null,
-      onclose: null,
-      onerror: null
-    }
+    // Notification APIモック - Vitest 4対応: classを使用
+    MockNotification.permission = 'default'
+    MockNotification.requestPermission = vi.fn(async () => 'granted' as NotificationPermission)
+    lastNotificationInstance = null
+    notificationConstructorCalls.length = 0 // 呼び出し履歴をリセット
 
-    mockNotificationConstructor = vi.fn(() => mockNotificationInstance)
-
-    // Notification.requestPermissionのモック
-    mockNotificationConstructor.requestPermission = vi.fn(async () => 'granted' as NotificationPermission)
-    mockNotificationConstructor.permission = 'default'
-
-    global.Notification = mockNotificationConstructor as unknown as typeof Notification
+    global.Notification = MockNotification as unknown as typeof Notification
     Object.defineProperty(window, 'Notification', {
-      value: mockNotificationConstructor,
+      value: MockNotification,
       configurable: true
     })
 
-    // Audio APIモック
-    global.Audio = vi.fn().mockImplementation((src: string) => ({
-      src,
-      preload: '',
-      volume: 0,
-      currentTime: 0,
-      play: vi.fn().mockResolvedValue(undefined),
-      pause: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn()
-    })) as unknown as typeof Audio
+    // Audio APIモック - Vitest 4対応: classを使用
+    global.Audio = MockAudio as unknown as typeof Audio
 
     // Vibration APIモック
     global.navigator.vibrate = vi.fn()
@@ -89,7 +109,10 @@ describe('useNotifications', () => {
     global.window.focus = vi.fn()
   })
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Reactの非同期処理を待ってからクリーンアップ
+    await new Promise(resolve => setTimeout(resolve, 0))
+    cleanup()
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
   })
@@ -172,7 +195,7 @@ describe('useNotifications', () => {
 
   describe('requestPermission', () => {
     it('権限要求に成功する', async () => {
-      mockNotificationConstructor.requestPermission = vi.fn(async () => 'granted')
+      MockNotification.requestPermission = vi.fn(async () => 'granted')
 
       const { result } = renderHook(() => useNotifications())
 
@@ -187,7 +210,7 @@ describe('useNotifications', () => {
 
     it('既に権限が付与されている場合は再要求しない', async () => {
       global.Notification.permission = 'granted'
-      mockNotificationConstructor.requestPermission = vi.fn()
+      MockNotification.requestPermission = vi.fn()
 
       const { result } = renderHook(() => useNotifications())
 
@@ -197,11 +220,11 @@ describe('useNotifications', () => {
       })
 
       expect(permission).toBe('granted')
-      expect(mockNotificationConstructor.requestPermission).not.toHaveBeenCalled()
+      expect(MockNotification.requestPermission).not.toHaveBeenCalled()
     })
 
     it('権限が拒否される', async () => {
-      mockNotificationConstructor.requestPermission = vi.fn(async () => 'denied')
+      MockNotification.requestPermission = vi.fn(async () => 'denied')
 
       const { result } = renderHook(() => useNotifications())
 
@@ -236,8 +259,9 @@ describe('useNotifications', () => {
       })
 
       expect(success).toBe(true)
-      expect(mockNotificationConstructor).toHaveBeenCalledWith(
-        'テスト通知',
+      expect(notificationConstructorCalls.length).toBe(1)
+      expect(notificationConstructorCalls[0].title).toBe('テスト通知')
+      expect(notificationConstructorCalls[0].options).toEqual(
         expect.objectContaining({
           body: 'テスト本文',
           tag: 'test'
@@ -256,7 +280,7 @@ describe('useNotifications', () => {
       })
 
       expect(success).toBe(false)
-      expect(mockNotificationConstructor).not.toHaveBeenCalled()
+      expect(notificationConstructorCalls.length).toBe(0)
     })
 
     it('設定で無効化されている場合は送信しない', async () => {
@@ -273,7 +297,7 @@ describe('useNotifications', () => {
       })
 
       expect(success).toBe(false)
-      expect(mockNotificationConstructor).not.toHaveBeenCalled()
+      expect(notificationConstructorCalls.length).toBe(0)
     })
 
     it('クリックイベントを処理する', async () => {
@@ -285,13 +309,13 @@ describe('useNotifications', () => {
 
       // クリックイベントをシミュレート
       act(() => {
-        if (mockNotificationInstance.onclick) {
-          mockNotificationInstance.onclick({})
+        if (lastNotificationInstance?.onclick) {
+          lastNotificationInstance.onclick({})
         }
       })
 
       expect(result.current.stats.clicked).toBe(1)
-      expect(mockNotificationInstance.close).toHaveBeenCalled()
+      expect(lastNotificationInstance?.close).toHaveBeenCalled()
       expect(global.window.focus).toHaveBeenCalled()
     })
 
@@ -304,8 +328,8 @@ describe('useNotifications', () => {
 
       // クローズイベントをシミュレート
       act(() => {
-        if (mockNotificationInstance.onclose) {
-          mockNotificationInstance.onclose()
+        if (lastNotificationInstance?.onclose) {
+          lastNotificationInstance.onclose()
         }
       })
 
@@ -370,8 +394,9 @@ describe('useNotifications', () => {
       })
 
       expect(success).toBe(true)
-      expect(mockNotificationConstructor).toHaveBeenCalledWith(
-        'テスト通知',
+      expect(notificationConstructorCalls.length).toBe(1)
+      expect(notificationConstructorCalls[0].title).toBe('テスト通知')
+      expect(notificationConstructorCalls[0].options).toEqual(
         expect.objectContaining({
           body: '通知システムが正常に動作しています。'
         })
