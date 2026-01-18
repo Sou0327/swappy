@@ -204,8 +204,68 @@ vi.mock('@/integrations/supabase/client', () => {
   }
 })
 
-// XRPLライブラリモック
-vi.mock('xrpl')
+// XRPLライブラリモック - Vitest 4対応: vi.hoisted() でホイスティング
+// vi.mock() はファイル先頭にホイストされるため、vi.hoisted() で変数もホイストする
+const { mockXrplClient, mockDropsToXrp, mockXrpToDrops, mockWalletFromSeed, mockWalletSign } = vi.hoisted(() => {
+  const mockWalletSign = vi.fn().mockReturnValue({
+    tx_blob: 'ABCDEF1234567890',
+    hash: '0xTransactionHash123'
+  })
+
+  const mockWalletFromSeed = vi.fn().mockReturnValue({
+    address: 'rHotWallet123',
+    publicKey: 'ED1234567890ABCDEF',
+    sign: mockWalletSign
+  })
+
+  const mockDropsToXrp = vi.fn().mockImplementation(
+    (drops: string) => (parseFloat(drops) / 1000000).toFixed(6)
+  )
+
+  const mockXrpToDrops = vi.fn().mockImplementation(
+    (xrp: string) => (parseFloat(xrp) * 1000000).toString()
+  )
+
+  const mockXrplClient = {
+    connect: vi.fn().mockResolvedValue(undefined),
+    disconnect: vi.fn().mockResolvedValue(undefined),
+    isConnected: vi.fn().mockReturnValue(false),
+    request: vi.fn().mockResolvedValue({
+      result: {
+        account_data: {
+          Balance: '5000000000',
+          Sequence: 100
+        }
+      }
+    }),
+    autofill: vi.fn().mockImplementation((tx: unknown) => Promise.resolve({ ...(tx as object), Fee: '12', Sequence: 100 })),
+    submit: vi.fn().mockResolvedValue({
+      result: {
+        engine_result: 'tesSUCCESS',
+        tx_json: {
+          hash: '0xTransactionHash123'
+        }
+      }
+    })
+  }
+  return { mockXrplClient, mockDropsToXrp, mockXrpToDrops, mockWalletFromSeed, mockWalletSign }
+})
+
+vi.mock('xrpl', () => {
+  // Vitest 4: classキーワードを使ってコンストラクタをモック
+  return {
+    Client: class MockClient {
+      constructor() {
+        return mockXrplClient
+      }
+    },
+    Wallet: {
+      fromSeed: mockWalletFromSeed
+    },
+    dropsToXrp: mockDropsToXrp,
+    xrpToDrops: mockXrpToDrops
+  }
+})
 
 // XRPWalletManagerモック
 vi.mock('@/lib/wallets/xrp-wallet', () => ({
@@ -253,8 +313,6 @@ import {
 
 describe('XRPWithdrawalProcessor', () => {
   let processor: XRPWithdrawalProcessor
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockClient: any
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -262,66 +320,46 @@ describe('XRPWithdrawalProcessor', () => {
     mockWithdrawals.clear()
     mockBalances.clear()
 
-    // Clientモックの設定
-    mockClient = {
-      connect: vi.fn().mockResolvedValue(undefined),
-      disconnect: vi.fn().mockResolvedValue(undefined),
-      isConnected: vi.fn().mockReturnValue(false),
-      request: vi.fn().mockResolvedValue({
-        result: {
-          account_data: {
-            Balance: '5000000000',
-            Sequence: 100
-          }
+    // mockXrplClient の状態をリセット（vi.mock内で定義済み）
+    // vi.clearAllMocks() で各メソッドはリセットされるが、
+    // mockImplementation も再設定する
+    mockXrplClient.connect.mockResolvedValue(undefined)
+    mockXrplClient.disconnect.mockResolvedValue(undefined)
+    mockXrplClient.isConnected.mockReturnValue(false)
+    mockXrplClient.request.mockResolvedValue({
+      result: {
+        account_data: {
+          Balance: '5000000000',
+          Sequence: 100
         }
-      }),
-      autofill: vi.fn().mockImplementation((tx) => Promise.resolve({ ...tx, Fee: '12', Sequence: 100 })),
-      submit: vi.fn().mockResolvedValue({
-        result: {
-          engine_result: 'tesSUCCESS',
-          tx_json: {
-            hash: '0xTransactionHash123'
-          }
+      }
+    })
+    mockXrplClient.autofill.mockImplementation((tx) => Promise.resolve({ ...tx, Fee: '12', Sequence: 100 }))
+    mockXrplClient.submit.mockResolvedValue({
+      result: {
+        engine_result: 'tesSUCCESS',
+        tx_json: {
+          hash: '0xTransactionHash123'
         }
-      })
-    }
+      }
+    })
 
-    interface MockXRPLClient {
-      connect: ReturnType<typeof vi.fn>
-      disconnect: ReturnType<typeof vi.fn>
-      isConnected: ReturnType<typeof vi.fn>
-      request: ReturnType<typeof vi.fn>
-      autofill: ReturnType<typeof vi.fn>
-      submit: ReturnType<typeof vi.fn>
-    }
-
-    vi.mocked(xrpl.Client).mockImplementation(() => mockClient as unknown as InstanceType<typeof xrpl.Client>)
-
-    // Walletモックの設定
-    interface MockXRPLWallet {
-      address: string
-      publicKey: string
-      sign: ReturnType<typeof vi.fn>
-    }
-
-    const mockWalletSign = vi.fn().mockReturnValue({
+    // dropsToXrp/xrpToDrops/Wallet.fromSeed も再設定（vi.clearAllMocksでリセットされるため）
+    mockDropsToXrp.mockImplementation(
+      (drops: string) => (parseFloat(drops) / 1000000).toFixed(6)
+    )
+    mockXrpToDrops.mockImplementation(
+      (xrp: string) => (parseFloat(xrp) * 1000000).toString()
+    )
+    mockWalletSign.mockReturnValue({
       tx_blob: 'ABCDEF1234567890',
       hash: '0xTransactionHash123'
     })
-
-    vi.mocked(xrpl.Wallet.fromSeed).mockReturnValue({
+    mockWalletFromSeed.mockReturnValue({
       address: 'rHotWallet123',
       publicKey: 'ED1234567890ABCDEF',
       sign: mockWalletSign
-    } as unknown as xrpl.Wallet)
-
-    // dropsToXrp / xrpToDropsモックの設定
-    vi.mocked(xrpl.dropsToXrp).mockImplementation(
-      (drops: string) => (parseFloat(drops) / 1000000).toFixed(6)
-    )
-    vi.mocked(xrpl.xrpToDrops).mockImplementation(
-      (xrp: string) => (parseFloat(xrp) * 1000000).toString()
-    )
+    })
 
     // ホットウォレット設定
     mockWallets.set('wallet-1', {
@@ -390,24 +428,24 @@ describe('XRPWithdrawalProcessor', () => {
   describe('XRPL接続', () => {
     it('XRPLに接続できる', async () => {
       await processor.connect()
-      expect(mockClient.connect).toHaveBeenCalled()
+      expect(mockXrplClient.connect).toHaveBeenCalled()
     })
 
     it('既に接続済みの場合は再接続しない', async () => {
       await processor.connect() // 最初の接続
       vi.clearAllMocks() // モックの呼び出しをクリア
       await processor.connect() // 2回目の接続
-      expect(mockClient.connect).not.toHaveBeenCalled()
+      expect(mockXrplClient.connect).not.toHaveBeenCalled()
     })
 
     it('XRPLから切断できる', async () => {
       await processor.connect()
       await processor.disconnect()
-      expect(mockClient.disconnect).toHaveBeenCalled()
+      expect(mockXrplClient.disconnect).toHaveBeenCalled()
     })
 
     it('接続エラーを適切にthrowする', async () => {
-      mockClient.connect.mockRejectedValueOnce(new Error('Connection failed'))
+      mockXrplClient.connect.mockRejectedValueOnce(new Error('Connection failed'))
       await expect(processor.connect()).rejects.toThrow('XRPL接続に失敗')
     })
   })
@@ -436,7 +474,7 @@ describe('XRPWithdrawalProcessor', () => {
 
       expect(result.status).toBe('pending')
       expect(result.transactionHash).toBe('0xTransactionHash123')
-      expect(mockClient.submit).toHaveBeenCalled()
+      expect(mockXrplClient.submit).toHaveBeenCalled()
     })
 
     it('destination tagを指定した出金を処理できる', async () => {
@@ -445,7 +483,7 @@ describe('XRPWithdrawalProcessor', () => {
       const result = await processor.processWithdrawal(requestWithTag)
 
       expect(result.status).toBe('pending')
-      expect(mockClient.autofill).toHaveBeenCalledWith(
+      expect(mockXrplClient.autofill).toHaveBeenCalledWith(
         expect.objectContaining({ DestinationTag: 12345 })
       )
     })
@@ -476,7 +514,7 @@ describe('XRPWithdrawalProcessor', () => {
 
       await noRetryProcessor.connect()
       // submitでエラーを返す
-      mockClient.submit.mockRejectedValue(new Error('Transaction failed'))
+      mockXrplClient.submit.mockRejectedValue(new Error('Transaction failed'))
 
       await expect(noRetryProcessor.processWithdrawal(validRequest))
         .rejects.toThrow('XRP送金処理に失敗')
@@ -505,7 +543,7 @@ describe('XRPWithdrawalProcessor', () => {
       await processor.connect()
 
       // client.requestをコマンドに応じて異なるレスポンスを返すように設定
-      mockClient.request.mockImplementation((req: { command: string }) => {
+      mockXrplClient.request.mockImplementation((req: { command: string }) => {
         if (req.command === 'tx') {
           return Promise.resolve({
             result: {
@@ -541,7 +579,7 @@ describe('XRPWithdrawalProcessor', () => {
       })
 
       await processor.processWithdrawalConfirmations()
-      expect(mockClient.request).toHaveBeenCalledWith({
+      expect(mockXrplClient.request).toHaveBeenCalledWith({
         command: 'tx',
         transaction: '0xHash123'
       })
@@ -551,7 +589,7 @@ describe('XRPWithdrawalProcessor', () => {
       await processor.connect()
 
       // client.requestをコマンドに応じて設定
-      mockClient.request.mockImplementation((req: { command: string }) => {
+      mockXrplClient.request.mockImplementation((req: { command: string }) => {
         if (req.command === 'tx') {
           return Promise.resolve({
             result: {
@@ -590,7 +628,7 @@ describe('XRPWithdrawalProcessor', () => {
     it('ホットウォレットの残高を確認できる', async () => {
       await processor.connect()
       await processor.manageHotWalletBalances()
-      expect(mockClient.request).toHaveBeenCalledWith({
+      expect(mockXrplClient.request).toHaveBeenCalledWith({
         command: 'account_info',
         account: 'rHotWallet123',
         ledger_index: 'validated'
@@ -599,7 +637,7 @@ describe('XRPWithdrawalProcessor', () => {
 
     it('残高が低い場合はアラートを記録する', async () => {
       await processor.connect()
-      mockClient.request.mockResolvedValue({
+      mockXrplClient.request.mockResolvedValue({
         result: {
           account_data: {
             Balance: '50000000', // 50 XRP (低残高)
@@ -625,7 +663,7 @@ describe('XRPWithdrawalProcessor', () => {
     })
 
     it('ホットウォレット残高情報を含む', async () => {
-      mockClient.request.mockResolvedValue({
+      mockXrplClient.request.mockResolvedValue({
         result: {
           account_data: {
             Balance: '5000000000',
@@ -640,7 +678,7 @@ describe('XRPWithdrawalProcessor', () => {
     })
 
     it('エラー時はデフォルト値を返す', async () => {
-      mockClient.request.mockRejectedValue(new Error('Failed'))
+      mockXrplClient.request.mockRejectedValue(new Error('Failed'))
 
       const stats = await processor.getStatistics()
       expect(stats.totalPendingWithdrawals).toBe(0)
@@ -652,7 +690,7 @@ describe('XRPWithdrawalProcessor', () => {
     it('cleanup()でXRPL接続をクローズする', async () => {
       await processor.connect()
       await processor.cleanup()
-      expect(mockClient.disconnect).toHaveBeenCalled()
+      expect(mockXrplClient.disconnect).toHaveBeenCalled()
     })
   })
 })
