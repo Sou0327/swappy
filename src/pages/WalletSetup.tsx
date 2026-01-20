@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -59,6 +59,7 @@ const WalletSetup = () => {
 
   // 初期化用
   const [initializeLoading, setInitializeLoading] = useState(false);
+  const initializeStartedRef = useRef(false);
 
   // パスワード強度計算
   const getPasswordStrength = (pwd: string): PasswordStrength => {
@@ -177,12 +178,14 @@ const WalletSetup = () => {
     setVerificationLoading(true);
     setVerifyError(null);
     try {
+      const blankWords = blankedWords.filter(w => w.isBlank);
       const { data, error } = await supabase.functions.invoke('user-wallet-manager', {
         body: {
           action: 'verify',
           masterKeyId,
           password,
-          wordIndices: blankedWords.filter(w => w.isBlank).map(w => w.index)
+          wordIndices: blankWords.map(w => w.index),
+          selectedWords: blankWords.map(w => w.userWord || '')
         }
       });
 
@@ -309,7 +312,25 @@ const WalletSetup = () => {
 
       console.log('[WalletSetup] Edge Functionレスポンス:', { data, error });
 
-      if (error) throw error;
+      if (error) {
+        // エラーの詳細を取得（Response オブジェクトから JSON を取得）
+        let errorBody = null;
+        try {
+          if (error.context && typeof error.context.json === 'function') {
+            errorBody = await error.context.json();
+          }
+        } catch {
+          console.error('[WalletSetup] エラーボディのパース失敗');
+        }
+        console.error('[WalletSetup] Edge Functionエラー詳細:', errorBody);
+        // data.errors に詳細エラーがある場合
+        const detailErrors = errorBody?.data?.errors;
+        if (detailErrors && Array.isArray(detailErrors)) {
+          console.error('[WalletSetup] DB書き込みエラー:', detailErrors);
+          throw new Error(`DB書き込みエラー: ${detailErrors.map((e: { chain?: string; error: string }) => `${e.chain}: ${e.error}`).join(', ')}`);
+        }
+        throw new Error(errorBody?.error || errorBody?.data?.errors?.[0]?.error || error.message);
+      }
       if (!data?.success) throw new Error(data?.error || '初期化に失敗しました');
 
       console.log('[WalletSetup] wallet_roots初期化完了');
@@ -354,12 +375,13 @@ const WalletSetup = () => {
     }
   }, [masterKeyId, mnemonic, password, user, t, toast, navigate]);
 
-  // initializeステップで自動的に初期化を実行
+  // initializeステップで自動的に初期化を実行（二重実行防止）
   useEffect(() => {
-    if (step === 'initialize' && !initializeLoading && masterKeyId) {
+    if (step === 'initialize' && !initializeStartedRef.current && masterKeyId && mnemonic) {
+      initializeStartedRef.current = true;
       handleInitialize();
     }
-  }, [step, initializeLoading, masterKeyId, handleInitialize]);
+  }, [step, masterKeyId, mnemonic, handleInitialize]);
 
   // ステップ1 UI
   if (step === 'generate') {

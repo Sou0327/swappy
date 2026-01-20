@@ -452,8 +452,11 @@ export async function handleRequest(request: Request): Promise<Response> {
       const results: Array<{ chain: string; network: string; asset: string; xpub: string }> = [];
       const errors: Array<{ chain?: string; network?: string; asset?: string; error: string }> = [];
 
+      console.log('[user-wallet-manager] Processing wallet roots:', { count: roots.length, roots: roots.map(r => ({ chain: r.chain, network: r.network, asset: r.asset })) });
+
       for (const root of roots) {
         const { chain, network, asset, xpub, derivationPath, chainCode } = root;
+        console.log('[user-wallet-manager] Processing root:', { chain, network, asset, hasXpub: !!xpub, hasDerivationPath: !!derivationPath, hasChainCode: !!chainCode });
 
         // 必須フィールドの検証
         if (!chain || !network || !asset || !xpub || !derivationPath || !chainCode) {
@@ -468,27 +471,57 @@ export async function handleRequest(request: Request): Promise<Response> {
           continue;
         }
 
-        const { error: insertError } = await supabase
+        // 部分インデックスのため upsert ではなく SELECT → INSERT/UPDATE を使用
+        const { data: existingRoot } = await supabase
           .from('wallet_roots')
-          .upsert({
-            chain,
-            network,
-            asset,
-            xpub,
-            derivation_path: derivationPath,
-            chain_code: chainCode,
-            master_key_id: masterKeyId,
-            user_id: userId,
-            auto_generated: true,
-            legacy_data: false,
-            verified: true,
-            last_verified_at: new Date().toISOString(),
-            active: true,
-            next_index: 0,
-            derivation_template: '0/{index}'
-          }, { onConflict: 'user_id,chain,network' })
           .select('id')
-          .single();
+          .eq('user_id', userId)
+          .eq('chain', chain)
+          .eq('network', network)
+          .maybeSingle();
+
+        let insertError;
+        if (existingRoot) {
+          // 既存レコードを更新
+          const { error } = await supabase
+            .from('wallet_roots')
+            .update({
+              asset,
+              xpub,
+              derivation_path: derivationPath,
+              chain_code: chainCode,
+              master_key_id: masterKeyId,
+              auto_generated: true,
+              legacy_data: false,
+              verified: true,
+              last_verified_at: new Date().toISOString(),
+              active: true
+            })
+            .eq('id', existingRoot.id);
+          insertError = error;
+        } else {
+          // 新規レコードを挿入
+          const { error } = await supabase
+            .from('wallet_roots')
+            .insert({
+              chain,
+              network,
+              asset,
+              xpub,
+              derivation_path: derivationPath,
+              chain_code: chainCode,
+              master_key_id: masterKeyId,
+              user_id: userId,
+              auto_generated: true,
+              legacy_data: false,
+              verified: true,
+              last_verified_at: new Date().toISOString(),
+              active: true,
+              next_index: 0,
+              derivation_template: '0/{index}'
+            });
+          insertError = error;
+        }
 
         if (insertError) {
           console.error('[user-wallet-manager] Failed to upsert wallet root:', {
